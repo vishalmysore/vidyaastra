@@ -2,34 +2,100 @@
 
 This project implements a graph database using Neo4j to store and analyze cricket matches, players, and teams data. It uses Spring Boot with Spring Data Neo4j for database interactions.
 
-## Prerequisites
 
-- Java 17 or higher
-- Maven
-- Neo4j Aura account (or local Neo4j instance)
-- Git (optional)
+##  Neo4j Queries
 
-## Project Structure
+1️⃣ List all teams and their players
+
+```sql 
+MATCH (t:Team)<-[r:PLAYS_FOR]-(p:Player)
+RETURN t.name, collect(p.name);
+``` 
+shows which players belong to each team.
+
+2️⃣ List all matches with teams and winners
+
+```sql 
+MATCH (m:Match)-[:TEAM_1]->(team1:Team),
+      (m)-[:TEAM_2]->(team2:Team),
+      (m)-[:WINNER]->(winner:Team)
+RETURN m.venue AS Venue, m.matchDate AS Date, 
+       team1.name AS Team1, team2.name AS Team2, 
+       winner.name AS Winner, m.result AS Result;
+```
+
+✅ Shows all match details in one table.
+
+3️⃣ Players grouped by role
+```sql 
+MATCH (p:Player)
+RETURN p.role AS Role, collect(p.name) AS PlayersByRole;
+```
+
+✅ Groups players by Batsman, Bowler, etc.
+
+4️⃣ Count of players per team
+```sql 
+MATCH (t:Team)<-[:PLAYS_FOR]-(p:Player)
+RETURN t.name AS Team, count(p) AS PlayerCount;
+```
+
+✅ Quick check if every team has correct number of players.
+
+5️⃣ List matches played by a specific team (e.g., India)
+```sql 
+MATCH (m:Match)-[:TEAM_1|TEAM_2]->(t:Team {name: "India"})
+RETURN m.matchDate AS Date, m.venue AS Venue, 
+       m.result AS Result;
+```
+
+✅ Shows all matches where India participated.
+
+6️⃣ Teams that have won matches
+```sql 
+MATCH (m:Match)-[:WINNER]->(t:Team)
+RETURN t.name AS WinningTeam, count(m) AS MatchesWon
+ORDER BY MatchesWon DESC;
+```
+
+✅ Gives a leaderboard of teams by wins.
+
+7️⃣ All players and their team
+```sql 
+MATCH (p:Player)-[:PLAYS_FOR]->(t:Team)
+RETURN p.name AS Player, t.name AS Team;
+```
+
+✅ Just a flat list for reference.
+
+8️⃣ Matches with players from both teams
+
+```sql 
+MATCH (m:Match)-[:TEAM_1]->(t1:Team)<-[:PLAYS_FOR]-(p1:Player),
+      (m)-[:TEAM_2]->(t2:Team)<-[:PLAYS_FOR]-(p2:Player)
+RETURN m.venue AS Venue, t1.name AS Team1, collect(p1.name) AS Team1Players,
+       t2.name AS Team2, collect(p2.name) AS Team2Players;
 
 ```
-VidyaAstra/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── org/example/
-│   │   │       ├── model/
-│   │   │       │   ├── Player.java
-│   │   │       │   ├── Team.java
-│   │   │       │   ├── Match.java
-│   │   │       │   └── PlayerScore.java
-│   │   │       ├── repository/
-│   │   │       ├── service/
-│   │   │       └── util/
-│   │   └── resources/
-│   │       └── application.properties
-│   └── test/
-└── pom.xml
+
+✅ Shows each match and all players from both sides.
+
+9️⃣ Count matches per team
+```sql 
+MATCH (t:Team)<-[:TEAM_1|TEAM_2]-(m:Match)
+RETURN t.name AS Team, count(m) AS MatchesPlayed
+ORDER BY MatchesPlayed DESC;
 ```
+
+✅ See how many matches each team has played.
+
+1️⃣0️⃣ Find players who have won at least one match
+```sql 
+MATCH (p:Player)-[:PLAYS_FOR]->(t:Team)<-[:WINNER]-(m:Match)
+RETURN p.name AS Player, collect(m.result) AS Wins;
+```
+
+✅ Useful if you want a “winning players” list.
 
 ## Database Schema
 

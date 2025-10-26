@@ -1,6 +1,7 @@
 package org.example.model;
 
 import lombok.Data;
+import java.util.UUID;
 import org.springframework.data.neo4j.core.schema.*;
 import java.time.LocalDateTime;
 
@@ -8,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class Match {
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(GeneratedValue.UUIDGenerator.class)
+    private UUID id;
     
     private String venue;
     private LocalDateTime matchDate;

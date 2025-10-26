@@ -1,12 +1,15 @@
 package org.example.repository;
 
 import org.example.model.Player;
+import org.example.model.Team;
+import java.util.UUID;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import java.util.List;
 
-public interface PlayerRepository extends Neo4jRepository<Player, Long> {
-    List<Player> findByTeamName(String teamName);
+public interface PlayerRepository extends Neo4jRepository<Player, UUID> {
+    @Query("MATCH (p:Player)-[r:PLAYS_FOR]->(t:Team) WHERE t.id = $team.id RETURN p")
+    List<Player> findByTeam(Team team);
     
     @Query("MATCH (p:Player)-[r:PLAYS_FOR]->(t:Team) WHERE t.country = $country RETURN p")
     List<Player> findPlayersByCountry(String country);

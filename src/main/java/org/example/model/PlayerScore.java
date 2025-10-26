@@ -2,6 +2,7 @@ package org.example.model;
 
 import lombok.Data;
 import org.springframework.data.neo4j.core.schema.*;
+import java.util.UUID;
 
 @RelationshipProperties
 @Data

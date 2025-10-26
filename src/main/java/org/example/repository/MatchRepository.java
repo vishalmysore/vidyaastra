@@ -1,12 +1,13 @@
 package org.example.repository;
 
 import org.example.model.Match;
+import java.util.UUID;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface MatchRepository extends Neo4jRepository<Match, Long> {
+public interface MatchRepository extends Neo4jRepository<Match, UUID> {
     List<Match> findByMatchType(String matchType);
     
     List<Match> findByVenue(String venue);

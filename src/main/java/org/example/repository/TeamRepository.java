@@ -4,8 +4,9 @@ import org.example.model.Team;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import java.util.List;
+import java.util.UUID;
 
-public interface TeamRepository extends Neo4jRepository<Team, Long> {
+public interface TeamRepository extends Neo4jRepository<Team, UUID> {
     Team findByName(String name);
     
     @Query("MATCH (t:Team)-[r:WINNER]-(m:Match) RETURN t, COUNT(m) as wins ORDER BY wins DESC")

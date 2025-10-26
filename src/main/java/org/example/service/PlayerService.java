@@ -13,6 +13,10 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     
     public Player savePlayer(Player player) {
+        if (player.getTeam() == null) {
+            throw new IllegalArgumentException("Player must be associated with a team");
+        }
+        // Save player directly - it's the owning side of the relationship
         return playerRepository.save(player);
     }
     
@@ -20,8 +24,8 @@ public class PlayerService {
         return playerRepository.findAll();
     }
     
-    public List<Player> getPlayersByTeam(String teamName) {
-        return playerRepository.findByTeamName(teamName);
+    public List<Player> getPlayersByTeam(Team team) {
+        return playerRepository.findByTeam(team);
     }
     
     public List<Player> getPlayersByCountry(String country) {
