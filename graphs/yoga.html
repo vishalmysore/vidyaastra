@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Knowledge Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.2);
+        }
+
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.9);
+            stroke-width: 3px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link:hover {
+            stroke: rgba(0, 217, 255, 1);
+            stroke-width: 4px;
+        }
+
+        .link-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #00d9ff;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 300px;
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #00d9ff;
+            font-size: 1.5em;
+        }
+
+        .controls button {
+            background: #00d9ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .controls button:hover {
+            background: #4ecdc4;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 300px;
+            display: none;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #00d9ff;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>Yoga Knowledge Graph</h2>
+        <p style="font-size: 0.9em; margin-bottom: 15px;">Drag nodes to explore. Click for details.</p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+    </div>
+
+    <div class="legend">
+        <h3 style="margin: 0 0 10px 0; color: #00d9ff;">Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div>Core Concept</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Yoga Type</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Practice</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Benefit</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Philosophy</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Technique</div>
+        <div class="legend-item"><div class="legend-color" style="background: #e76f51;"></div>Equipment</div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <p id="nodeDescription"></p>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Core Concepts
+            {id: "Yoga", type: "core", category: "Core Concept", size: 25, description: "Ancient practice combining physical, mental, and spiritual disciplines"},
+            {id: "Eight Limbs", type: "philosophy", category: "Philosophy", size: 20, description: "Patanjali's eight aspects of yoga practice: Yama, Niyama, Asana, Pranayama, Pratyahara, Dharana, Dhyana, Samadhi"},
+
+            // Major Yoga Types
+            {id: "Hatha Yoga", type: "type", category: "Yoga Type", size: 18, description: "Physical practice focusing on postures and breath control"},
+            {id: "Raja Yoga", type: "type", category: "Yoga Type", size: 18, description: "Meditation and spiritual practice focusing on mind control"},
+            {id: "Karma Yoga", type: "type", category: "Yoga Type", size: 18, description: "Path of selfless service and action"},
+            {id: "Bhakti Yoga", type: "type", category: "Yoga Type", size: 18, description: "Path of devotion and love"},
+            {id: "Jnana Yoga", type: "type", category: "Yoga Type", size: 18, description: "Path of knowledge and wisdom"},
+            {id: "Kundalini Yoga", type: "type", category: "Yoga Type", size: 18, description: "Practice focusing on awakening spiritual energy"},
+
+            // Modern Yoga Styles
+            {id: "Vinyasa", type: "type", category: "Yoga Type", size: 16, description: "Flow-based practice linking breath with movement"},
+            {id: "Ashtanga", type: "type", category: "Yoga Type", size: 16, description: "Dynamic sequence-based practice"},
+            {id: "Yin Yoga", type: "type", category: "Yoga Type", size: 16, description: "Slow-paced practice holding poses for longer periods"},
+            {id: "Restorative", type: "type", category: "Yoga Type", size: 16, description: "Gentle practice using props for complete relaxation"},
+            {id: "Hot Yoga", type: "type", category: "Yoga Type", size: 16, description: "Practice in heated room (95-105°F)"},
+
+            // Core Practices
+            {id: "Asanas", type: "practice", category: "Practice", size: 17, description: "Physical postures in yoga"},
+            {id: "Pranayama", type: "practice", category: "Practice", size: 17, description: "Breathing techniques and exercises"},
+            {id: "Meditation", type: "practice", category: "Practice", size: 17, description: "Mental focus and mindfulness practices"},
+            {id: "Mudras", type: "practice", category: "Practice", size: 15, description: "Hand gestures used in yoga practice"},
+            {id: "Mantras", type: "practice", category: "Practice", size: 15, description: "Sacred sounds or phrases for meditation"},
+
+            // Physical Benefits
+            {id: "Flexibility", type: "benefit", category: "Benefit", size: 14, description: "Increased range of motion and joint mobility"},
+            {id: "Strength", type: "benefit", category: "Benefit", size: 14, description: "Enhanced muscular strength and tone"},
+            {id: "Balance", type: "benefit", category: "Benefit", size: 14, description: "Improved physical and mental balance"},
+            {id: "Posture", type: "benefit", category: "Benefit", size: 14, description: "Better alignment and body awareness"},
+
+            // Mental Benefits
+            {id: "Stress Relief", type: "benefit", category: "Benefit", size: 14, description: "Reduced stress and anxiety"},
+            {id: "Focus", type: "benefit", category: "Benefit", size: 14, description: "Enhanced concentration and mental clarity"},
+            {id: "Sleep", type: "benefit", category: "Benefit", size: 14, description: "Improved sleep quality"},
+            {id: "Mindfulness", type: "benefit", category: "Benefit", size: 14, description: "Increased present moment awareness"},
+
+            // Equipment
+            {id: "Yoga Mat", type: "equipment", category: "Equipment", size: 12, description: "Non-slip surface for practice"},
+            {id: "Props", type: "equipment", category: "Equipment", size: 12, description: "Blocks, straps, blankets, and bolsters"},
+
+            // Philosophical Concepts
+            {id: "Chakras", type: "philosophy", category: "Philosophy", size: 15, description: "Energy centers in the body"},
+            {id: "Karma", type: "philosophy", category: "Philosophy", size: 15, description: "Law of cause and effect"},
+            {id: "Dharma", type: "philosophy", category: "Philosophy", size: 15, description: "Life purpose and moral duty"},
+
+            // Breathing Techniques
+            {id: "Ujjayi", type: "technique", category: "Technique", size: 13, description: "Ocean breath technique"},
+            {id: "Kapalabhati", type: "technique", category: "Technique", size: 13, description: "Skull-shining breath"},
+            {id: "Nadi Shodhana", type: "technique", category: "Technique", size: 13, description: "Alternate nostril breathing"},
+
+            // Additional Concepts
+            {id: "Spirituality", type: "philosophy", category: "Philosophy", size: 16, description: "Connection to higher consciousness"},
+            {id: "Mind-Body Connection", type: "core", category: "Core Concept", size: 16, description: "Integration of mental and physical aspects"},
+            {id: "Energy Work", type: "practice", category: "Practice", size: 15, description: "Practices working with subtle energy"}
+        ];
+
+        const links = [
+            // Core Connections
+            {source: "Yoga", target: "Eight Limbs", label: "fundamental framework"},
+            {source: "Yoga", target: "Mind-Body Connection", label: "develops"},
+
+            // Major Types
+            {source: "Yoga", target: "Hatha Yoga", label: "type"},
+            {source: "Yoga", target: "Raja Yoga", label: "type"},
+            {source: "Yoga", target: "Karma Yoga", label: "type"},
+            {source: "Yoga", target: "Bhakti Yoga", label: "type"},
+            {source: "Yoga", target: "Jnana Yoga", label: "type"},
+            {source: "Yoga", target: "Kundalini Yoga", label: "type"},
+
+            // Modern Styles
+            {source: "Hatha Yoga", target: "Vinyasa", label: "modern form"},
+            {source: "Hatha Yoga", target: "Ashtanga", label: "modern form"},
+            {source: "Hatha Yoga", target: "Yin Yoga", label: "modern form"},
+            {source: "Hatha Yoga", target: "Restorative", label: "modern form"},
+            {source: "Hatha Yoga", target: "Hot Yoga", label: "modern form"},
+
+            // Core Practices
+            {source: "Yoga", target: "Asanas", label: "includes"},
+            {source: "Yoga", target: "Pranayama", label: "includes"},
+            {source: "Yoga", target: "Meditation", label: "includes"},
+            {source: "Yoga", target: "Mudras", label: "includes"},
+            {source: "Yoga", target: "Mantras", label: "includes"},
+
+            // Benefits
+            {source: "Asanas", target: "Flexibility", label: "improves"},
+            {source: "Asanas", target: "Strength", label: "builds"},
+            {source: "Asanas", target: "Balance", label: "enhances"},
+            {source: "Asanas", target: "Posture", label: "corrects"},
+            {source: "Meditation", target: "Stress Relief", label: "provides"},
+            {source: "Meditation", target: "Focus", label: "improves"},
+            {source: "Meditation", target: "Sleep", label: "enhances"},
+            {source: "Pranayama", target: "Mindfulness", label: "develops"},
+
+            // Equipment
+            {source: "Asanas", target: "Yoga Mat", label: "requires"},
+            {source: "Restorative", target: "Props", label: "uses"},
+
+            // Philosophy
+            {source: "Kundalini Yoga", target: "Chakras", label: "works with"},
+            {source: "Karma Yoga", target: "Karma", label: "based on"},
+            {source: "Dharma", target: "Spirituality", label: "relates to"},
+
+            // Breathing
+            {source: "Pranayama", target: "Ujjayi", label: "technique"},
+            {source: "Pranayama", target: "Kapalabhati", label: "technique"},
+            {source: "Pranayama", target: "Nadi Shodhana", label: "technique"},
+
+            // Additional Connections
+            {source: "Mind-Body Connection", target: "Energy Work", label: "involves"},
+            {source: "Chakras", target: "Energy Work", label: "related to"},
+            {source: "Meditation", target: "Spirituality", label: "develops"},
+            {source: "Raja Yoga", target: "Meditation", label: "focuses on"},
+            {source: "Bhakti Yoga", target: "Spirituality", label: "emphasizes"},
+            {source: "Kundalini Yoga", target: "Energy Work", label: "works with"},
+            {source: "Mantras", target: "Meditation", label: "used in"},
+            {source: "Mudras", target: "Energy Work", label: "directs"},
+
+            // Practice Connections
+            {source: "Vinyasa", target: "Ujjayi", label: "uses"},
+            {source: "Ashtanga", target: "Strength", label: "builds"},
+            {source: "Yin Yoga", target: "Flexibility", label: "improves"},
+            {source: "Hot Yoga", target: "Flexibility", label: "enhances"},
+            {source: "Restorative", target: "Stress Relief", label: "promotes"},
+
+            // Philosophical Connections
+            {source: "Eight Limbs", target: "Asanas", label: "includes"},
+            {source: "Eight Limbs", target: "Pranayama", label: "includes"},
+            {source: "Eight Limbs", target: "Meditation", label: "leads to"},
+            {source: "Jnana Yoga", target: "Focus", label: "requires"},
+            {source: "Mind-Body Connection", target: "Balance", label: "improves"}
+        ];
+
+        const categoryColors = {
+            "Core Concept": "#ff6b6b",
+            "Yoga Type": "#4ecdc4",
+            "Practice": "#ffe66d",
+            "Benefit": "#95e1d3",
+            "Philosophy": "#a8dadc",
+            "Technique": "#f4a261",
+            "Equipment": "#e76f51"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        // Define arrowhead marker
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(0, 217, 255, 1)")
+            .attr("stroke", "rgba(0, 217, 255, 1)")
+            .attr("stroke-width", "1");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 10));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                // Calculate the position where arrow should stop (at the edge of target circle)
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+            panel.style.display = "block";
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.8 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        // Initial zoom to fit
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>
+
