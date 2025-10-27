@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extended Knowledge Graph - Vishal Mysore</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+        }
+        
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.2);
+        }
+        
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        
+        .link {
+            stroke: rgba(100, 200, 255, 0.9);
+            stroke-width: 3px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        
+        .link:hover {
+            stroke: rgba(0, 217, 255, 1);
+            stroke-width: 4px;
+        }
+        
+        .link-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #00d9ff;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+        
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 300px;
+        }
+        
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #00d9ff;
+            font-size: 1.5em;
+        }
+        
+        .controls button {
+            background: #00d9ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .controls button:hover {
+            background: #4ecdc4;
+        }
+        
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 300px;
+            display: none;
+        }
+        
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #00d9ff;
+        }
+        
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>Knowledge Graph</h2>
+        <p style="font-size: 0.9em; margin-bottom: 15px;">Drag nodes to explore. Click for details.</p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+    </div>
+    
+    <div class="legend">
+        <h3 style="margin: 0 0 10px 0; color: #00d9ff;">Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div>Person</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Location</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Organization</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Skill/Field</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Concept</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Product</div>
+        <div class="legend-item"><div class="legend-color" style="background: #e76f51;"></div>Activity</div>
+    </div>
+    
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <p id="nodeDescription"></p>
+    </div>
+    
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Central person
+            {id: "Vishal Mysore", type: "person", category: "Person", size: 25, description: "Director with 25 years of experience in AI and Software Engineering"},
+            
+            // Experience and roles
+            {id: "Experience", type: "concept", category: "Concept", size: 18, description: "25 years of professional experience"},
+            {id: "Director", type: "role", category: "Concept", size: 15, description: "Leadership role"},
+            {id: "AI", type: "skill", category: "Skill/Field", size: 18, description: "Artificial Intelligence expertise"},
+            {id: "Software Engineering", type: "skill", category: "Skill/Field", size: 18, description: "Software development and engineering"},
+            
+            // Locations
+            {id: "India", type: "location", category: "Location", size: 15, description: "Country in South Asia"},
+            {id: "Bangalore", type: "location", category: "Location", size: 14, description: "IT Hub of India"},
+            {id: "Canada", type: "location", category: "Location", size: 15, description: "North American country"},
+            {id: "USA", type: "location", category: "Location", size: 15, description: "United States of America"},
+            {id: "New York", type: "location", category: "Location", size: 14, description: "Major US city"},
+            {id: "North America", type: "location", category: "Location", size: 14, description: "Continental region"},
+            
+            // Organizations
+            {id: "Citibank", type: "organization", category: "Organization", size: 16, description: "Global banking institution"},
+            {id: "IT Hub", type: "concept", category: "Concept", size: 13, description: "Technology center"},
+            {id: "Wall Street", type: "location", category: "Location", size: 13, description: "Financial district in NYC"},
+            
+            // Industries and sectors
+            {id: "Banking", type: "industry", category: "Organization", size: 15, description: "Financial services industry"},
+            {id: "FinTec", type: "industry", category: "Organization", size: 14, description: "Financial Technology"},
+            
+            // Extended USA nodes
+            {id: "Provinces", type: "concept", category: "Concept", size: 12, description: "Canadian provinces (10 total)"},
+            {id: "California", type: "location", category: "Location", size: 13, description: "US West Coast state"},
+            {id: "Texas", type: "location", category: "Location", size: 13, description: "US Southern state"},
+            {id: "Florida", type: "location", category: "Location", size: 12, description: "US Southeastern state"},
+            {id: "Silicon Valley", type: "location", category: "Location", size: 14, description: "Tech hub in California"},
+            
+            // Extended Yoga nodes
+            {id: "Yoga", type: "activity", category: "Activity", size: 14, description: "Ancient practice of physical and mental discipline"},
+            {id: "Hatha Yoga", type: "activity", category: "Activity", size: 12, description: "Physical yoga practice"},
+            {id: "Vinyasa", type: "activity", category: "Activity", size: 12, description: "Flow-style yoga"},
+            {id: "Meditation", type: "activity", category: "Activity", size: 12, description: "Mindfulness practice"},
+            {id: "Pranayama", type: "activity", category: "Activity", size: 11, description: "Breath control techniques"},
+            {id: "Asanas", type: "activity", category: "Activity", size: 11, description: "Yoga postures"},
+            
+            // Extended Software Engineering nodes
+            {id: "Python", type: "skill", category: "Skill/Field", size: 13, description: "Programming language"},
+            {id: "Java", type: "skill", category: "Skill/Field", size: 13, description: "Programming language"},
+            {id: "JavaScript", type: "skill", category: "Skill/Field", size: 13, description: "Web programming language"},
+            {id: "Cloud Computing", type: "skill", category: "Skill/Field", size: 13, description: "Distributed computing"},
+            {id: "DevOps", type: "skill", category: "Skill/Field", size: 12, description: "Development and operations practices"},
+            {id: "Agile", type: "concept", category: "Concept", size: 12, description: "Software development methodology"},
+            {id: "Microservices", type: "concept", category: "Concept", size: 11, description: "Software architecture pattern"},
+            
+            // Extended AI nodes
+            {id: "Machine Learning", type: "skill", category: "Skill/Field", size: 14, description: "Subset of AI"},
+            {id: "Deep Learning", type: "skill", category: "Skill/Field", size: 13, description: "Neural network-based learning"},
+            {id: "NLP", type: "skill", category: "Skill/Field", size: 13, description: "Natural Language Processing"},
+            {id: "Computer Vision", type: "skill", category: "Skill/Field", size: 13, description: "Image analysis and understanding"},
+            {id: "Robotics", type: "skill", category: "Skill/Field", size: 13, description: "Robotic systems and automation"},
+            {id: "Neural Networks", type: "concept", category: "Concept", size: 12, description: "AI computational models"},
+            {id: "TensorFlow", type: "tool", category: "Product", size: 11, description: "ML framework"},
+            {id: "PyTorch", type: "tool", category: "Product", size: 11, description: "ML framework"},
+            
+            // Patents and Research
+            {id: "Patents", type: "achievement", category: "Concept", size: 14, description: "10 patents held"},
+            {id: "AI Research", type: "concept", category: "Concept", size: 13, description: "Research in artificial intelligence"},
+            {id: "Software Engineering & AI", type: "concept", category: "Concept", size: 12, description: "Intersection of SE and AI"},
+            
+            // Canada specific
+            {id: "Maple Trees", type: "nature", category: "Concept", size: 11, description: "Iconic Canadian trees"},
+            {id: "Maple Syrup", type: "product", category: "Product", size: 12, description: "Popular Canadian product"},
+            {id: "Breakfast items", type: "product", category: "Product", size: 10, description: "Common breakfast foods"},
+            
+            // Additional tech nodes
+            {id: "APIs", type: "concept", category: "Concept", size: 11, description: "Application Programming Interfaces"},
+            {id: "Databases", type: "concept", category: "Concept", size: 12, description: "Data storage systems"},
+            {id: "SQL", type: "skill", category: "Skill/Field", size: 11, description: "Database query language"},
+            {id: "NoSQL", type: "skill", category: "Skill/Field", size: 11, description: "Non-relational databases"},
+            
+            // US Cities
+            {id: "Los Angeles", type: "location", category: "Location", size: 11, description: "California city"},
+            {id: "Chicago", type: "location", category: "Location", size: 11, description: "Illinois city"},
+            {id: "Seattle", type: "location", category: "Location", size: 11, description: "Washington state city"},
+            {id: "Austin", type: "location", category: "Location", size: 11, description: "Texas city"}
+        ];
+
+        const links = [
+            // Original connections
+            {source: "Vishal Mysore", target: "Experience", label: "25 years of"},
+            {source: "Experience", target: "Software Engineering", label: "in"},
+            {source: "Vishal Mysore", target: "Director", label: "has role"},
+            {source: "Vishal Mysore", target: "AI", label: "has skills"},
+            {source: "Vishal Mysore", target: "Yoga", label: "practices"},
+            {source: "Vishal Mysore", target: "India", label: "born in"},
+            {source: "Vishal Mysore", target: "Canada", label: "lives in"},
+            {source: "Vishal Mysore", target: "Citibank", label: "works for"},
+            {source: "Vishal Mysore", target: "Patents", label: "holds (10)"},
+            
+            {source: "India", target: "Bangalore", label: "has city"},
+            {source: "Bangalore", target: "IT Hub", label: "known as"},
+            {source: "Citibank", target: "New York", label: "headquarters"},
+            {source: "New York", target: "Wall Street", label: "home to"},
+            {source: "New York", target: "USA", label: "located in"},
+            {source: "Citibank", target: "Banking", label: "sector"},
+            {source: "Banking", target: "FinTec", label: "includes"},
+            
+            {source: "Canada", target: "North America", label: "is in"},
+            {source: "Canada", target: "Provinces", label: "has 10"},
+            {source: "Canada", target: "Maple Trees", label: "known for"},
+            {source: "Maple Trees", target: "Maple Syrup", label: "produced from"},
+            {source: "Maple Syrup", target: "Breakfast items", label: "popular in"},
+            
+            {source: "AI", target: "Robotics", label: "can be used in"},
+            {source: "AI", target: "Machine Learning", label: "related to"},
+            {source: "Patents", target: "Software Engineering & AI", label: "related to"},
+            {source: "AI Research", target: "Patents", label: "also known for"},
+            
+            // Extended Yoga connections
+            {source: "Yoga", target: "Hatha Yoga", label: "type"},
+            {source: "Yoga", target: "Vinyasa", label: "type"},
+            {source: "Yoga", target: "Meditation", label: "includes"},
+            {source: "Yoga", target: "Pranayama", label: "includes"},
+            {source: "Yoga", target: "Asanas", label: "includes"},
+            {source: "Yoga", target: "India", label: "originated in"},
+            {source: "Meditation", target: "Pranayama", label: "combined with"},
+            
+            // Extended USA connections
+            {source: "USA", target: "California", label: "has state"},
+            {source: "USA", target: "Texas", label: "has state"},
+            {source: "USA", target: "Florida", label: "has state"},
+            {source: "USA", target: "North America", label: "is in"},
+            {source: "California", target: "Silicon Valley", label: "home to"},
+            {source: "California", target: "Los Angeles", label: "has city"},
+            {source: "Texas", target: "Austin", label: "has city"},
+            {source: "USA", target: "Chicago", label: "has city"},
+            {source: "USA", target: "Seattle", label: "has city"},
+            {source: "Silicon Valley", target: "Software Engineering", label: "hub for"},
+            
+            // Extended Software Engineering connections
+            {source: "Software Engineering", target: "Python", label: "uses"},
+            {source: "Software Engineering", target: "Java", label: "uses"},
+            {source: "Software Engineering", target: "JavaScript", label: "uses"},
+            {source: "Software Engineering", target: "Cloud Computing", label: "includes"},
+            {source: "Software Engineering", target: "DevOps", label: "methodology"},
+            {source: "Software Engineering", target: "Agile", label: "methodology"},
+            {source: "Software Engineering", target: "Microservices", label: "architecture"},
+            {source: "Software Engineering", target: "APIs", label: "builds"},
+            {source: "Software Engineering", target: "Databases", label: "uses"},
+            {source: "Databases", target: "SQL", label: "queried with"},
+            {source: "Databases", target: "NoSQL", label: "includes"},
+            
+            // Extended AI connections
+            {source: "AI", target: "Machine Learning", label: "includes"},
+            {source: "Machine Learning", target: "Deep Learning", label: "includes"},
+            {source: "AI", target: "NLP", label: "includes"},
+            {source: "AI", target: "Computer Vision", label: "includes"},
+            {source: "Deep Learning", target: "Neural Networks", label: "uses"},
+            {source: "Machine Learning", target: "TensorFlow", label: "framework"},
+            {source: "Machine Learning", target: "PyTorch", label: "framework"},
+            {source: "Machine Learning", target: "Python", label: "coded in"},
+            {source: "NLP", target: "Python", label: "uses"},
+            
+            // Cross-domain connections
+            {source: "AI", target: "Cloud Computing", label: "deployed on"},
+            {source: "DevOps", target: "Cloud Computing", label: "manages"},
+            {source: "Citibank", target: "FinTec", label: "invests in"},
+            {source: "FinTec", target: "AI", label: "uses"},
+            {source: "Banking", target: "Software Engineering", label: "requires"},
+            {source: "Silicon Valley", target: "AI Research", label: "center for"},
+            {source: "Austin", target: "Software Engineering", label: "hub for"}
+        ];
+
+        const categoryColors = {
+            "Person": "#ff6b6b",
+            "Location": "#4ecdc4",
+            "Organization": "#ffe66d",
+            "Skill/Field": "#95e1d3",
+            "Concept": "#a8dadc",
+            "Product": "#f4a261",
+            "Activity": "#e76f51"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        // Define arrowhead marker
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(0, 217, 255, 1)")
+            .attr("stroke", "rgba(0, 217, 255, 1)")
+            .attr("stroke-width", "1");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 10));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+                
+                // Calculate the position where arrow should stop (at the edge of target circle)
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+                
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+            panel.style.display = "block";
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.8 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        // Initial zoom to fit
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>
