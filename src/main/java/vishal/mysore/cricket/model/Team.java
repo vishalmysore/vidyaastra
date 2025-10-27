@@ -1,4 +1,4 @@
-package org.example.model;
+package vishal.mysore.cricket.model;
 
 import lombok.Data;
 import org.springframework.data.neo4j.core.schema.*;

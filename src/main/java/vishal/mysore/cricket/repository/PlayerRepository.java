@@ -1,7 +1,7 @@
-package org.example.repository;
+package vishal.mysore.cricket.repository;
 
-import org.example.model.Player;
-import org.example.model.Team;
+import vishal.mysore.cricket.model.Player;
+import vishal.mysore.cricket.model.Team;
 import java.util.UUID;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;

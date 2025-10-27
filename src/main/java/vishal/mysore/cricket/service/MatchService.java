@@ -1,8 +1,8 @@
-package org.example.service;
+package vishal.mysore.cricket.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.model.Match;
-import org.example.repository.MatchRepository;
+import vishal.mysore.cricket.model.Match;
+import vishal.mysore.cricket.repository.MatchRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;

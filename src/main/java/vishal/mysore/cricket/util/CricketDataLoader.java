@@ -1,11 +1,16 @@
-package org.example.util;
+package vishal.mysore.cricket.util;
 
 import lombok.RequiredArgsConstructor;
-import org.example.model.*;
-import org.example.service.*;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.data.neo4j.core.Neo4jClient;
+import vishal.mysore.cricket.model.Match;
+import vishal.mysore.cricket.model.Player;
+import vishal.mysore.cricket.model.Team;
+import vishal.mysore.cricket.service.MatchService;
+import vishal.mysore.cricket.service.PlayerService;
+import vishal.mysore.cricket.service.TeamService;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

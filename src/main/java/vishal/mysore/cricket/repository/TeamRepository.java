@@ -1,6 +1,6 @@
-package org.example.repository;
+package vishal.mysore.cricket.repository;
 
-import org.example.model.Team;
+import vishal.mysore.cricket.model.Team;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.example;
+package vishal.mysore.cricket;
 
 public class Main {
     public static void main(String[] args) {

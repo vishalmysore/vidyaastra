@@ -1,9 +1,9 @@
-package org.example.service;
+package vishal.mysore.cricket.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.model.Player;
-import org.example.model.Team;
-import org.example.repository.PlayerRepository;
+import vishal.mysore.cricket.model.Player;
+import vishal.mysore.cricket.model.Team;
+import vishal.mysore.cricket.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

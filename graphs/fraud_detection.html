@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection Knowledge Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.2);
+        }
+
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.9);
+            stroke-width: 3px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link:hover {
+            stroke: rgba(0, 217, 255, 1);
+            stroke-width: 4px;
+        }
+
+        .link-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #00d9ff;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 300px;
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #00d9ff;
+            font-size: 1.5em;
+        }
+
+        .controls button {
+            background: #00d9ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .controls button:hover {
+            background: #4ecdc4;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 300px;
+            display: none;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #00d9ff;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>Fraud Detection Knowledge Graph</h2>
+        <p style="font-size: 0.9em; margin-bottom: 15px;">Drag nodes to explore. Click for details.</p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+    </div>
+
+    <div class="legend">
+        <h3 style="margin: 0 0 10px 0; color: #00d9ff;">Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div>Core Concept</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Fraud Type</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Detection Method</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Indicator</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Data Source</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Technology</div>
+        <div class="legend-item"><div class="legend-color" style="background: #e76f51;"></div>Prevention</div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <p id="nodeDescription"></p>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Core Concepts
+            {id: "Fraud Detection", type: "core", category: "Core Concept", size: 25, description: "System and processes to identify and prevent fraudulent activities"},
+            {id: "Pattern Recognition", type: "core", category: "Core Concept", size: 20, description: "Identification of suspicious patterns and behaviors in transactions"},
+            {id: "Risk Assessment", type: "core", category: "Core Concept", size: 20, description: "Evaluation of potential fraud risks in transactions and accounts"},
+
+            // Fraud Types
+            {id: "Account Takeover", type: "fraud", category: "Fraud Type", size: 18, description: "Unauthorized access and control of legitimate accounts"},
+            {id: "Identity Theft", type: "fraud", category: "Fraud Type", size: 18, description: "Using stolen personal information for fraudulent purposes"},
+            {id: "Payment Fraud", type: "fraud", category: "Fraud Type", size: 18, description: "Unauthorized or fake payment transactions"},
+            {id: "Application Fraud", type: "fraud", category: "Fraud Type", size: 18, description: "Using false information to open new accounts"},
+            {id: "Transaction Fraud", type: "fraud", category: "Fraud Type", size: 18, description: "Manipulating transactions for financial gain"},
+
+            // Detection Methods
+            {id: "Machine Learning", type: "method", category: "Detection Method", size: 17, description: "AI-based algorithms to detect unusual patterns"},
+            {id: "Rule-Based Systems", type: "method", category: "Detection Method", size: 17, description: "Predefined rules to flag suspicious activity"},
+            {id: "Network Analysis", type: "method", category: "Detection Method", size: 17, description: "Analyzing connections between accounts and transactions"},
+            {id: "Anomaly Detection", type: "method", category: "Detection Method", size: 17, description: "Identifying behavior that deviates from normal patterns"},
+
+            // Indicators
+            {id: "Unusual Time", type: "indicator", category: "Indicator", size: 15, description: "Transactions at unusual hours"},
+            {id: "Velocity Check", type: "indicator", category: "Indicator", size: 15, description: "Rapid succession of transactions"},
+            {id: "Location Mismatch", type: "indicator", category: "Indicator", size: 15, description: "Transactions from unexpected locations"},
+            {id: "Common Attributes", type: "indicator", category: "Indicator", size: 15, description: "Shared identifiers across multiple accounts"},
+            {id: "Amount Pattern", type: "indicator", category: "Indicator", size: 15, description: "Unusual transaction amounts or patterns"},
+
+            // Data Sources
+            {id: "Transaction Data", type: "data", category: "Data Source", size: 16, description: "Historical and current transaction records"},
+            {id: "Account Data", type: "data", category: "Data Source", size: 16, description: "User account information and history"},
+            {id: "Device Data", type: "data", category: "Data Source", size: 16, description: "Information about devices used for transactions"},
+            {id: "Behavioral Data", type: "data", category: "Data Source", size: 16, description: "User activity and behavior patterns"},
+
+            // Technology
+            {id: "Real-time Monitoring", type: "tech", category: "Technology", size: 16, description: "Continuous transaction monitoring system"},
+            {id: "Data Analytics", type: "tech", category: "Technology", size: 16, description: "Advanced data analysis tools"},
+            {id: "AI Models", type: "tech", category: "Technology", size: 16, description: "Artificial Intelligence and predictive models"},
+
+            // Prevention
+            {id: "Authentication", type: "prevention", category: "Prevention", size: 14, description: "Multi-factor and strong authentication methods"},
+            {id: "Monitoring Systems", type: "prevention", category: "Prevention", size: 14, description: "Continuous surveillance of account activity"},
+            {id: "Security Policies", type: "prevention", category: "Prevention", size: 14, description: "Guidelines and procedures for fraud prevention"},
+            {id: "User Education", type: "prevention", category: "Prevention", size: 14, description: "Training users about fraud awareness"}
+        ];
+
+        const links = [
+            // Core Concept Relations
+            {source: "Fraud Detection", target: "Pattern Recognition", label: "utilizes"},
+            {source: "Fraud Detection", target: "Risk Assessment", label: "includes"},
+
+            // Fraud Types
+            {source: "Fraud Detection", target: "Account Takeover", label: "detects"},
+            {source: "Fraud Detection", target: "Identity Theft", label: "prevents"},
+            {source: "Fraud Detection", target: "Payment Fraud", label: "monitors"},
+            {source: "Fraud Detection", target: "Application Fraud", label: "identifies"},
+            {source: "Fraud Detection", target: "Transaction Fraud", label: "analyzes"},
+
+            // Detection Methods
+            {source: "Pattern Recognition", target: "Machine Learning", label: "uses"},
+            {source: "Pattern Recognition", target: "Rule-Based Systems", label: "implements"},
+            {source: "Risk Assessment", target: "Network Analysis", label: "employs"},
+            {source: "Pattern Recognition", target: "Anomaly Detection", label: "includes"},
+
+            // Indicators
+            {source: "Anomaly Detection", target: "Unusual Time", label: "checks"},
+            {source: "Pattern Recognition", target: "Velocity Check", label: "monitors"},
+            {source: "Anomaly Detection", target: "Location Mismatch", label: "identifies"},
+            {source: "Network Analysis", target: "Common Attributes", label: "finds"},
+            {source: "Pattern Recognition", target: "Amount Pattern", label: "analyzes"},
+
+            // Data Sources
+            {source: "Pattern Recognition", target: "Transaction Data", label: "analyzes"},
+            {source: "Risk Assessment", target: "Account Data", label: "uses"},
+            {source: "Pattern Recognition", target: "Device Data", label: "processes"},
+            {source: "Anomaly Detection", target: "Behavioral Data", label: "monitors"},
+
+            // Technology Connections
+            {source: "Real-time Monitoring", target: "Transaction Data", label: "processes"},
+            {source: "Data Analytics", target: "Pattern Recognition", label: "enables"},
+            {source: "AI Models", target: "Machine Learning", label: "powers"},
+
+            // Prevention Methods
+            {source: "Authentication", target: "Account Takeover", label: "prevents"},
+            {source: "Monitoring Systems", target: "Transaction Fraud", label: "detects"},
+            {source: "Security Policies", target: "Application Fraud", label: "prevents"},
+            {source: "User Education", target: "Identity Theft", label: "reduces"},
+
+            // Additional Connections
+            {source: "Machine Learning", target: "Behavioral Data", label: "analyzes"},
+            {source: "Rule-Based Systems", target: "Amount Pattern", label: "detects"},
+            {source: "Network Analysis", target: "Device Data", label: "correlates"},
+            {source: "Real-time Monitoring", target: "Velocity Check", label: "performs"},
+            {source: "Data Analytics", target: "Location Mismatch", label: "identifies"},
+            {source: "AI Models", target: "Common Attributes", label: "discovers"},
+
+            // Prevention Connections
+            {source: "Authentication", target: "Security Policies", label: "enforces"},
+            {source: "Monitoring Systems", target: "Real-time Monitoring", label: "implements"},
+            {source: "Security Policies", target: "User Education", label: "includes"}
+        ];
+
+        const categoryColors = {
+            "Core Concept": "#ff6b6b",
+            "Fraud Type": "#4ecdc4",
+            "Detection Method": "#ffe66d",
+            "Indicator": "#95e1d3",
+            "Data Source": "#a8dadc",
+            "Technology": "#f4a261",
+            "Prevention": "#e76f51"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        // Define arrowhead marker
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(0, 217, 255, 1)")
+            .attr("stroke", "rgba(0, 217, 255, 1)")
+            .attr("stroke-width", "1");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(100))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 10));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                // Calculate the position where arrow should stop (at the edge of target circle)
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+            panel.style.display = "block";
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.8 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        // Initial zoom to fit
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package org.example.config;
+package vishal.mysore.cricket.config;
 
 import org.neo4j.driver.Driver;
 import org.springframework.context.annotation.Bean;
