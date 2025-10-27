@@ -1,6 +1,15 @@
-# Cricket Match Graph Database Project
+# Vidya Astra - Knowledge Tool 
 
-This project implements a graph database using Neo4j to store and analyze cricket matches, players, and teams data. It uses Spring Boot with Spring Data Neo4j for database interactions.
+This project implements a graph database using Neo4j  and provides variouls examples 
+1) to store and analyze cricket matches, players, and teams data. It uses Spring Boot with Spring Data Neo4j for database interactions.
+2) My personal graph and knowledge about me collected from various sources.
+3) A knowledge graph about various technologies and programming languages.
+
+What does Vidya Astra mean?  
+- Vidya means Knowledge/Wisdom in Sanskrit.
+- Astra means Tool/Weapon in Sanskrit.
+- So, Vidya Astra means "Tool of Knowledge" or "Weapon of Wisdom".
+
 
 
 ##  Neo4j Queries
