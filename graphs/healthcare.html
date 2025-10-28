@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Knowledge Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.3);
+        }
+
+        .node text {
+            font-size: 11px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.7);
+            stroke-width: 2px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link:hover {
+            stroke: rgba(0, 255, 200, 1);
+            stroke-width: 3px;
+        }
+
+        .link-label {
+            font-size: 10px;
+            font-weight: bold;
+            fill: #00ffcc;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 320px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #00ffcc;
+            font-size: 1.6em;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #00ffcc, #00b894);
+            color: #0f2027;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: linear-gradient(135deg, #00b894, #00ffcc);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,255,204,0.4);
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 350px;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border: 2px solid #00ffcc;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #00ffcc;
+            font-size: 1.3em;
+        }
+
+        .info-panel .category-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border-radius: 12px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>Healthcare System</h2>
+        <p style="font-size: 0.9em; margin-bottom: 15px;">Interactive healthcare knowledge graph. Drag nodes and click for details.</p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+    </div>
+
+    <div class="legend">
+        <h3 style="margin: 0 0 12px 0; color: #00ffcc; font-size: 1.2em;">Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div>Patient</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Medicine</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Condition</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Symptom</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Treatment</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Reaction</div>
+        <div class="legend-item"><div class="legend-color" style="background: #e76f51;"></div>Department</div>
+        <div class="legend-item"><div class="legend-color" style="background: #9d84b7;"></div>Procedure</div>
+        <div class="legend-item"><div class="legend-color" style="background: #51cf66;"></div>Diagnosis</div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <div id="categoryTag" class="category-tag"></div>
+        <p id="nodeDescription"></p>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Patients
+            {id: "Patient A", type: "patient", category: "Patient", size: 20, description: "65-year-old male with hypertension and diabetes"},
+            {id: "Patient B", type: "patient", category: "Patient", size: 20, description: "42-year-old female presenting with chest pain"},
+            {id: "Patient C", type: "patient", category: "Patient", size: 20, description: "28-year-old male with severe allergic reaction"},
+            
+            // Conditions/Diseases
+            {id: "Hypertension", type: "condition", category: "Condition", size: 18, description: "High blood pressure - chronic condition affecting blood vessels"},
+            {id: "Type 2 Diabetes", type: "condition", category: "Condition", size: 18, description: "Metabolic disorder affecting blood sugar regulation"},
+            {id: "Coronary Artery Disease", type: "condition", category: "Condition", size: 18, description: "Narrowing of arteries supplying the heart"},
+            {id: "Anaphylaxis", type: "condition", category: "Condition", size: 18, description: "Severe, life-threatening allergic reaction"},
+            {id: "Asthma", type: "condition", category: "Condition", size: 17, description: "Chronic respiratory condition causing airway inflammation"},
+            {id: "Infection", type: "condition", category: "Condition", size: 16, description: "Invasion of body tissues by pathogens"},
+            
+            // Symptoms
+            {id: "Chest Pain", type: "symptom", category: "Symptom", size: 15, description: "Discomfort or pain in the chest area"},
+            {id: "High Blood Sugar", type: "symptom", category: "Symptom", size: 15, description: "Elevated glucose levels in blood"},
+            {id: "Elevated BP", type: "symptom", category: "Symptom", size: 15, description: "Blood pressure above normal range (140/90 mmHg)"},
+            {id: "Shortness of Breath", type: "symptom", category: "Symptom", size: 15, description: "Difficulty breathing or feeling breathless"},
+            {id: "Skin Rash", type: "symptom", category: "Symptom", size: 14, description: "Abnormal change in skin color or texture"},
+            {id: "Swelling", type: "symptom", category: "Symptom", size: 14, description: "Abnormal enlargement of body tissues"},
+            {id: "Fever", type: "symptom", category: "Symptom", size: 14, description: "Elevated body temperature above 100.4°F"},
+            
+            // Medicines
+            {id: "Lisinopril", type: "medicine", category: "Medicine", size: 16, description: "ACE inhibitor for treating hypertension"},
+            {id: "Metformin", type: "medicine", category: "Medicine", size: 16, description: "First-line medication for Type 2 Diabetes"},
+            {id: "Aspirin", type: "medicine", category: "Medicine", size: 16, description: "Antiplatelet drug for heart disease prevention"},
+            {id: "Epinephrine", type: "medicine", category: "Medicine", size: 16, description: "Emergency medication for severe allergic reactions"},
+            {id: "Albuterol", type: "medicine", category: "Medicine", size: 15, description: "Bronchodilator for treating asthma symptoms"},
+            {id: "Antibiotics", type: "medicine", category: "Medicine", size: 15, description: "Medications to treat bacterial infections"},
+            {id: "Insulin", type: "medicine", category: "Medicine", size: 15, description: "Hormone therapy for blood sugar control"},
+            
+            // Adverse Reactions
+            {id: "Dizziness", type: "reaction", category: "Reaction", size: 13, description: "Common side effect of blood pressure medications"},
+            {id: "Nausea", type: "reaction", category: "Reaction", size: 13, description: "Feeling of sickness with urge to vomit"},
+            {id: "Hypoglycemia", type: "reaction", category: "Reaction", size: 13, description: "Dangerously low blood sugar levels"},
+            {id: "Bleeding Risk", type: "reaction", category: "Reaction", size: 13, description: "Increased tendency to bleed"},
+            {id: "Tachycardia", type: "reaction", category: "Reaction", size: 13, description: "Abnormally rapid heart rate"},
+            {id: "GI Upset", type: "reaction", category: "Reaction", size: 12, description: "Gastrointestinal disturbance"},
+            
+            // Treatments
+            {id: "Medication Therapy", type: "treatment", category: "Treatment", size: 17, description: "Treatment using pharmaceutical drugs"},
+            {id: "Lifestyle Changes", type: "treatment", category: "Treatment", size: 16, description: "Diet, exercise, and behavioral modifications"},
+            {id: "Emergency Care", type: "treatment", category: "Treatment", size: 16, description: "Immediate medical intervention for critical conditions"},
+            {id: "Surgery", type: "treatment", category: "Treatment", size: 16, description: "Operative medical procedures"},
+            {id: "Physical Therapy", type: "treatment", category: "Treatment", size: 15, description: "Rehabilitation through physical exercises"},
+            
+            // Procedures
+            {id: "ECG", type: "procedure", category: "Procedure", size: 14, description: "Electrocardiogram - records heart electrical activity"},
+            {id: "Blood Test", type: "procedure", category: "Procedure", size: 14, description: "Laboratory analysis of blood samples"},
+            {id: "Angiography", type: "procedure", category: "Procedure", size: 14, description: "Imaging of blood vessels"},
+            {id: "Allergy Test", type: "procedure", category: "Procedure", size: 13, description: "Testing for allergic sensitivities"},
+            
+            // Departments
+            {id: "Cardiology", type: "department", category: "Department", size: 17, description: "Heart and cardiovascular system specialist department"},
+            {id: "Endocrinology", type: "department", category: "Department", size: 17, description: "Hormone and metabolic disorder specialist department"},
+            {id: "Emergency Dept", type: "department", category: "Department", size: 17, description: "Acute and critical care department"},
+            {id: "Pulmonology", type: "department", category: "Department", size: 16, description: "Respiratory system specialist department"},
+            
+            // Diagnosis Methods
+            {id: "Clinical Diagnosis", type: "diagnosis", category: "Diagnosis", size: 15, description: "Diagnosis based on symptoms and examination"},
+            {id: "Lab Diagnosis", type: "diagnosis", category: "Diagnosis", size: 15, description: "Diagnosis confirmed by laboratory tests"},
+            {id: "Imaging Diagnosis", type: "diagnosis", category: "Diagnosis", size: 15, description: "Diagnosis using medical imaging techniques"}
+        ];
+
+        const links = [
+            // Patient A connections
+            {source: "Patient A", target: "Hypertension", label: "diagnosed with"},
+            {source: "Patient A", target: "Type 2 Diabetes", label: "diagnosed with"},
+            {source: "Patient A", target: "Lisinopril", label: "prescribed"},
+            {source: "Patient A", target: "Metformin", label: "prescribed"},
+            
+            // Patient B connections
+            {source: "Patient B", target: "Chest Pain", label: "presents with"},
+            {source: "Patient B", target: "Coronary Artery Disease", label: "diagnosed with"},
+            {source: "Patient B", target: "Aspirin", label: "prescribed"},
+            {source: "Patient B", target: "Cardiology", label: "referred to"},
+            
+            // Patient C connections
+            {source: "Patient C", target: "Anaphylaxis", label: "experiencing"},
+            {source: "Patient C", target: "Epinephrine", label: "administered"},
+            {source: "Patient C", target: "Emergency Dept", label: "admitted to"},
+            {source: "Patient C", target: "Skin Rash", label: "presents with"},
+            {source: "Patient C", target: "Swelling", label: "presents with"},
+            
+            // Condition to Symptom connections
+            {source: "Hypertension", target: "Elevated BP", label: "causes"},
+            {source: "Hypertension", target: "Dizziness", label: "may cause"},
+            {source: "Type 2 Diabetes", target: "High Blood Sugar", label: "causes"},
+            {source: "Coronary Artery Disease", target: "Chest Pain", label: "causes"},
+            {source: "Coronary Artery Disease", target: "Shortness of Breath", label: "causes"},
+            {source: "Anaphylaxis", target: "Swelling", label: "causes"},
+            {source: "Anaphylaxis", target: "Skin Rash", label: "causes"},
+            {source: "Anaphylaxis", target: "Shortness of Breath", label: "causes"},
+            {source: "Asthma", target: "Shortness of Breath", label: "causes"},
+            {source: "Infection", target: "Fever", label: "causes"},
+            
+            // Medicine to Condition connections (Treatment)
+            {source: "Lisinopril", target: "Hypertension", label: "treats"},
+            {source: "Metformin", target: "Type 2 Diabetes", label: "treats"},
+            {source: "Aspirin", target: "Coronary Artery Disease", label: "treats"},
+            {source: "Epinephrine", target: "Anaphylaxis", label: "treats"},
+            {source: "Albuterol", target: "Asthma", label: "treats"},
+            {source: "Antibiotics", target: "Infection", label: "treats"},
+            {source: "Insulin", target: "Type 2 Diabetes", label: "treats"},
+            
+            // Medicine to Adverse Reaction connections
+            {source: "Lisinopril", target: "Dizziness", label: "may cause"},
+            {source: "Metformin", target: "GI Upset", label: "may cause"},
+            {source: "Metformin", target: "Nausea", label: "may cause"},
+            {source: "Aspirin", target: "Bleeding Risk", label: "increases"},
+            {source: "Epinephrine", target: "Tachycardia", label: "may cause"},
+            {source: "Albuterol", target: "Tachycardia", label: "may cause"},
+            {source: "Insulin", target: "Hypoglycemia", label: "may cause"},
+            
+            // Treatment connections
+            {source: "Medication Therapy", target: "Lisinopril", label: "includes"},
+            {source: "Medication Therapy", target: "Metformin", label: "includes"},
+            {source: "Medication Therapy", target: "Aspirin", label: "includes"},
+            {source: "Emergency Care", target: "Epinephrine", label: "uses"},
+            {source: "Lifestyle Changes", target: "Hypertension", label: "manages"},
+            {source: "Lifestyle Changes", target: "Type 2 Diabetes", label: "manages"},
+            {source: "Surgery", target: "Coronary Artery Disease", label: "treats"},
+            
+            // Procedure connections
+            {source: "ECG", target: "Coronary Artery Disease", label: "diagnoses"},
+            {source: "Blood Test", target: "Type 2 Diabetes", label: "monitors"},
+            {source: "Blood Test", target: "Infection", label: "detects"},
+            {source: "Angiography", target: "Coronary Artery Disease", label: "diagnoses"},
+            {source: "Allergy Test", target: "Anaphylaxis", label: "identifies trigger"},
+            
+            // Department connections
+            {source: "Cardiology", target: "Coronary Artery Disease", label: "specializes in"},
+            {source: "Cardiology", target: "ECG", label: "performs"},
+            {source: "Cardiology", target: "Angiography", label: "performs"},
+            {source: "Endocrinology", target: "Type 2 Diabetes", label: "specializes in"},
+            {source: "Emergency Dept", target: "Emergency Care", label: "provides"},
+            {source: "Pulmonology", target: "Asthma", label: "specializes in"},
+            
+            // Diagnosis connections
+            {source: "Clinical Diagnosis", target: "Hypertension", label: "identifies"},
+            {source: "Lab Diagnosis", target: "Type 2 Diabetes", label: "confirms"},
+            {source: "Lab Diagnosis", target: "Blood Test", label: "uses"},
+            {source: "Imaging Diagnosis", target: "ECG", label: "uses"},
+            {source: "Imaging Diagnosis", target: "Angiography", label: "uses"},
+            {source: "Imaging Diagnosis", target: "Coronary Artery Disease", label: "identifies"},
+            
+            // Additional clinical connections
+            {source: "Chest Pain", target: "ECG", label: "requires"},
+            {source: "Elevated BP", target: "Medication Therapy", label: "requires"},
+            {source: "High Blood Sugar", target: "Blood Test", label: "detected by"},
+            {source: "Shortness of Breath", target: "Albuterol", label: "relieved by"}
+        ];
+
+        const categoryColors = {
+            "Patient": "#ff6b6b",
+            "Medicine": "#4ecdc4",
+            "Condition": "#ffe66d",
+            "Symptom": "#95e1d3",
+            "Treatment": "#a8dadc",
+            "Reaction": "#f4a261",
+            "Department": "#e76f51",
+            "Procedure": "#9d84b7",
+            "Diagnosis": "#51cf66"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(100, 200, 255, 0.9)")
+            .attr("stroke", "rgba(100, 200, 255, 0.9)");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            const categoryTag = document.getElementById("categoryTag");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+            categoryTag.textContent = d.category;
+            categoryTag.style.background = categoryColors[d.category];
+            categoryTag.style.color = "#fff";
+            panel.style.display = "block";
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.75 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>

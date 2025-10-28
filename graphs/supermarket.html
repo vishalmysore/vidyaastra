@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermarket Knowledge Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2d1b00 0%, #1a0f00 50%, #0d0600 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.3);
+            transform: scale(1.1);
+        }
+
+        .node text {
+            font-size: 11px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+        }
+
+        .link {
+            stroke: rgba(255, 179, 71, 0.7);
+            stroke-width: 2px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link:hover {
+            stroke: rgba(255, 215, 0, 1);
+            stroke-width: 3px;
+        }
+
+        .link-label {
+            font-size: 10px;
+            font-weight: bold;
+            fill: #ffd700;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 320px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            border: 2px solid #ff8c42;
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #ff8c42;
+            font-size: 1.6em;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #ff8c42, #ff6b35);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 66, 0.5);
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 350px;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            border: 2px solid #ff8c42;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #ff8c42;
+            font-size: 1.3em;
+        }
+
+        .info-panel .category-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            border: 2px solid #ff8c42;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>🛒 Supermarket System</h2>
+        <p style="font-size: 0.9em; margin-bottom: 15px;">Interactive retail knowledge graph. Drag nodes and click for details.</p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+    </div>
+
+    <div class="legend">
+        <h3 style="margin: 0 0 12px 0; color: #ff8c42; font-size: 1.2em;">Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div>Customer</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Product</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Category</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Brand</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Department</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Supplier</div>
+        <div class="legend-item"><div class="legend-color" style="background: #e76f51;"></div>Promotion</div>
+        <div class="legend-item"><div class="legend-color" style="background: #9d84b7;"></div>Service</div>
+        <div class="legend-item"><div class="legend-color" style="background: #51cf66;"></div>Payment</div>
+        <div class="legend-item"><div class="legend-color" style="background: #fa5252;"></div>Location</div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <div id="categoryTag" class="category-tag"></div>
+        <p id="nodeDescription"></p>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Customers
+            {id: "Customer A", type: "customer", category: "Customer", size: 20, description: "Regular shopper, loyalty member, prefers organic products"},
+            {id: "Customer B", type: "customer", category: "Customer", size: 20, description: "Budget-conscious family shopper, buys in bulk"},
+            {id: "Customer C", type: "customer", category: "Customer", size: 20, description: "Health-focused millennial, shops for fresh produce"},
+            
+            // Departments
+            {id: "Produce", type: "department", category: "Department", size: 22, description: "Fresh fruits and vegetables section"},
+            {id: "Dairy", type: "department", category: "Department", size: 22, description: "Milk, cheese, yogurt, and dairy products"},
+            {id: "Meat & Seafood", type: "department", category: "Department", size: 22, description: "Fresh and frozen meats, fish, and poultry"},
+            {id: "Bakery", type: "department", category: "Department", size: 22, description: "Fresh breads, cakes, and baked goods"},
+            {id: "Grocery", type: "department", category: "Department", size: 22, description: "Canned goods, dry foods, and pantry items"},
+            {id: "Frozen Foods", type: "department", category: "Department", size: 21, description: "Frozen meals, vegetables, and ice cream"},
+            {id: "Beverages", type: "department", category: "Department", size: 21, description: "Soft drinks, juices, water, and beverages"},
+            
+            // Product Categories
+            {id: "Organic", type: "category", category: "Category", size: 18, description: "Certified organic products without pesticides"},
+            {id: "Fresh", type: "category", category: "Category", size: 18, description: "Fresh, unprocessed food items"},
+            {id: "Frozen", type: "category", category: "Category", size: 17, description: "Frozen and preserved foods"},
+            {id: "Packaged", type: "category", category: "Category", size: 17, description: "Pre-packaged convenience items"},
+            {id: "Gluten-Free", type: "category", category: "Category", size: 16, description: "Products without gluten ingredients"},
+            {id: "Vegan", type: "category", category: "Category", size: 16, description: "Plant-based products with no animal ingredients"},
+            
+            // Products
+            {id: "Apples", type: "product", category: "Product", size: 15, description: "Fresh crisp apples - $3.99/lb"},
+            {id: "Bananas", type: "product", category: "Product", size: 15, description: "Yellow bananas - $0.59/lb"},
+            {id: "Milk", type: "product", category: "Product", size: 15, description: "Whole milk 1 gallon - $4.29"},
+            {id: "Cheese", type: "product", category: "Product", size: 15, description: "Cheddar cheese block - $5.99"},
+            {id: "Chicken Breast", type: "product", category: "Product", size: 15, description: "Fresh boneless chicken - $6.99/lb"},
+            {id: "Salmon", type: "product", category: "Product", size: 15, description: "Fresh Atlantic salmon - $12.99/lb"},
+            {id: "White Bread", type: "product", category: "Product", size: 15, description: "Sliced white bread loaf - $2.49"},
+            {id: "Croissants", type: "product", category: "Product", size: 14, description: "Butter croissants 6-pack - $4.99"},
+            {id: "Pasta", type: "product", category: "Product", size: 14, description: "Spaghetti pasta 1lb - $1.99"},
+            {id: "Tomato Sauce", type: "product", category: "Product", size: 14, description: "Marinara sauce jar - $3.49"},
+            {id: "Ice Cream", type: "product", category: "Product", size: 14, description: "Vanilla ice cream 1.5qt - $5.99"},
+            {id: "Frozen Pizza", type: "product", category: "Product", size: 14, description: "Pepperoni pizza - $6.99"},
+            {id: "Orange Juice", type: "product", category: "Product", size: 14, description: "Fresh OJ 64oz - $4.99"},
+            {id: "Coffee", type: "product", category: "Product", size: 14, description: "Ground coffee 12oz - $8.99"},
+            
+            // Brands
+            {id: "Store Brand", type: "brand", category: "Brand", size: 17, description: "In-house private label products"},
+            {id: "Premium Brand", type: "brand", category: "Brand", size: 17, description: "High-end national brands"},
+            {id: "Local Farm Co", type: "brand", category: "Brand", size: 16, description: "Local farm fresh products"},
+            {id: "Green Valley", type: "brand", category: "Brand", size: 16, description: "Organic and natural brand"},
+            
+            // Suppliers
+            {id: "Local Farms", type: "supplier", category: "Supplier", size: 18, description: "Regional farm suppliers for fresh produce"},
+            {id: "Dairy Distributors", type: "supplier", category: "Supplier", size: 18, description: "Regional dairy product suppliers"},
+            {id: "National Foods Inc", type: "supplier", category: "Supplier", size: 17, description: "Large scale packaged food distributor"},
+            {id: "Seafood Wholesale", type: "supplier", category: "Supplier", size: 17, description: "Fresh seafood supplier"},
+            
+            // Promotions
+            {id: "Weekly Sale", type: "promotion", category: "Promotion", size: 16, description: "Weekly discounted items - save 20-30%"},
+            {id: "BOGO", type: "promotion", category: "Promotion", size: 16, description: "Buy One Get One promotion"},
+            {id: "Loyalty Rewards", type: "promotion", category: "Promotion", size: 16, description: "Points and rewards for members"},
+            {id: "Clearance", type: "promotion", category: "Promotion", size: 15, description: "Marked down items near expiration"},
+            
+            // Services
+            {id: "Delivery", type: "service", category: "Service", size: 16, description: "Home delivery service within 2 hours"},
+            {id: "Curbside Pickup", type: "service", category: "Service", size: 16, description: "Order online, pick up without leaving car"},
+            {id: "Pharmacy", type: "service", category: "Service", size: 16, description: "In-store pharmacy and prescriptions"},
+            {id: "Deli Counter", type: "service", category: "Service", size: 15, description: "Fresh sliced meats and prepared foods"},
+            
+            // Payment Methods
+            {id: "Credit Card", type: "payment", category: "Payment", size: 14, description: "Visa, Mastercard, Amex accepted"},
+            {id: "Mobile Pay", type: "payment", category: "Payment", size: 14, description: "Apple Pay, Google Pay, digital wallets"},
+            {id: "Store Card", type: "payment", category: "Payment", size: 14, description: "Store credit card with rewards"},
+            
+            // Locations
+            {id: "Checkout", type: "location", category: "Location", size: 15, description: "12 checkout lanes plus self-checkout"},
+            {id: "Customer Service", type: "location", category: "Location", size: 15, description: "Returns, exchanges, and assistance"},
+            {id: "Storage", type: "location", category: "Location", size: 14, description: "Back-of-house inventory storage"}
+        ];
+
+        const links = [
+            // Customer shopping patterns
+            {source: "Customer A", target: "Produce", label: "shops in"},
+            {source: "Customer A", target: "Organic", label: "prefers"},
+            {source: "Customer A", target: "Apples", label: "purchases"},
+            {source: "Customer A", target: "Loyalty Rewards", label: "enrolled in"},
+            {source: "Customer A", target: "Delivery", label: "uses"},
+            
+            {source: "Customer B", target: "Grocery", label: "shops in"},
+            {source: "Customer B", target: "Frozen Foods", label: "shops in"},
+            {source: "Customer B", target: "Frozen Pizza", label: "purchases"},
+            {source: "Customer B", target: "BOGO", label: "looks for"},
+            {source: "Customer B", target: "Store Brand", label: "prefers"},
+            
+            {source: "Customer C", target: "Produce", label: "shops in"},
+            {source: "Customer C", target: "Fresh", label: "prefers"},
+            {source: "Customer C", target: "Salmon", label: "purchases"},
+            {source: "Customer C", target: "Vegan", label: "interested in"},
+            {source: "Customer C", target: "Curbside Pickup", label: "uses"},
+            
+            // Department to Product relationships
+            {source: "Produce", target: "Apples", label: "stocks"},
+            {source: "Produce", target: "Bananas", label: "stocks"},
+            {source: "Dairy", target: "Milk", label: "stocks"},
+            {source: "Dairy", target: "Cheese", label: "stocks"},
+            {source: "Meat & Seafood", target: "Chicken Breast", label: "stocks"},
+            {source: "Meat & Seafood", target: "Salmon", label: "stocks"},
+            {source: "Bakery", target: "White Bread", label: "stocks"},
+            {source: "Bakery", target: "Croissants", label: "stocks"},
+            {source: "Grocery", target: "Pasta", label: "stocks"},
+            {source: "Grocery", target: "Tomato Sauce", label: "stocks"},
+            {source: "Grocery", target: "Coffee", label: "stocks"},
+            {source: "Frozen Foods", target: "Ice Cream", label: "stocks"},
+            {source: "Frozen Foods", target: "Frozen Pizza", label: "stocks"},
+            {source: "Beverages", target: "Orange Juice", label: "stocks"},
+            
+            // Product to Category relationships
+            {source: "Apples", target: "Fresh", label: "classified as"},
+            {source: "Apples", target: "Organic", label: "available in"},
+            {source: "Bananas", target: "Fresh", label: "classified as"},
+            {source: "Milk", target: "Fresh", label: "classified as"},
+            {source: "Salmon", target: "Fresh", label: "classified as"},
+            {source: "Ice Cream", target: "Frozen", label: "classified as"},
+            {source: "Frozen Pizza", target: "Frozen", label: "classified as"},
+            {source: "Frozen Pizza", target: "Packaged", label: "classified as"},
+            {source: "Pasta", target: "Packaged", label: "classified as"},
+            {source: "White Bread", target: "Gluten-Free", label: "available in"},
+            
+            // Product to Brand relationships
+            {source: "Milk", target: "Local Farm Co", label: "supplied by"},
+            {source: "Cheese", target: "Premium Brand", label: "supplied by"},
+            {source: "Pasta", target: "Store Brand", label: "supplied by"},
+            {source: "Tomato Sauce", target: "Store Brand", label: "supplied by"},
+            {source: "Apples", target: "Local Farm Co", label: "supplied by"},
+            {source: "Chicken Breast", target: "Green Valley", label: "supplied by"},
+            {source: "Coffee", target: "Premium Brand", label: "supplied by"},
+            
+            // Supplier relationships
+            {source: "Local Farms", target: "Produce", label: "supplies to"},
+            {source: "Local Farms", target: "Local Farm Co", label: "partners with"},
+            {source: "Dairy Distributors", target: "Dairy", label: "supplies to"},
+            {source: "National Foods Inc", target: "Grocery", label: "supplies to"},
+            {source: "National Foods Inc", target: "Frozen Foods", label: "supplies to"},
+            {source: "Seafood Wholesale", target: "Meat & Seafood", label: "supplies to"},
+            
+            // Promotion relationships
+            {source: "Weekly Sale", target: "Bananas", label: "discounts"},
+            {source: "Weekly Sale", target: "Cheese", label: "discounts"},
+            {source: "BOGO", target: "Ice Cream", label: "applies to"},
+            {source: "BOGO", target: "Frozen Pizza", label: "applies to"},
+            {source: "Loyalty Rewards", target: "Store Card", label: "earned with"},
+            {source: "Clearance", target: "Bakery", label: "applies to"},
+            
+            // Service relationships
+            {source: "Delivery", target: "Customer A", label: "serves"},
+            {source: "Curbside Pickup", target: "Customer C", label: "serves"},
+            {source: "Deli Counter", target: "Meat & Seafood", label: "part of"},
+            {source: "Pharmacy", target: "Customer Service", label: "located near"},
+            
+            // Payment relationships
+            {source: "Customer A", target: "Store Card", label: "pays with"},
+            {source: "Customer B", target: "Credit Card", label: "pays with"},
+            {source: "Customer C", target: "Mobile Pay", label: "pays with"},
+            {source: "Checkout", target: "Credit Card", label: "accepts"},
+            {source: "Checkout", target: "Mobile Pay", label: "accepts"},
+            {source: "Checkout", target: "Store Card", label: "accepts"},
+            
+            // Location relationships
+            {source: "Customer Service", target: "Loyalty Rewards", label: "manages"},
+            {source: "Storage", target: "Produce", label: "stores inventory"},
+            {source: "Storage", target: "Frozen Foods", label: "stores inventory"},
+            {source: "Storage", target: "Grocery", label: "stores inventory"},
+            
+            // Additional connections
+            {source: "Bakery", target: "Fresh", label: "sells"},
+            {source: "Meat & Seafood", target: "Fresh", label: "sells"},
+            {source: "Green Valley", target: "Organic", label: "specializes in"},
+            {source: "Local Farm Co", target: "Organic", label: "offers"},
+            {source: "Store Brand", target: "Packaged", label: "produces"},
+            {source: "Orange Juice", target: "Fresh", label: "classified as"},
+            {source: "Croissants", target: "Fresh", label: "classified as"}
+        ];
+
+        const categoryColors = {
+            "Customer": "#ff6b6b",
+            "Product": "#4ecdc4",
+            "Category": "#ffe66d",
+            "Brand": "#95e1d3",
+            "Department": "#a8dadc",
+            "Supplier": "#f4a261",
+            "Promotion": "#e76f51",
+            "Service": "#9d84b7",
+            "Payment": "#51cf66",
+            "Location": "#fa5252"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(255, 179, 71, 0.9)")
+            .attr("stroke", "rgba(255, 179, 71, 0.9)");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            const categoryTag = document.getElementById("categoryTag");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+            categoryTag.textContent = d.category;
+            categoryTag.style.background = categoryColors[d.category];
+            panel.style.display = "block";
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.75 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>
