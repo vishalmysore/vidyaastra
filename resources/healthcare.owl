@@ -1,0 +1,62 @@
+@prefix ex: <http://example.org/vidya-astra#> .
+@prefix schema: <http://schema.org/> .
+@prefix snomed: <http://snomed.info/id/> .
+@prefix drug: <http://drugbank.ca/drugs/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+############################
+# Classes
+############################
+ex:Patient a schema:Person .
+ex:MedicalCondition a schema:MedicalCondition .
+ex:Symptom a schema:MedicalSignOrSymptom .
+ex:Drug a schema:Drug .
+
+############################
+# Individuals - Patient and Clinical Findings
+############################
+
+# Patient A
+ex:PatientA a ex:Patient ;
+    schema:age 65 ;
+    schema:gender "Male" .
+
+# Conditions
+ex:Hypertension a ex:MedicalCondition ;
+    schema:sameAs snomed:38341003 .
+
+ex:Type2Diabetes a ex:MedicalCondition ;
+    schema:sameAs snomed:44054006 .
+
+# Symptoms
+ex:ElevatedBP a ex:Symptom ;
+    schema:sameAs snomed:75367002 .
+
+ex:HighBloodSugar a ex:Symptom ;
+    schema:sameAs snomed:80394007 .
+
+# Medicines
+ex:Lisinopril a ex:Drug ;
+    schema:sameAs drug:DB00722 .
+
+ex:Metformin a ex:Drug ;
+    schema:sameAs drug:DB00331 .
+
+############################
+# Medical Relationships
+############################
+
+# Diagnoses
+ex:PatientA schema:diagnosis ex:Hypertension .
+ex:PatientA schema:diagnosis ex:Type2Diabetes .
+
+# Symptoms caused by conditions
+ex:Hypertension schema:possibleComplication ex:ElevatedBP .
+ex:Type2Diabetes schema:possibleComplication ex:HighBloodSugar .
+
+# Treatments
+ex:Lisinopril schema:treats ex:Hypertension .
+ex:Metformin schema:treats ex:Type2Diabetes .
+
+# Prescriptions given to Patient A
+ex:PatientA schema:drug ex:Lisinopril, ex:Metformin .

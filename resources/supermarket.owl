@@ -1,0 +1,66 @@
+@prefix ex: <http://example.org/supermarket#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+############################
+# Classes
+############################
+ex:Customer a schema:Person .
+ex:Product a schema:Product .
+ex:Department a schema:Store .
+ex:Brand a schema:Brand .
+
+############################
+# Individuals - Departments
+############################
+ex:FruitsDept a ex:Department ;
+    schema:name "Fruits and Vegetables" .
+
+ex:DairyDept a ex:Department ;
+    schema:name "Dairy" .
+
+############################
+# Individuals - Brand
+############################
+ex:BrandA a ex:Brand ;
+    schema:name "FreshChoice" .
+
+ex:BrandB a ex:Brand ;
+    schema:name "MilkyWay" .
+
+############################
+# Individuals - Products
+############################
+ex:Apple a ex:Product ;
+    schema:name "Apple" ;
+    schema:category "Fruit" ;
+    schema:brand ex:BrandA ;
+    schema:price "2.99"^^xsd:decimal ;
+    schema:unitText "per kg" ;
+    schema:department ex:FruitsDept .
+
+ex:Milk a ex:Product ;
+    schema:name "Whole Milk" ;
+    schema:category "Dairy" ;
+    schema:brand ex:BrandB ;
+    schema:price "4.50"^^xsd:decimal ;
+    schema:unitText "1 litre" ;
+    schema:department ex:DairyDept .
+
+############################
+# Individuals - Customer
+############################
+ex:CustomerJohn a ex:Customer ;
+    schema:name "John Doe" ;
+    schema:address "Toronto, Canada" .
+
+############################
+# Purchase Event
+############################
+ex:Purchase123 a schema:PurchaseAction ;
+    schema:agent ex:CustomerJohn ;
+    schema:itemPurchased ex:Apple, ex:Milk ;
+    schema:price "7.49"^^xsd:decimal ;
+    schema:acceptedOffer "Online Checkout" ;
+    schema:location "SuperMart - Toronto" ;
+    schema:datePurchased "2025-10-29"^^xsd:date .

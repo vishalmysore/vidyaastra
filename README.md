@@ -1,16 +1,68 @@
 # Vidya Astra - Knowledge Tool 
 
-This project implements a graph database using Neo4j  and provides variouls examples 
-1) to store and analyze cricket matches, players, and teams data. It uses Spring Boot with Spring Data Neo4j for database interactions.
-2) My personal graph and knowledge about me collected from various sources.
-3) A knowledge graph about various technologies and programming languages.
+This project implements multiple knowledge graphs using Neo4j and Spring Boot with Spring Data Neo4j for database interactions. It provides the following modules:
+
+1) **Cricket** - Store and analyze cricket matches, players, teams, and performance statistics
+2) **Healthcare (HC)** - Medical knowledge graph covering diseases, treatments, medications, and healthcare providers
+3) **Yoga** - Yoga poses, practices, health benefits, and yoga-related knowledge
+4) **Supermarket (Supermart)** - Retail knowledge graph with departments, products, categories, brands, suppliers, customers, and promotions
+5) **Fraud Detection (FD)** - Fraud detection and prevention knowledge graph with fraud types, detection methods, indicators, and prevention strategies
 
 What does Vidya Astra mean?  
 - Vidya means Knowledge/Wisdom in Sanskrit.
 - Astra means Tool/Weapon in Sanskrit.
 - So, Vidya Astra means "Tool of Knowledge" or "Weapon of Wisdom".
 
+## Module Descriptions
 
+### 🏏 Cricket Module
+Stores and analyzes cricket matches, players, teams, and performance statistics. Track match results, player roles, and team achievements.
+
+**Key Entities:**
+- Team: name, country
+- Player: name, country, role (Batsman/Bowler), jerseyNumber
+- Match: venue, matchDate, matchType, result
+- PlayerScore: performance statistics
+
+### 🏥 Healthcare Module (HC)
+Medical knowledge graph covering diseases, treatments, medications, and healthcare providers. Build relationships between medical conditions and their remedies.
+
+**Key Entities:**
+- Disease: name, symptoms, severity
+- Treatment: name, description, type
+- Medication: name, dosage, sideEffects
+- Provider: name, specialization, location
+
+### 🧘 Yoga Module
+Yoga poses, practices, health benefits, and yoga-related knowledge. Organize yoga practices by difficulty level and target body areas.
+
+**Key Entities:**
+- Pose: name, difficulty, sanskritName
+- Practice: name, description, duration
+- Benefit: description, targetArea
+- Instructor: name, experience, specialization
+
+### 🛒 Supermarket Module (Supermart)
+Retail knowledge graph with departments, products, categories, brands, suppliers, customers, and promotions.
+
+**Key Entities:**
+- Department: name, description
+- Product: name, price, description
+- Category: name, classification
+- Brand: name, description
+- Supplier: name, contact
+- Customer: name, preferences
+- Promotion: name, discount, validity
+
+### 🚨 Fraud Detection Module (FD)
+Fraud detection and prevention knowledge graph with fraud types, detection methods, indicators, and prevention strategies.
+
+**Key Entities:**
+- FraudType: name, category, riskLevel
+- DetectionMethod: name, accuracy, description
+- FraudIndicator: name, riskScore, pattern
+- PreventionMethod: name, effectiveness
+- DetectionTool: name, type, provider
 
 ##  Neo4j Queries
 
@@ -139,15 +191,84 @@ The application.properties already contains the connection details for:
 
 ## Building and Running
 
-1. Clone or download the project
-2. Build the project:
+### Prerequisites
+
+1. Set up environment variables for Neo4j Aura connection:
+
+```powershell
+# Windows Command Prompt
+set NEO4J_PASSWORD=your-neo4j-password
+
+# Windows PowerShell
+$env:NEO4J_PASSWORD="your-neo4j-password"
+```
+
+```bash
+# Linux/macOS
+export NEO4J_PASSWORD="your-neo4j-password"
+```
+
+The application.properties already contains the connection details for:
+- URI: neo4j+s://bb3147a9.databases.neo4j.io
+- Username: neo4j
+- Database: neo4j
+
+### Build the Project
+
 ```bash
 mvn clean install
 ```
 
-3. Run the application:
-```bash
-mvn spring-boot:run
+### Running Individual Modules
+
+Each module can be run independently by specifying the active profile. Use the `-Dspring.profiles.active=` parameter:
+
+**Cricket Module:**
+```cmd
+set NEO4J_PASSWORD=your-neo4j-password
+mvn spring-boot:run -Dspring.profiles.active=cricket
+```
+
+**Healthcare Module (HC):**
+```cmd
+set NEO4J_PASSWORD=your-neo4j-password
+mvn spring-boot:run -Dspring.profiles.active=hc
+```
+
+**Yoga Module:**
+```cmd
+set NEO4J_PASSWORD=your-neo4j-password
+mvn spring-boot:run -Dspring.profiles.active=yoga
+```
+
+**Supermarket Module (Supermart):**
+```cmd
+set NEO4J_PASSWORD=your-neo4j-password
+mvn spring-boot:run -Dspring.profiles.active=supermart
+```
+
+**Fraud Detection Module (FD):**
+```cmd
+set NEO4J_PASSWORD=your-neo4j-password
+mvn spring-boot:run -Dspring.profiles.active=fd
+```
+
+For Linux/macOS, use `export` instead of `set`.
+
+### Batch Scripts (Windows)
+
+You can create batch files for quick execution. For example, `run-hc.bat`:
+
+```batch
+@echo off
+set NEO4J_PASSWORD=your-neo4j-password
+mvn spring-boot:run -Dspring.profiles.active=hc
+pause
+```
+
+Then simply run:
+```cmd
+run-hc.bat
 ```
 
 The application will:

@@ -2,37 +2,37 @@ package vishal.mysore.supermart.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vishal.mysore.supermart.model.Service;
-import vishal.mysore.supermart.repository.ServiceRepository;
+import vishal.mysore.supermart.model.StoreService;
+import vishal.mysore.supermart.repository.StoreServiceRepository;
 
 import java.util.List;
 
-@Service
+@org.springframework.stereotype.Service
 public class ServiceService {
-    private final ServiceRepository serviceRepository;
+    private final StoreServiceRepository storeServiceRepository;
 
     @Autowired
-    public ServiceService(ServiceRepository serviceRepository) {
-        this.serviceRepository = serviceRepository;
+    public ServiceService(StoreServiceRepository storeServiceRepository) {
+        this.storeServiceRepository = storeServiceRepository;
     }
 
-    public Service createService(Service service) {
-        return serviceRepository.save(service);
+    public StoreService createService(StoreService service) {
+        return storeServiceRepository.save(service);
     }
 
-    public List<Service> getAllServices() {
-        return serviceRepository.findAll();
+    public List<StoreService> getAllServices() {
+        return storeServiceRepository.findAll();
     }
 
-    public Service getServiceByName(String name) {
-        return serviceRepository.findByName(name);
+    public StoreService getServiceByName(String name) {
+        return storeServiceRepository.findByName(name);
     }
 
-    public Service updateService(Service service) {
-        return serviceRepository.save(service);
+    public StoreService updateService(StoreService service) {
+        return storeServiceRepository.save(service);
     }
 
     public void deleteService(Long id) {
-        serviceRepository.deleteById(id);
+        storeServiceRepository.deleteById(id);
     }
 }

@@ -13,7 +13,7 @@ import java.util.Set;
 @Node
 @Getter
 @Setter
-public class Service {
+public class StoreService {
     @Id @GeneratedValue
     private Long id;
     private String name;

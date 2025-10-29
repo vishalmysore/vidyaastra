@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra : Cycle Detection Knowledge Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node.cycle-node circle {
+            stroke: #ff4444;
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 10px #ff4444);
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.2);
+        }
+
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.6);
+            stroke-width: 2px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link.cycle-link {
+            stroke: #ff4444;
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 5px #ff4444);
+            opacity: 1;
+        }
+
+        .link:hover {
+            stroke: rgba(0, 217, 255, 1);
+            stroke-width: 4px;
+        }
+
+        .link-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #00d9ff;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .cycle-link-label {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #ff4444;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 350px;
+            border: 2px solid #00d9ff;
+        }
+
+        .controls h2 {
+            margin: 0 0 10px 0;
+            color: #00d9ff;
+            font-size: 1.5em;
+        }
+
+        .controls h3 {
+            margin: 10px 0 5px 0;
+            color: #4ecdc4;
+            font-size: 1.1em;
+        }
+
+        .controls button {
+            background: #00d9ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #4ecdc4;
+            transform: scale(1.05);
+        }
+
+        .controls button.active {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 350px;
+            display: none;
+            border: 2px solid #00d9ff;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #00d9ff;
+        }
+
+        .info-panel.cycle-info {
+            border-color: #ff4444;
+        }
+
+        .info-panel.cycle-info h3 {
+            color: #ff4444;
+        }
+
+        .cycle-details {
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .cycle-path {
+            background: rgba(255, 68, 68, 0.2);
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #ff4444;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            border: 2px solid #00d9ff;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+
+        .cycle-indicator {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 3px solid #ff4444;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>⚠️ Cycle Detection</h2>
+        <h3>Project: Vidya Astra</h3>
+        <p style="font-size: 0.85em; margin-bottom: 15px;">
+            Red highlighted nodes and links indicate detected cycles. Drag to explore.
+        </p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+        <button onclick="toggleCycleHighlight()" class="active">Highlight Cycles</button>
+        <button onclick="showAllCycles()">Show All Cycles</button>
+    </div>
+
+    <div class="legend">
+        <h3 style="margin: 0 0 10px 0; color: #00d9ff;">Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div>Account</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Transaction</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Cycle Detection</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Indicator</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Algorithm</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Risk Level</div>
+        <div class="legend-item">
+            <div class="cycle-indicator"></div>Cycle Path
+        </div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <p id="nodeDescription"></p>
+        <div id="cycleInfo" class="cycle-details" style="display:none;"></div>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Accounts (represent in transaction cycle)
+            {id: "Account A", type: "account", category: "Account", size: 22, description: "Originating account in cycle", x: 0, y: -200},
+            {id: "Account B", type: "account", category: "Account", size: 22, description: "Intermediate account", x: 200, y: -100},
+            {id: "Account C", type: "account", category: "Account", size: 22, description: "Intermediate account", x: 200, y: 100},
+            {id: "Account D", type: "account", category: "Account", size: 22, description: "Final account in cycle", x: 0, y: 200},
+
+            // Other Accounts (not in cycle)
+            {id: "Account E", type: "account", category: "Account", size: 18, description: "Regular account", x: -250, y: -150},
+            {id: "Account F", type: "account", category: "Account", size: 18, description: "Regular account", x: -250, y: 150},
+
+            // Core Cycle Detection Concepts
+            {id: "Cycle Detection", type: "core", category: "Cycle Detection", size: 24, description: "Detection of circular money flows in transaction networks"},
+            {id: "Circular Money Flow", type: "core", category: "Cycle Detection", size: 20, description: "Money returned to originating account through intermediaries"},
+            {id: "Anti-Money Laundering", type: "core", category: "Cycle Detection", size: 19, description: "Detection and prevention of money laundering activities"},
+
+            // Fraud Patterns
+            {id: "Money Laundering", type: "fraud", category: "Indicator", size: 17, description: "Illegal movement of funds to hide origin"},
+            {id: "Credit Card Loop", type: "fraud", category: "Indicator", size: 17, description: "Card usage in impossible travel scenarios"},
+            {id: "Identity Theft Loop", type: "fraud", category: "Indicator", size: 17, description: "Same identity across multiple fraudulent accounts"},
+            {id: "Account Takeover", type: "fraud", category: "Indicator", size: 17, description: "Unauthorized account access and manipulation"},
+
+            // Algorithms
+            {id: "DFS Algorithm", type: "algorithm", category: "Algorithm", size: 16, description: "Depth-First Search for general cycle detection (O(V+E))"},
+            {id: "Floyd-Warshall", type: "algorithm", category: "Algorithm", size: 16, description: "All-pairs analysis and shortest cycles (O(V³))"},
+            {id: "Tarjan's SCC", type: "algorithm", category: "Algorithm", size: 16, description: "Strongly Connected Components detection (O(V+E))"},
+            {id: "Bellman-Ford", type: "algorithm", category: "Algorithm", size: 16, description: "Negative cycle detection in weighted graphs (O(VxE))"},
+
+            // Detection Methods
+            {id: "Pattern Recognition", type: "method", category: "Cycle Detection", size: 17, description: "Identifying recurring patterns in transactions"},
+            {id: "Real-time Analysis", type: "method", category: "Cycle Detection", size: 17, description: "Continuous monitoring of transaction flows"},
+            {id: "Network Analysis", type: "method", category: "Cycle Detection", size: 17, description: "Analyzing relationships between accounts"},
+
+            // Risk Indicators
+            {id: "High Risk", type: "risk", category: "Risk Level", size: 15, description: "Risk Score ≥ 0.80 - Immediate investigation required"},
+            {id: "Medium Risk", type: "risk", category: "Risk Level", size: 15, description: "Risk Score 0.50-0.79 - Schedule for review"},
+            {id: "Low Risk", type: "risk", category: "Risk Level", size: 15, description: "Risk Score < 0.50 - Monitor and log"},
+
+            // Prevention
+            {id: "Compliance", type: "prevention", category: "Account", size: 14, description: "Regulatory compliance and reporting"},
+            {id: "Investigation", type: "prevention", category: "Account", size: 14, description: "Manual review of suspicious cycles"},
+            {id: "Blocking", type: "prevention", category: "Account", size: 14, description: "Immediate suspension of fraudulent transactions"}
+        ];
+
+        const links = [
+            // Core concept relations
+            {source: "Cycle Detection", target: "Circular Money Flow", label: "detects", isCycle: false},
+            {source: "Cycle Detection", target: "Anti-Money Laundering", label: "supports", isCycle: false},
+            {source: "Circular Money Flow", target: "Money Laundering", label: "indicates", isCycle: false},
+
+            // THE CYCLE - Highlighted
+            {source: "Account A", target: "Account B", label: "$50K", isCycle: true},
+            {source: "Account B", target: "Account C", label: "$50K", isCycle: true},
+            {source: "Account C", target: "Account D", label: "$50K", isCycle: true},
+            {source: "Account D", target: "Account A", label: "$50K", isCycle: true},
+
+            // Other transactions
+            {source: "Account A", target: "Account E", label: "$10K", isCycle: false},
+            {source: "Account E", target: "Account F", label: "$5K", isCycle: false},
+            {source: "Account F", target: "Account A", label: "$3K", isCycle: false},
+
+            // Algorithm connections
+            {source: "Pattern Recognition", target: "DFS Algorithm", label: "uses", isCycle: false},
+            {source: "Pattern Recognition", target: "Tarjan's SCC", label: "uses", isCycle: false},
+            {source: "Real-time Analysis", target: "Floyd-Warshall", label: "employs", isCycle: false},
+            {source: "Network Analysis", target: "Bellman-Ford", label: "uses", isCycle: false},
+
+            // Detection to fraud patterns
+            {source: "Cycle Detection", target: "Credit Card Loop", label: "detects", isCycle: false},
+            {source: "Cycle Detection", target: "Identity Theft Loop", label: "identifies", isCycle: false},
+            {source: "Anti-Money Laundering", target: "Account Takeover", label: "monitors", isCycle: false},
+
+            // Risk assessment
+            {source: "Circular Money Flow", target: "High Risk", label: "classified as", isCycle: false},
+            {source: "Money Laundering", target: "High Risk", label: "rated", isCycle: false},
+            {source: "Credit Card Loop", target: "High Risk", label: "assigned", isCycle: false},
+
+            // Prevention
+            {source: "High Risk", target: "Investigation", label: "triggers", isCycle: false},
+            {source: "High Risk", target: "Compliance", label: "requires", isCycle: false},
+            {source: "Investigation", target: "Blocking", label: "may lead to", isCycle: false},
+
+            // Algorithm feedback
+            {source: "DFS Algorithm", target: "Pattern Recognition", label: "feeds", isCycle: false},
+            {source: "Tarjan's SCC", target: "Network Analysis", label: "enables", isCycle: false}
+        ];
+
+        const categoryColors = {
+            "Account": "#ff6b6b",
+            "Transaction": "#4ecdc4",
+            "Cycle Detection": "#ffe66d",
+            "Indicator": "#95e1d3",
+            "Algorithm": "#a8dadc",
+            "Risk Level": "#f4a261",
+            "Core Concept": "#ff6b6b"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        let cycleHighlightEnabled = true;
+        let allDetectedCycles = [
+            ["Account A", "Account B", "Account C", "Account D", "Account A"]
+        ];
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        // Define arrowhead markers
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(0, 217, 255, 0.8)");
+
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead-cycle")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "#ff4444");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", d => "link" + (cycleHighlightEnabled && d.isCycle ? " cycle-link" : ""))
+            .attr("marker-end", d => d.isCycle ? "url(#arrowhead-cycle)" : "url(#arrowhead)");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", d => "link-label" + (cycleHighlightEnabled && d.isCycle ? " cycle-link-label" : ""))
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", d => {
+                let classes = "node";
+                if (cycleHighlightEnabled && ["Account A", "Account B", "Account C", "Account D"].includes(d.id)) {
+                    classes += " cycle-node";
+                }
+                return classes;
+            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+
+            const cycleInfo = document.getElementById("cycleInfo");
+            if (["Account A", "Account B", "Account C", "Account D"].includes(d.id)) {
+                cycleInfo.innerHTML = `
+                    <strong>⚠️ CYCLE DETECTED</strong><br>
+                    <div class="cycle-path">Account A → Account B → Account C → Account D → Account A</div>
+                    <strong>Details:</strong><br>
+                    • Pattern: Circular Money Flow<br>
+                    • Total Amount: $200,000<br>
+                    • Cycle Length: 4 accounts<br>
+                    • Risk Score: 0.92 (HIGH)<br>
+                    • Status: INVESTIGATING
+                `;
+                cycleInfo.style.display = "block";
+                panel.classList.add("cycle-info");
+            } else {
+                cycleInfo.style.display = "none";
+                panel.classList.remove("cycle-info");
+            }
+
+            panel.style.display = "block";
+        }
+
+        function toggleCycleHighlight() {
+            cycleHighlightEnabled = !cycleHighlightEnabled;
+            const btn = event.target;
+            btn.classList.toggle("active");
+
+            link.attr("class", d => "link" + (cycleHighlightEnabled && d.isCycle ? " cycle-link" : ""));
+            linkLabel.attr("class", d => "link-label" + (cycleHighlightEnabled && d.isCycle ? " cycle-link-label" : ""));
+            node.attr("class", d => {
+                let classes = "node";
+                if (cycleHighlightEnabled && ["Account A", "Account B", "Account C", "Account D"].includes(d.id)) {
+                    classes += " cycle-node";
+                }
+                return classes;
+            });
+        }
+
+        function showAllCycles() {
+            alert("Detected Cycles:\n\n1. CIRCULAR MONEY FLOW\n   Account A → Account B → Account C → Account D → Account A\n   Amount: $200,000\n   Risk Score: 0.92 (HIGH)\n   Status: INVESTIGATING\n\nTotal Cycles: 1");
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.8 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        // Initial zoom to fit
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>
+

@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-import vishal.mysore.hc.model.Department;
+import vishal.mysore.supermart.model.Department;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +33,7 @@ public class Customer {
     private Set<Promotion> promotions = new HashSet<>();
 
     @Relationship(type = "USES", direction = Relationship.Direction.OUTGOING)
-    private Set<Service> services = new HashSet<>();
+    private Set<StoreService> services = new HashSet<>();
 
     @Relationship(type = "PAYS_WITH", direction = Relationship.Direction.OUTGOING)
     private Set<Payment> paymentMethods = new HashSet<>();

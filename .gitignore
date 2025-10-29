@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+run-hc.bat
+/run-vidyaastra.bat

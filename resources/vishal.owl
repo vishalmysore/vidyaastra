@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://example.org/vishal#"
+     xml:base="http://example.org/vishal"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+    <owl:Ontology rdf:about="http://example.org/vishal"/>
+
+    <!-- Classes -->
+    <owl:Class rdf:about="http://example.org/vishal#Person"/>
+    <owl:Class rdf:about="http://example.org/vishal#Organization"/>
+    <owl:Class rdf:about="http://example.org/vishal#Bank">
+        <rdfs:subClassOf rdf:resource="http://example.org/vishal#Organization"/>
+    </owl:Class>
+
+    <!-- Object Property -->
+    <owl:ObjectProperty rdf:about="http://example.org/vishal#worksFor"/>
+
+    <!-- Individuals -->
+    <owl:NamedIndividual rdf:about="http://example.org/vishal#Vishal">
+        <rdf:type rdf:resource="http://example.org/vishal#Person"/>
+        <worksFor rdf:resource="http://example.org/vishal#Citibank"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/vishal#Citibank">
+        <rdf:type rdf:resource="http://example.org/vishal#Bank"/>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

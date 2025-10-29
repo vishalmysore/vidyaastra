@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Component;
 import vishal.mysore.supermart.model.*;
 import vishal.mysore.supermart.service.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class SupermartDataLoader implements CommandLineRunner {
@@ -16,7 +17,7 @@ public class SupermartDataLoader implements CommandLineRunner {
     private final BrandService brandService;
     private final SupplierService supplierService;
     private final PromotionService promotionService;
-    private final ServiceService serviceService;
+    private final ServiceService storeServiceService;
     private final PaymentService paymentService;
     private final LocationService locationService;
     private final Neo4jClient neo4jClient;
@@ -30,7 +31,7 @@ public class SupermartDataLoader implements CommandLineRunner {
             BrandService brandService,
             SupplierService supplierService,
             PromotionService promotionService,
-            ServiceService serviceService,
+            ServiceService storeServiceService,
             PaymentService paymentService,
             LocationService locationService,
             Neo4jClient neo4jClient) {
@@ -41,13 +42,14 @@ public class SupermartDataLoader implements CommandLineRunner {
         this.brandService = brandService;
         this.supplierService = supplierService;
         this.promotionService = promotionService;
-        this.serviceService = serviceService;
+        this.storeServiceService = storeServiceService;
         this.paymentService = paymentService;
         this.locationService = locationService;
         this.neo4jClient = neo4jClient;
     }
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         try {
             clearDatabase();
@@ -68,6 +70,7 @@ public class SupermartDataLoader implements CommandLineRunner {
         System.out.println("Database cleared successfully");
     }
 
+    @Transactional
     private void loadSupermartKnowledgeGraph() {
         // Create Departments
         Department grocery = createDepartment(
@@ -163,13 +166,13 @@ public class SupermartDataLoader implements CommandLineRunner {
             "Storage and distribution center"
         );
 
-        // Create Services
-        Service delivery = createService(
+        // Create Store Services
+        StoreService delivery = createService(
             "Home Delivery",
             "Door-to-door delivery service"
         );
 
-        Service customerService = createService(
+        StoreService customerSupportService = createService(
             "Customer Service",
             "Customer support and assistance"
         );
@@ -246,6 +249,7 @@ public class SupermartDataLoader implements CommandLineRunner {
         customer.getPurchases().add(apple);
         customer.getPurchases().add(iphone);
         customer.getServices().add(delivery);
+        customer.getServices().add(customerSupportService);
         customer.getPaymentMethods().add(creditCard);
 
         // Save updated entities
@@ -393,11 +397,11 @@ public class SupermartDataLoader implements CommandLineRunner {
         return supplierService.createSupplier(supplier);
     }
 
-    private Service createService(String name, String description) {
-        Service service = new Service();
+    private StoreService createService(String name, String description) {
+        StoreService service = new StoreService();
         service.setName(name);
         service.setDescription(description);
-        return serviceService.createService(service);
+        return storeServiceService.createService(service);
     }
 
     private Payment createPayment(String name, String description) {
