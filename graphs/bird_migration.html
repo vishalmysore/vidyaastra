@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra : Bird Migration Cycle Detection</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a3d62 0%, #1a5a7a 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node.migration-cycle circle {
+            stroke: #00ff88;
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 15px #00ff88);
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.3);
+        }
+
+        .node text {
+            font-size: 11px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.4);
+            stroke-width: 1.5px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link.migration-route {
+            stroke: #4ecdc4;
+            stroke-width: 3px;
+            filter: drop-shadow(0 0 5px #4ecdc4);
+            opacity: 0.8;
+        }
+
+        .link.return-route {
+            stroke: #ff6b6b;
+            stroke-width: 3px;
+            stroke-dasharray: 5,5;
+            filter: drop-shadow(0 0 5px #ff6b6b);
+            opacity: 0.8;
+        }
+
+        .link.food-source {
+            stroke: #ffe66d;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link:hover {
+            stroke-width: 4px;
+            filter: brightness(1.2);
+        }
+
+        .link-label {
+            font-size: 10px;
+            font-weight: bold;
+            fill: #4ecdc4;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+        }
+
+        .migration-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #4ecdc4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+        }
+
+        .return-label {
+            fill: #ff6b6b;
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(10, 61, 98, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 380px;
+            border: 2px solid #4ecdc4;
+        }
+
+        .controls h2 {
+            margin: 0 0 10px 0;
+            color: #4ecdc4;
+            font-size: 1.5em;
+        }
+
+        .controls h3 {
+            margin: 10px 0 5px 0;
+            color: #00ff88;
+            font-size: 1em;
+        }
+
+        .season-selector {
+            display: flex;
+            gap: 5px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .season-btn {
+            background: rgba(78, 205, 196, 0.3);
+            color: #4ecdc4;
+            border: 2px solid #4ecdc4;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .season-btn:hover {
+            background: #4ecdc4;
+            color: #0a3d62;
+        }
+
+        .season-btn.active {
+            background: #4ecdc4;
+            color: #0a3d62;
+            box-shadow: 0 0 10px #4ecdc4;
+        }
+
+        .controls button {
+            background: #00ff88;
+            color: #0a3d62;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #4ecdc4;
+            transform: scale(1.05);
+        }
+
+        .controls button.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(10, 61, 98, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 380px;
+            display: none;
+            border: 2px solid #4ecdc4;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #4ecdc4;
+        }
+
+        .info-panel.cycle-info {
+            border-color: #00ff88;
+        }
+
+        .info-panel.cycle-info h3 {
+            color: #00ff88;
+        }
+
+        .cycle-details {
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .migration-path {
+            background: rgba(78, 205, 196, 0.2);
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #4ecdc4;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 61, 98, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            border: 2px solid #4ecdc4;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+
+        .migration-indicator {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border: 3px solid #4ecdc4;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #4ecdc4;
+        }
+
+        .stats {
+            background: rgba(0, 255, 136, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 3px solid #00ff88;
+            font-size: 0.9em;
+        }
+
+        @keyframes flight {
+            0% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: 20;
+            }
+        }
+
+        .animated-route {
+            animation: flight 2s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>🦅 Bird Migration Cycles</h2>
+        <h3>Vidya Astra - Ecological Tracker</h3>
+        <p style="font-size: 0.85em; margin-bottom: 15px;">
+            Green highlighted nodes show annual migration cycles. Blue = Spring, Red = Fall.
+        </p>
+
+        <h3>Select Season:</h3>
+        <div class="season-selector">
+            <button class="season-btn active" onclick="setseason('spring')">Spring</button>
+            <button class="season-btn" onclick="setseason('summer')">Summer</button>
+            <button class="season-btn" onclick="setseason('fall')">Fall</button>
+            <button class="season-btn" onclick="setseason('winter')">Winter</button>
+            <button class="season-btn" onclick="setseason('all')">All Year</button>
+        </div>
+
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+        <button onclick="toggleCycleHighlight()" class="active">Highlight Cycles</button>
+        <button onclick="showAllMigrations()">Show All Routes</button>
+        <button onclick="animateMigration()">Animate Migration</button>
+    </div>
+
+    <div class="legend">
+        <h3 style="margin: 0 0 10px 0; color: #4ecdc4;">🦅 Bird Species</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff4444;"></div>Arctic Tern</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b9d;"></div>Bar-tailed Godwit</div>
+        <div class="legend-item"><div class="legend-color" style="background: #c44536;"></div>Swainson's Hawk</div>
+        <hr style="border-color: rgba(78, 205, 196, 0.3); margin: 10px 0;">
+        <h3 style="margin: 0 0 10px 0; color: #4ecdc4;">Categories & Routes</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div>Breeding Ground</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Stopover Site</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Wintering Ground</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Food Source</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Habitat</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Climate Factor</div>
+        <div class="legend-item">
+            <div style="display: flex; align-items: center;">
+                <div style="width: 30px; height: 2px; background: #4ecdc4; margin-right: 10px;"></div>Spring/Fall Route
+            </div>
+        </div>
+        <div class="legend-item">
+            <div style="display: flex; align-items: center;">
+                <div style="width: 30px; height: 2px; border-top: 2px dashed #ff6b6b; margin-right: 10px;"></div>Return Route
+            </div>
+        </div>
+        <div class="legend-item">
+            <div class="migration-indicator"></div>Annual Cycle
+        </div>
+        <hr style="border-color: rgba(78, 205, 196, 0.3); margin: 10px 0;">
+        <h3 style="color: #00ff88; margin: 10px 0 5px 0;">Migration Info</h3>
+        <div id="migrationStats"></div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <p id="nodeDescription"></p>
+        <div id="cycleInfo" class="cycle-details" style="display:none;"></div>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const birdSpecies = {
+            "Arctic Tern": {
+                color: "#ff4444",
+                distance: 44000,
+                route: ["Arctic (Breeding)", "Greenland Stopover", "Iceland Stopover", "West Africa Coast", "Antarctic (Wintering)"],
+                speed: "Fastest migrant"
+            },
+            "Bar-tailed Godwit": {
+                color: "#ff6b9d",
+                distance: 11000,
+                route: ["Alaska (Breeding)", "China Stopover", "New Zealand (Wintering)"],
+                speed: "Non-stop flight"
+            },
+            "Swainson's Hawk": {
+                color: "#c44536",
+                distance: 13000,
+                route: ["North America (Breeding)", "Central America Stopover", "South America (Wintering)"],
+                speed: "Thermal soaring"
+            }
+        };
+
+        const nodes = [
+            // Arctic Tern - Red (Breeding)
+            {id: "Arctic (Breeding)", type: "breeding", category: "Breeding Ground", size: 24, description: "Arctic breeding grounds - 24-hour daylight", bird: "Arctic Tern", x: -300, y: -400},
+            {id: "Greenland Stopover", type: "stopover", category: "Stopover Site", size: 18, description: "Rest and refuel - fish feeding", bird: "Arctic Tern", x: -200, y: -250},
+            {id: "Iceland Stopover", type: "stopover", category: "Stopover Site", size: 18, description: "Mid-journey rest - rich food supply", bird: "Arctic Tern", x: 0, y: -200},
+            {id: "West Africa Coast", type: "stopover", category: "Stopover Site", size: 18, description: "Equatorial feeding ground", bird: "Arctic Tern", x: 150, y: -100},
+            {id: "Antarctic (Wintering)", type: "wintering", category: "Wintering Ground", size: 24, description: "Wintering grounds - perpetual summer", bird: "Arctic Tern", x: 300, y: 100},
+
+            // Bar-tailed Godwit - Pink (Breeding)
+            {id: "Alaska (Breeding)", type: "breeding", category: "Breeding Ground", size: 22, description: "Alaska tundra breeding - short summer", bird: "Bar-tailed Godwit", x: -350, y: -100},
+            {id: "China Stopover", type: "stopover", category: "Stopover Site", size: 17, description: "Refueling stop - critical habitat", bird: "Bar-tailed Godwit", x: -50, y: 50},
+            {id: "New Zealand (Wintering)", type: "wintering", category: "Wintering Ground", size: 22, description: "Southern hemisphere summer", bird: "Bar-tailed Godwit", x: 350, y: 200},
+
+            // Swainson's Hawk - Brown (Breeding)
+            {id: "North America (Breeding)", type: "breeding", category: "Breeding Ground", size: 20, description: "Grasslands & prairies breeding", bird: "Swainson's Hawk", x: -250, y: 200},
+            {id: "Central America Stopover", type: "stopover", category: "Stopover Site", size: 16, description: "Migration corridor - abundant insects", bird: "Swainson's Hawk", x: 50, y: 250},
+            {id: "South America (Wintering)", type: "wintering", category: "Wintering Ground", size: 20, description: "Pampas & savannas wintering", bird: "Swainson's Hawk", x: 300, y: 350},
+
+            // Environmental & Supporting Nodes
+            {id: "Day Length", type: "trigger", category: "Climate Factor", size: 15, description: "Photoperiod - primary migration trigger"},
+            {id: "Temperature", type: "trigger", category: "Climate Factor", size: 15, description: "Seasonal temperature changes"},
+            {id: "Food Availability", type: "resource", category: "Food Source", size: 15, description: "Seasonal abundance of insects & fish"},
+            {id: "Wind Patterns", type: "resource", category: "Habitat", size: 15, description: "Jet streams & trade winds assist flight"},
+            {id: "Magnetic Navigation", type: "mechanism", category: "Habitat", size: 14, description: "Geomagnetic field navigation"},
+
+            // Cycle Concept Nodes
+            {id: "Annual Cycle", type: "core", category: "Breeding Ground", size: 18, description: "Complete yearly migration circuit"},
+            {id: "Genetic Programming", type: "driver", category: "Climate Factor", size: 16, description: "Innate migration behavior"},
+            {id: "Population Health", type: "indicator", category: "Wintering Ground", size: 15, description: "Species survival & breeding success"}
+        ];
+
+        const links = [
+            // ARCTIC TERN - Spring Migration (Highlighted)
+            {source: "Arctic (Breeding)", target: "Greenland Stopover", label: "2 weeks", type: "migration", bird: "Arctic Tern", season: "spring"},
+            {source: "Greenland Stopover", target: "Iceland Stopover", label: "10 days", type: "migration", bird: "Arctic Tern", season: "spring"},
+            {source: "Iceland Stopover", target: "West Africa Coast", label: "3 weeks", type: "migration", bird: "Arctic Tern", season: "spring"},
+            {source: "West Africa Coast", target: "Antarctic (Wintering)", label: "4 weeks", type: "migration", bird: "Arctic Tern", season: "spring"},
+
+            // ARCTIC TERN - Fall Return (Highlighted)
+            {source: "Antarctic (Wintering)", target: "West Africa Coast", label: "4 weeks", type: "return", bird: "Arctic Tern", season: "fall"},
+            {source: "West Africa Coast", target: "Iceland Stopover", label: "3 weeks", type: "return", bird: "Arctic Tern", season: "fall"},
+            {source: "Iceland Stopover", target: "Greenland Stopover", label: "10 days", type: "return", bird: "Arctic Tern", season: "fall"},
+            {source: "Greenland Stopover", target: "Arctic (Breeding)", label: "2 weeks", type: "return", bird: "Arctic Tern", season: "fall"},
+
+            // BAR-TAILED GODWIT Spring/Fall
+            {source: "Alaska (Breeding)", target: "China Stopover", label: "Direct", type: "migration", bird: "Bar-tailed Godwit", season: "spring"},
+            {source: "China Stopover", target: "New Zealand (Wintering)", label: "Direct", type: "migration", bird: "Bar-tailed Godwit", season: "spring"},
+            {source: "New Zealand (Wintering)", target: "China Stopover", label: "Direct", type: "return", bird: "Bar-tailed Godwit", season: "fall"},
+            {source: "China Stopover", target: "Alaska (Breeding)", label: "Direct", type: "return", bird: "Bar-tailed Godwit", season: "fall"},
+
+            // SWAINSON'S HAWK Spring/Fall
+            {source: "North America (Breeding)", target: "Central America Stopover", label: "Thermal soaring", type: "migration", bird: "Swainson's Hawk", season: "spring"},
+            {source: "Central America Stopover", target: "South America (Wintering)", label: "Thermal soaring", type: "migration", bird: "Swainson's Hawk", season: "spring"},
+            {source: "South America (Wintering)", target: "Central America Stopover", label: "Thermal soaring", type: "return", bird: "Swainson's Hawk", season: "fall"},
+            {source: "Central America Stopover", target: "North America (Breeding)", label: "Thermal soaring", type: "return", bird: "Swainson's Hawk", season: "fall"},
+
+            // Environmental Connections
+            {source: "Day Length", target: "Annual Cycle", label: "triggers", type: "trigger"},
+            {source: "Temperature", target: "Annual Cycle", label: "influences", type: "trigger"},
+            {source: "Food Availability", target: "Greenland Stopover", label: "abundant", type: "food"},
+            {source: "Food Availability", target: "Iceland Stopover", label: "abundant", type: "food"},
+            {source: "Food Availability", target: "West Africa Coast", label: "abundant", type: "food"},
+            {source: "Wind Patterns", target: "Arctic (Breeding)", label: "assists", type: "environmental"},
+            {source: "Magnetic Navigation", target: "Annual Cycle", label: "enables", type: "environmental"},
+            {source: "Genetic Programming", target: "Annual Cycle", label: "controls", type: "genetic"},
+            {source: "Annual Cycle", target: "Population Health", label: "determines", type: "outcome"}
+        ];
+
+        const categoryColors = {
+            "Breeding Ground": "#ff6b6b",
+            "Stopover Site": "#4ecdc4",
+            "Wintering Ground": "#ffe66d",
+            "Food Source": "#95e1d3",
+            "Habitat": "#a8dadc",
+            "Climate Factor": "#f4a261",
+            "Core": "#00ff88"
+        };
+
+        const birdColors = {
+            "Arctic Tern": "#ff4444",
+            "Bar-tailed Godwit": "#ff6b9d",
+            "Swainson's Hawk": "#c44536"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        let cycleHighlightEnabled = true;
+        let currentSeason = "spring";
+        let animationActive = false;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        // Arrowhead markers
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(78, 205, 196, 0.8)");
+
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead-return")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(255, 107, 107, 0.8)");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(130))
+            .force("charge", d3.forceManyBody().strength(-500))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 20));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", d => {
+                let classes = "link";
+                if (d.type === "migration") classes += " migration-route";
+                if (d.type === "return") classes += " return-route";
+                if (d.type === "food") classes += " food-source";
+                return classes;
+            })
+            .attr("marker-end", d => d.type === "return" ? "url(#arrowhead-return)" : "url(#arrowhead)");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", d => "link-label" + (d.type === "return" ? " return-label" : ""))
+            .text(d => d.label)
+            .style("display", d => d.type === "migration" || d.type === "return" ? "block" : "none");
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", d => {
+                let classes = "node";
+                if (cycleHighlightEnabled && ["Arctic (Breeding)", "Greenland Stopover", "Iceland Stopover", "West Africa Coast", "Antarctic (Wintering)"].includes(d.id)) {
+                    classes += " migration-cycle";
+                }
+                return classes;
+            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => {
+                if (d.bird && birdColors[d.bird]) {
+                    return birdColors[d.bird];
+                }
+                return categoryColors[d.category] || "#ccc";
+            });
+
+        // Add bird color indicator ring for bird nodes
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", "none")
+            .attr("stroke", d => d.bird ? birdColors[d.bird] : "none")
+            .attr("stroke-width", 2)
+            .attr("opacity", 0.5);
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.bird ? d.bird.split(" ")[0] : d.id.split(" ")[0])
+            .style("font-size", "12px");
+
+        // Add location label for bird nodes
+        node.append("text")
+            .attr("dy", d => d.size + 30)
+            .text(d => d.bird ? d.id.split(" ")[0] : "")
+            .style("font-size", "9px")
+            .style("fill", "#aaa");
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+
+            const cycleInfo = document.getElementById("cycleInfo");
+            if (d.bird) {
+                const species = birdSpecies[d.bird];
+                cycleInfo.innerHTML = `
+                    <strong>🦅 ${d.bird}</strong><br>
+                    <div class="migration-path">${species.route.join(" → ")}</div>
+                    <strong>Details:</strong><br>
+                    • Total Distance: ${species.distance.toLocaleString()} miles<br>
+                    • Characteristic: ${species.speed}<br>
+                    • Annual Cycle: COMPLETE ✅<br>
+                    • Current Status: Migration Active
+                `;
+                cycleInfo.style.display = "block";
+                panel.classList.add("cycle-info");
+            } else {
+                cycleInfo.style.display = "none";
+                panel.classList.remove("cycle-info");
+            }
+
+            panel.style.display = "block";
+        }
+
+        function toggleCycleHighlight() {
+            cycleHighlightEnabled = !cycleHighlightEnabled;
+            const btn = event.target;
+            btn.classList.toggle("active");
+
+            node.attr("class", d => {
+                let classes = "node";
+                const cycleNodes = ["Arctic (Breeding)", "Greenland Stopover", "Iceland Stopover", "West Africa Coast", "Antarctic (Wintering)",
+                                  "Alaska (Breeding)", "China Stopover", "New Zealand (Wintering)",
+                                  "North America (Breeding)", "Central America Stopover", "South America (Wintering)"];
+                if (cycleHighlightEnabled && cycleNodes.includes(d.id)) {
+                    classes += " migration-cycle";
+                }
+                return classes;
+            });
+        }
+
+        function setseason(season) {
+            currentSeason = season;
+            document.querySelectorAll('.season-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            linkLabel.style("display", d => {
+                if (d.type !== "migration" && d.type !== "return") return "none";
+                if (season === "all") return "block";
+                if (season === "spring" && d.type === "migration") return "block";
+                if (season === "fall" && d.type === "return") return "block";
+                return "none";
+            });
+        }
+
+        function showAllMigrations() {
+            alert("🦅 DETECTED MIGRATION CYCLES:\n\n1. ARCTIC TERN (44,000 miles)\n   Arctic → Greenland → Iceland → West Africa → Antarctic → Arctic\n   Duration: 12 months\n   Status: ACTIVE CYCLE ✅\n\n2. BAR-TAILED GODWIT (11,000 miles)\n   Alaska → China → New Zealand → Alaska\n   Duration: 11 months (non-stop)\n   Status: ACTIVE CYCLE ✅\n\n3. SWAINSON'S HAWK (13,000 miles)\n   North America → Central America → South America → North America\n   Duration: 12 months\n   Status: ACTIVE CYCLE ✅\n\nTotal Annual Cycles Detected: 3");
+        }
+
+        function animateMigration() {
+            if (animationActive) return;
+            animationActive = true;
+
+            link.classed("animated-route", d => d.type === "migration" || d.type === "return");
+
+            setTimeout(() => {
+                link.classed("animated-route", false);
+                animationActive = false;
+            }, 4000);
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.8 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        // Update stats
+        document.getElementById("migrationStats").innerHTML = `
+            <div class="stats">
+                <strong>Arctic Tern</strong><br>
+                44,000 mi/year | 44 days
+            </div>
+            <div class="stats">
+                <strong>Bar-tailed Godwit</strong><br>
+                11,000 mi/year | Non-stop
+            </div>
+            <div class="stats">
+                <strong>Swainson's Hawk</strong><br>
+                13,000 mi/year | Thermal soaring
+            </div>
+        `;
+
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>
+
