@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Interaction Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node.mutation circle {
+            stroke: #ff4444;
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 10px #ff4444);
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.2);
+        }
+
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.6);
+            stroke-width: 2px;
+            fill: none;
+            marker-end: url(#arrowhead);
+            transition: all 0.3s;
+        }
+
+        .link.signal {
+            stroke: #ffcc00;
+            stroke-width: 3px;
+            opacity: 0.8;
+            animation: flow 1s infinite linear;
+        }
+
+        @keyframes flow {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .link-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #00d9ff;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 350px;
+            border: 2px solid #00d9ff;
+        }
+
+        .controls h2 {
+            margin: 0 0 10px 0;
+            color: #00d9ff;
+            font-size: 1.5em;
+        }
+
+        .controls button {
+            background: #00d9ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #4ecdc4;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+<div class="controls">
+    <h2>🧬 Protein Interaction Network</h2>
+    <button onclick="resetSimulation()">Reset Layout</button>
+    <button onclick="highlightMutations()">Highlight Mutations</button>
+</div>
+
+<svg id="graph"></svg>
+
+<script>
+    const nodes = [
+        {id: "Protein A", type: "protein", category: "Protein", size: 20, description: "Key signaling protein"},
+        {id: "Protein B", type: "protein", category: "Protein", size: 18, description: "Interacts with Protein A"},
+        {id: "Protein C", type: "protein", category: "Protein", size: 18, description: "Regulates Protein D"},
+        {id: "Protein D", type: "protein", category: "Protein", size: 20, description: "Central hub"},
+        {id: "Gene X", type: "gene", category: "Gene", size: 16, description: "Gene regulating Protein B"},
+        {id: "Gene Y", type: "gene", category: "Gene", size: 16, description: "Gene influencing Protein D"},
+        {id: "Species Z", type: "species", category: "Species", size: 22, description: "Species-specific protein interactions"}
+    ];
+
+    const links = [
+        {source: "Protein A", target: "Protein B", label: "activates", signal: true},
+        {source: "Protein B", target: "Protein C", label: "inhibits", signal: true},
+        {source: "Protein C", target: "Protein D", label: "activates", signal: false},
+        {source: "Protein D", target: "Protein A", label: "feedback", signal: true},
+        {source: "Gene X", target: "Protein B", label: "expresses", signal: false},
+        {source: "Gene Y", target: "Protein D", label: "expresses", signal: false},
+        {source: "Species Z", target: "Protein A", label: "species-specific", signal: false}
+    ];
+
+    const categoryColors = {
+        "Protein": "#ff6b6b",
+        "Gene": "#4ecdc4",
+        "Species": "#ffe66d"
+    };
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("#graph").attr("width", width).attr("height", height);
+    const g = svg.append("g");
+
+    svg.append("defs").append("marker")
+        .attr("id", "arrowhead")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 20)
+        .attr("refY", 0)
+        .attr("markerWidth", 8)
+        .attr("markerHeight", 8)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M0,-5L10,0L0,5")
+        .attr("fill", "rgba(0, 217, 255, 0.8)");
+
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(150))
+        .force("charge", d3.forceManyBody().strength(-400))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+    const link = g.append("g").selectAll("path")
+        .data(links)
+        .enter().append("path")
+        .attr("class", d => "link" + (d.signal ? " signal" : ""))
+        .attr("marker-end", "url(#arrowhead)");
+
+    const linkLabel = g.append("g").selectAll("text")
+        .data(links)
+        .enter().append("text")
+        .attr("class", "link-label")
+        .text(d => d.label);
+
+    const node = g.append("g").selectAll("g")
+        .data(nodes)
+        .enter().append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    node.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+    node.append("text")
+        .attr("dy", d => d.size + 15)
+        .text(d => d.id);
+
+    simulation.on("tick", () => {
+        link.attr("d", d => {
+            const dx = d.target.x - d.source.x;
+            const dy = d.target.y - d.source.y;
+            const dr = Math.sqrt(dx * dx + dy * dy);
+            const targetRadius = d.target.size;
+            const offsetX = (dx * targetRadius) / dr;
+            const offsetY = (dy * targetRadius) / dr;
+            return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+        });
+
+        linkLabel
+            .attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event, d) { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }
+    function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+    function dragended(event, d) { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }
+
+    function resetSimulation() {
+        nodes.forEach(node => { node.fx = null; node.fy = null; });
+        simulation.alpha(1).restart();
+    }
+
+    function highlightMutations() {
+        node.selectAll("circle")
+            .attr("class", d => d.id.includes("Protein D") ? "mutation" : "");
+    }
+</script>
+
+</body>
+</html>

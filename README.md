@@ -7,11 +7,22 @@ This project implements multiple knowledge graphs using Neo4j and Spring Boot wi
 3) **Yoga** - Yoga poses, practices, health benefits, and yoga-related knowledge
 4) **Supermarket (Supermart)** - Retail knowledge graph with departments, products, categories, brands, suppliers, customers, and promotions
 5) **Fraud Detection (FD)** - Fraud detection and prevention knowledge graph with fraud types, detection methods, indicators, and prevention strategies
+6) **Bird Migration** - Knowledge graph on bird species, migration patterns, habitats, and conservation status
+
 
 What does Vidya Astra mean?  
 - Vidya means Knowledge/Wisdom in Sanskrit.
 - Astra means Tool/Weapon in Sanskrit.
 - So, Vidya Astra means "Tool of Knowledge" or "Weapon of Wisdom".
+
+## Live Demos 
+
+https://vishalmysore.github.io/vidyaastra/graphs/  - My Intro in Graph  
+https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection  - Fraud Detection Graph Demo  
+https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection - Cycle Detection Graph Demo for Fraud Detection 
+https://vishalmysore.github.io/vidyaastra/graphs/bird_migration - Bird Migration Graph Demo  
+https://vishalmysore.github.io/vidyaastra/graphs/healthcare - Healthcare Graph Demo  
+https://vishalmysore.github.io/vidyaastra/graphs/cyber_security - Cyber Security Graph Demo  
 
 ## Module Descriptions
 

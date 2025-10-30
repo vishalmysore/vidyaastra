@@ -1,0 +1,122 @@
+@prefix ex: <http://example.org/supermarket#> .
+@prefix schema: <http://schema.org/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+############################
+# Ontology
+############################
+ex:SupermarketOntology a owl:Ontology .
+
+############################
+# Classes
+############################
+ex:Customer a owl:Class ;
+    rdfs:subClassOf schema:Person .
+
+ex:Product a owl:Class ;
+    rdfs:subClassOf schema:Product .
+
+ex:Department a owl:Class ;
+    rdfs:subClassOf schema:Store .
+
+ex:Brand a owl:Class ;
+    rdfs:subClassOf schema:Brand .
+
+ex:PurchaseEvent a owl:Class ;
+    rdfs:subClassOf schema:PurchaseAction .
+
+############################
+# Object Properties (Relations)
+############################
+ex:buys a owl:ObjectProperty ;
+    rdfs:domain ex:Customer ;
+    rdfs:range ex:Product ;
+    rdfs:label "buys" .
+
+ex:hasBrand a owl:ObjectProperty ;
+    rdfs:domain ex:Product ;
+    rdfs:range ex:Brand ;
+    rdfs:label "has brand" .
+
+ex:inDepartment a owl:ObjectProperty ;
+    rdfs:domain ex:Product ;
+    rdfs:range ex:Department ;
+    rdfs:label "in department" .
+
+ex:performedBy a owl:ObjectProperty ;
+    rdfs:domain ex:PurchaseEvent ;
+    rdfs:range ex:Customer ;
+    rdfs:label "performed by" .
+
+ex:includesProduct a owl:ObjectProperty ;
+    rdfs:domain ex:PurchaseEvent ;
+    rdfs:range ex:Product ;
+    rdfs:label "includes product" .
+
+############################
+# Datatype Properties
+############################
+ex:price a owl:DatatypeProperty ;
+    rdfs:domain ex:Product ;
+    rdfs:range xsd:decimal .
+
+ex:unitText a owl:DatatypeProperty ;
+    rdfs:domain ex:Product ;
+    rdfs:range xsd:string .
+
+ex:customerName a owl:DatatypeProperty ;
+    rdfs:domain ex:Customer ;
+    rdfs:range xsd:string .
+
+############################
+# Individuals - Departments
+############################
+ex:FruitsDept a ex:Department ;
+    rdfs:label "Fruits and Vegetables" .
+
+ex:DairyDept a ex:Department ;
+    rdfs:label "Dairy" .
+
+############################
+# Individuals - Brands
+############################
+ex:BrandA a ex:Brand ;
+    rdfs:label "FreshChoice" .
+
+ex:BrandB a ex:Brand ;
+    rdfs:label "MilkyWay" .
+
+############################
+# Individuals - Products
+############################
+ex:Apple a ex:Product ;
+    rdfs:label "Apple" ;
+    ex:hasBrand ex:BrandA ;
+    ex:inDepartment ex:FruitsDept ;
+    ex:price "2.99"^^xsd:decimal ;
+    ex:unitText "per kg" .
+
+ex:Milk a ex:Product ;
+    rdfs:label "Whole Milk" ;
+    ex:hasBrand ex:BrandB ;
+    ex:inDepartment ex:DairyDept ;
+    ex:price "4.50"^^xsd:decimal ;
+    ex:unitText "1 litre" .
+
+############################
+# Individual - Customer
+############################
+ex:CustomerJohn a ex:Customer ;
+    ex:customerName "John Doe" ;
+    ex:buys ex:Apple, ex:Milk .
+
+############################
+# Individual - Purchase Event
+############################
+ex:Purchase123 a ex:PurchaseEvent ;
+    ex:performedBy ex:CustomerJohn ;
+    ex:includesProduct ex:Apple, ex:Milk ;
+    schema:price "7.49"^^xsd:decimal ;
+    schema:datePurchased "2025-10-29"^^xsd:date .

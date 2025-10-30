@@ -1,0 +1,327 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://example.org/cyber#"
+    xmlns:ex="http://example.org/cyber#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+  <!-- Ontology -->
+  <owl:Ontology rdf:about="http://example.org/cyber">
+    <rdfs:comment>Hybrid Cyber Threat Intelligence ontology (systems, vulnerabilities, actors, IOCs, mitigations, campaigns)</rdfs:comment>
+  </owl:Ontology>
+
+  <!-- Classes -->
+  <owl:Class rdf:about="http://example.org/cyber#System">
+    <rdfs:label>System</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://example.org/cyber#Vulnerability">
+    <rdfs:label>Vulnerability</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://example.org/cyber#ThreatActor">
+    <rdfs:label>ThreatActor</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://example.org/cyber#Indicator">
+    <rdfs:label>Indicator</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://example.org/cyber#Malware">
+    <rdfs:label>Malware</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://example.org/cyber#Control">
+    <rdfs:label>Control</rdfs:label>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://example.org/cyber#Campaign">
+    <rdfs:label>Campaign</rdfs:label>
+  </owl:Class>
+
+  <!-- Object Properties -->
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#runs">
+    <rdfs:label>runs</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#ThreatActor"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#Campaign"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#phishes">
+    <rdfs:label>phishes</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Campaign"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#System"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#exploits">
+    <rdfs:label>exploits</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#Vulnerability"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#compromises">
+    <rdfs:label>compromises</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Vulnerability"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#System"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#escalatesTo">
+    <rdfs:label>escalatesTo</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Vulnerability"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#System"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#accesses">
+    <rdfs:label>accesses</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#System"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#c2Of">
+    <rdfs:label>c2Of</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Indicator"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#ThreatActor"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#usedBy">
+    <rdfs:label>usedBy</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Indicator"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#Campaign"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#sampleOf">
+    <rdfs:label>sampleOf</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Indicator"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#Malware"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#remediates">
+    <rdfs:label>remediates</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Control"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#Vulnerability"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#protects">
+    <rdfs:label>protects</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Control"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#System"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#beaconsTo">
+    <rdfs:label>beaconsTo</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#Indicator"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://example.org/cyber#deploys">
+    <rdfs:label>deploys</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#ThreatActor"/>
+    <rdfs:range rdf:resource="http://example.org/cyber#Malware"/>
+  </owl:ObjectProperty>
+
+  <!-- Datatype Properties -->
+  <owl:DatatypeProperty rdf:about="http://example.org/cyber#ipAddress">
+    <rdfs:label>ipAddress</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://example.org/cyber#os">
+    <rdfs:label>os</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://example.org/cyber#cvssScore">
+    <rdfs:label>cvssScore</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Vulnerability"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://example.org/cyber#cveId">
+    <rdfs:label>cveId</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/cyber#Vulnerability"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <owl:DatatypeProperty rdf:about="http://example.org/cyber#description">
+    <rdfs:label>description</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+
+  <!-- Individuals: Systems -->
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Web_Server">
+    <rdf:type rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:label>Web Server</rdfs:label>
+    <ex:ipAddress>10.10.10.21</ex:ipAddress>
+    <ex:os>Linux</ex:os>
+    <ex:description>Public-facing web server</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#App_Server">
+    <rdf:type rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:label>App Server</rdfs:label>
+    <ex:ipAddress>10.10.10.22</ex:ipAddress>
+    <ex:os>Linux</ex:os>
+    <ex:description>Application server behind web tier</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Database">
+    <rdf:type rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:label>Database</rdfs:label>
+    <ex:ipAddress>10.10.10.30</ex:ipAddress>
+    <ex:os>Postgres</ex:os>
+    <ex:description>Customer DB (sensitive)</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Jump_Host">
+    <rdf:type rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:label>Jump Host</rdfs:label>
+    <ex:ipAddress>10.10.10.5</ex:ipAddress>
+    <ex:os>Windows Server</ex:os>
+    <ex:description>Admin jump box</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Workstation_101">
+    <rdf:type rdf:resource="http://example.org/cyber#System"/>
+    <rdfs:label>Workstation-101</rdfs:label>
+    <ex:ipAddress>10.10.11.101</ex:ipAddress>
+    <ex:os>Windows 10</ex:os>
+    <ex:description>User workstation</ex:description>
+  </owl:NamedIndividual>
+
+  <!-- Individuals: Vulnerabilities -->
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#CVE_2024_XXXX">
+    <rdf:type rdf:resource="http://example.org/cyber#Vulnerability"/>
+    <rdfs:label>CVE-2024-XXXX</rdfs:label>
+    <ex:cveId>CVE-2024-XXXX</ex:cveId>
+    <ex:cvssScore rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">9.1</ex:cvssScore>
+    <ex:description>Remote code execution in web server module</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#CVE_2025_YYYY">
+    <rdf:type rdf:resource="http://example.org/cyber#Vulnerability"/>
+    <rdfs:label>CVE-2025-YYYY</rdfs:label>
+    <ex:cveId>CVE-2025-YYYY</ex:cveId>
+    <ex:cvssScore rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">7.8</ex:cvssScore>
+    <ex:description>Privilege escalation in app framework</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#CVE_2023_ZZZZ">
+    <rdf:type rdf:resource="http://example.org/cyber#Vulnerability"/>
+    <rdfs:label>CVE-2023-ZZZZ</rdfs:label>
+    <ex:cveId>CVE-2023-ZZZZ</ex:cveId>
+    <ex:cvssScore rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">6.4</ex:cvssScore>
+    <ex:description>SQL injection pattern</ex:description>
+  </owl:NamedIndividual>
+
+  <!-- Individuals: Threat Actors / Malware -->
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#APT_BlackFox">
+    <rdf:type rdf:resource="http://example.org/cyber#ThreatActor"/>
+    <rdfs:label>APT-BlackFox</rdfs:label>
+    <ex:description>Likely nation-state actor (phishing, custom malware)</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#RansomEx">
+    <rdf:type rdf:resource="http://example.org/cyber#Malware"/>
+    <rdfs:label>RansomEx</rdfs:label>
+    <ex:description>Ransomware family</ex:description>
+  </owl:NamedIndividual>
+
+  <!-- Individuals: Indicators -->
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#IP_185_45_12_90">
+    <rdf:type rdf:resource="http://example.org/cyber#Indicator"/>
+    <rdfs:label>185.45.12.90</rdfs:label>
+    <ex:description>Observed C2 IP</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#bad_domain_xyz">
+    <rdf:type rdf:resource="http://example.org/cyber#Indicator"/>
+    <rdfs:label>bad-domain[.]xyz</rdfs:label>
+    <ex:description>Phishing domain</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#hash_abcd_1234">
+    <rdf:type rdf:resource="http://example.org/cyber#Indicator"/>
+    <rdfs:label>sha256:abcd...1234</rdfs:label>
+    <ex:description>Malicious binary hash</ex:description>
+  </owl:NamedIndividual>
+
+  <!-- Individuals: Controls / Mitigation -->
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Patch_Management">
+    <rdf:type rdf:resource="http://example.org/cyber#Control"/>
+    <rdfs:label>Patch Management</rdfs:label>
+    <ex:description>Apply vendor patch</ex:description>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Network_Segmentation">
+    <rdf:type rdf:resource="http://example.org/cyber#Control"/>
+    <rdfs:label>Network Segmentation</rdfs:label>
+    <ex:description>Segment DB from internet</ex:description>
+  </owl:NamedIndividual>
+
+  <!-- Individuals: Campaign -->
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Phishing_Campaign_2025_09">
+    <rdf:type rdf:resource="http://example.org/cyber#Campaign"/>
+    <rdfs:label>Phishing Campaign 2025-09</rdfs:label>
+    <ex:description>Mass phishing observed Sept 2025 targeting finance</ex:description>
+  </owl:NamedIndividual>
+
+  <!-- Relations (Individuals connected via object properties) -->
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#APT_BlackFox">
+    <ex:runs rdf:resource="http://example.org/cyber#Phishing_Campaign_2025_09"/>
+    <ex:deploys rdf:resource="http://example.org/cyber#RansomEx"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Phishing_Campaign_2025_09">
+    <ex:phishes rdf:resource="http://example.org/cyber#Workstation_101"/>
+    <ex:usedBy rdf:resource="http://example.org/cyber#bad_domain_xyz"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Workstation_101">
+    <ex:exploits rdf:resource="http://example.org/cyber#CVE_2025_YYYY"/>
+    <ex:beaconsTo rdf:resource="http://example.org/cyber#IP_185_45_12_90"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#CVE_2025_YYYY">
+    <ex:escalatesTo rdf:resource="http://example.org/cyber#Jump_Host"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Jump_Host">
+    <ex:accesses rdf:resource="http://example.org/cyber#Database"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Web_Server">
+    <ex:exploits rdf:resource="http://example.org/cyber#CVE_2024_XXXX"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#CVE_2024_XXXX">
+    <ex:compromises rdf:resource="http://example.org/cyber#App_Server"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#App_Server">
+    <ex:exposes rdf:resource="http://example.org/cyber#CVE_2023_ZZZZ"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#IP_185_45_12_90">
+    <ex:c2Of rdf:resource="http://example.org/cyber#APT_BlackFox"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#bad_domain_xyz">
+    <ex:usedBy rdf:resource="http://example.org/cyber#Phishing_Campaign_2025_09"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#hash_abcd_1234">
+    <ex:sampleOf rdf:resource="http://example.org/cyber#RansomEx"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Patch_Management">
+    <ex:remediates rdf:resource="http://example.org/cyber#CVE_2024_XXXX"/>
+  </owl:NamedIndividual>
+
+  <owl:NamedIndividual rdf:about="http://example.org/cyber#Network_Segmentation">
+    <ex:protects rdf:resource="http://example.org/cyber#Database"/>
+  </owl:NamedIndividual>
+
+</rdf:RDF>

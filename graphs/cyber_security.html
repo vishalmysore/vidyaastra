@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Vidya Astra : Cyber Threat Intelligence (Hybrid)</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        :root{
+            --bg1: #0f1724;
+            --bg2: #0b1220;
+            --accent: #00d9ff;
+            --danger: #ff4444;
+            --muted: rgba(255,255,255,0.85);
+        }
+        body{
+            margin:0;
+            padding:0;
+            font-family: "Inter", Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+            color:var(--muted);
+            overflow:hidden;
+        }
+        svg#graph{ width:100vw; height:100vh; display:block; }
+
+        .node circle{
+            stroke:#fff;
+            stroke-width:1.75px;
+            transition: all 0.2s;
+            cursor:pointer;
+        }
+        .node:hover circle{ stroke-width:3px; filter:brightness(1.2); }
+        .node.attack-node circle{
+            stroke:var(--danger);
+            stroke-width:3.5px;
+            filter: drop-shadow(0 0 12px rgba(255,68,68,0.6));
+        }
+        .node.vuln-node circle{
+            stroke:#ffb86b;
+            stroke-width:3px;
+            filter: drop-shadow(0 0 8px rgba(255,184,107,0.25));
+        }
+
+        .node text{
+            font-size:12px;
+            font-weight:600;
+            fill:#fff;
+            pointer-events:none;
+            text-anchor:middle;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        }
+
+        .link{
+            stroke: rgba(100,200,255,0.5);
+            stroke-width:1.8px;
+            fill:none;
+            marker-end: url(#arrowhead);
+            transition: all 0.15s;
+            opacity:0.9;
+        }
+        .link.attack-link{
+            stroke: var(--danger);
+            stroke-width:3.2px;
+            filter: drop-shadow(0 0 6px rgba(255,68,68,0.35));
+            opacity:1;
+        }
+        .link.vuln-link{
+            stroke: #ffb86b;
+            stroke-width:2.6px;
+        }
+        .link.threatintel-link{
+            stroke-dasharray: 4 3;
+            stroke-width:2px;
+        }
+
+        .link-label{
+            font-size:11px;
+            font-weight:700;
+            fill: var(--accent);
+            text-anchor:middle;
+            pointer-events:none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+        .attack-label{ fill: var(--danger); font-size:12px; font-weight:800; }
+
+        .controls{
+            position:absolute;
+            left:18px;
+            top:18px;
+            background: rgba(0,0,0,0.75);
+            border:2px solid var(--accent);
+            padding:14px;
+            border-radius:10px;
+            max-width:360px;
+            color:#fff;
+        }
+        .controls h2{ margin:0 0 8px 0; font-size:1.25rem; color:var(--accent); }
+        .controls p{ margin:6px 0 12px 0; font-size:0.88rem; color:#cfeffd; }
+        .controls button{
+            background:var(--accent);
+            color: #081220;
+            border:none;
+            padding:8px 12px;
+            margin:4px;
+            border-radius:6px;
+            cursor:pointer;
+            font-weight:700;
+        }
+        .controls button.toggle.active{ background:var(--danger); color:#fff; }
+
+        .legend{
+            position:absolute;
+            top:18px;
+            right:18px;
+            background: rgba(0,0,0,0.75);
+            border:2px solid var(--accent);
+            padding:12px;
+            border-radius:10px;
+            color:#fff;
+        }
+        .legend h4{ margin:0 0 6px 0; color:var(--accent); }
+        .legend-item{ display:flex; align-items:center; gap:8px; margin:6px 0; font-size:0.9rem; }
+        .legend-swatch{ width:18px; height:18px; border-radius:4px; border:1px solid #fff; }
+
+        .info-panel{
+            position:absolute;
+            right:18px;
+            bottom:18px;
+            width:360px;
+            max-height:380px;
+            overflow:auto;
+            background: rgba(0,0,0,0.8);
+            border:2px solid var(--accent);
+            padding:12px;
+            border-radius:10px;
+            display:none;
+            color:#fff;
+        }
+        .info-panel h3{ margin:0 0 6px 0; color:var(--accent); }
+        .info-panel .meta{ font-size:0.86rem; color:#cfeffd; margin-bottom:8px; }
+        .info-panel .badge{ display:inline-block; padding:4px 8px; border-radius:6px; font-weight:700; margin-right:6px; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); }
+        .info-panel .danger{ border-color:var(--danger); color:var(--danger); background: rgba(255,68,68,0.06); }
+
+        /* small screens adjustments */
+        @media (max-width:700px){
+            .controls, .legend, .info-panel{ max-width:90vw; left:4%; right:4%; }
+            .legend{ top:120px; }
+        }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h2>🔐 Cyber Threat Intelligence — Hybrid Graph</h2>
+    <h3> Project: Vidya Astra</h3>
+    <p>Shows attack paths, CVE propagation, and threat-intel indicators. Click nodes to inspect. Drag nodes to explore relationships.</p>
+
+    <div>
+        <button onclick="resetLayout()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+        <button class="toggle active" id="showAttackBtn" onclick="toggleAttackHighlight()">Highlight Attack Paths</button>
+        <button class="toggle" id="showVulnBtn" onclick="toggleVulnHighlight()">Show Vulnerability Propagation</button>
+        <button onclick="showDetectedPaths()">Show Detected Paths</button>
+    </div>
+    <hr style="border:none;border-top:1px solid rgba(255,255,255,0.06);margin:8px 0;">
+    <div style="font-size:0.9rem;">
+        <strong>Filter:</strong><br>
+        <label><input type="checkbox" checked onchange="filterCategory('System', this.checked)"> Systems</label><br>
+        <label><input type="checkbox" checked onchange="filterCategory('Vulnerability', this.checked)"> Vulnerabilities (CVE)</label><br>
+        <label><input type="checkbox" checked onchange="filterCategory('ThreatActor', this.checked)"> Threat Actors</label><br>
+        <label><input type="checkbox" checked onchange="filterCategory('Indicator', this.checked)"> IOCs / Indicators</label>
+    </div>
+</div>
+
+<div class="legend">
+    <h4>Legend</h4>
+    <div class="legend-item"><div class="legend-swatch" style="background:#6ec6ff"></div> System / Host</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff6b6b"></div> Threat Actor</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ffb86b"></div> Vulnerability (CVE)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#f0c987"></div> Malware / Campaign</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#95e1d3"></div> Indicator (IP / Domain / Hash)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#b4f5b4"></div> Control / Mitigation</div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+    <h3 id="infoTitle">Node</h3>
+    <div class="meta" id="infoType">Type: —</div>
+    <div id="infoBody">Select a node to see details.</div>
+    <div style="margin-top:8px;">
+        <button onclick="focusOnNode()">Focus</button>
+        <button onclick="highlightRelated()">Highlight Neighbors</button>
+    </div>
+</div>
+
+<svg id="graph"></svg>
+
+<script>
+    // --- Data (hybrid)
+    const nodes = [
+        // Systems / Hosts
+        { id: "Web Server", category: "System", size: 22, ip: "10.10.10.21", os: "Linux", descr: "Public-facing web server" },
+        { id: "App Server", category: "System", size: 20, ip: "10.10.10.22", os: "Linux", descr: "Application server behind web tier" },
+        { id: "Database", category: "System", size: 22, ip: "10.10.10.30", os: "Postgres", descr: "Customer DB (sensitive)" },
+        { id: "Jump Host", category: "System", size: 18, ip: "10.10.10.5", os: "WinServer", descr: "Admin jump box" },
+        { id: "Workstation-101", category: "System", size: 16, ip: "10.10.11.101", os: "Windows 10", descr: "User workstation" },
+
+        // Vulnerabilities (CVE)
+        { id: "CVE-2024-XXXX", category: "Vulnerability", size: 16, cve: "CVE-2024-XXXX", cvss: 9.1, descr: "Remote code execution in web server module" },
+        { id: "CVE-2025-YYYY", category: "Vulnerability", size: 14, cve: "CVE-2025-YYYY", cvss: 7.8, descr: "Priv escalation in app framework" },
+        { id: "CVE-2023-ZZZZ", category: "Vulnerability", size: 14, cve: "CVE-2023-ZZZZ", cvss: 6.4, descr: "SQL injection pattern" },
+
+        // Threat actors & Malware
+        { id: "APT-BlackFox", category: "ThreatActor", size: 18, threat_type: "APT", descr: "Likely nation-state actor (TTPs: phishing, custom malware)" },
+        { id: "RansomEx", category: "Malware", size: 16, descr: "Ransomware family used in recent campaign" },
+
+        // Indicators / IOCs
+        { id: "185.45.12.90", category: "Indicator", size: 13, kind: "IP", descr: "Observed C2 IP" },
+        { id: "bad-domain[.]xyz", category: "Indicator", size: 13, kind: "Domain", descr: "Phishing domain" },
+        { id: "sha256:abcd...1234", category: "Indicator", size: 12, kind: "Hash", descr: "Malicious binary hash" },
+
+        // Controls / Mitigation
+        { id: "Patch Management", category: "Control", size: 14, descr: "Apply vendor patch" },
+        { id: "Network Segmentation", category: "Control", size: 14, descr: "Segment DB from internet" },
+
+        // Campaign / Tooling
+        { id: "Phishing Campaign 2025-09", category: "Campaign", size: 14, descr: "Mass phishing observed Sept 2025 targeting finance" }
+    ];
+
+    const links = [
+        // Attack chain (detected path)
+        { source: "APT-BlackFox", target: "Phishing Campaign 2025-09", label: "runs", type: "threatintel", isPath: true },
+        { source: "Phishing Campaign 2025-09", target: "Workstation-101", label: "phishes", type: "attack", isPath: true },
+        { source: "Workstation-101", target: "CVE-2025-YYYY", label: "exploits", type: "vuln", isPath: true },
+        { source: "CVE-2025-YYYY", target: "Jump Host", label: "escalates_to", type: "vuln", isPath: true },
+        { source: "Jump Host", target: "Database", label: "accesses", type: "attack", isPath: true },
+
+        // Lateral movement / propagation
+        { source: "Web Server", target: "CVE-2024-XXXX", label: "vulnerable", type: "vuln", isPath: false },
+        { source: "CVE-2024-XXXX", target: "App Server", label: "compromises", type: "attack", isPath: false },
+        { source: "App Server", target: "CVE-2023-ZZZZ", label: "exposes", type: "vuln", isPath: false },
+
+        // Threat intel links
+        { source: "185.45.12.90", target: "APT-BlackFox", label: "C2", type: "threatintel", isPath: false },
+        { source: "bad-domain[.]xyz", target: "Phishing Campaign 2025-09", label: "used_by", type: "threatintel", isPath: false },
+        { source: "sha256:abcd...1234", target: "RansomEx", label: "sample_of", type: "threatintel", isPath: false },
+
+        // Control / mitigation relations
+        { source: "Patch Management", target: "CVE-2024-XXXX", label: "remediates", type: "control", isPath: false },
+        { source: "Network Segmentation", target: "Database", label: "protects", type: "control", isPath: false },
+
+        // Additional actor->malware
+        { source: "APT-BlackFox", target: "RansomEx", label: "deploys", type: "threatintel", isPath: false },
+
+        // cross-links
+        { source: "Workstation-101", target: "185.45.12.90", label: "beacon_to", type: "threatintel", isPath: false }
+    ];
+
+    // visualization helpers
+    const categoryColors = {
+        "System": "#6ec6ff",
+        "ThreatActor": "#ff6b6b",
+        "Vulnerability": "#ffb86b",
+        "Indicator": "#95e1d3",
+        "Malware": "#f0c987",
+        "Control": "#b4f5b4",
+        "Campaign": "#d6a6ff"
+    };
+
+    const width = window.innerWidth, height = window.innerHeight;
+    const svg = d3.select("#graph").attr("width", width).attr("height", height);
+    const g = svg.append("g");
+
+    // markers
+    svg.append("defs").append("marker")
+        .attr("id", "arrowhead")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 20).attr("refY", 0)
+        .attr("markerWidth", 8).attr("markerHeight", 8)
+        .attr("orient", "auto")
+        .append("path").attr("d", "M0,-5L10,0L0,5").attr("fill", "rgba(0,217,255,0.9)");
+
+    svg.append("defs").append("marker")
+        .attr("id", "arrowhead-attack")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 22).attr("refY", 0)
+        .attr("markerWidth", 8).attr("markerHeight", 8)
+        .attr("orient", "auto")
+        .append("path").attr("d", "M0,-5L10,0L0,5").attr("fill", "rgba(255,68,68,0.95)");
+
+    // zoom
+    const zoom = d3.zoom().scaleExtent([0.1, 4]).on("zoom", (event) => g.attr("transform", event.transform));
+    svg.call(zoom);
+
+    // simulation
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.type === "attack" ? 120 : 160))
+        .force("charge", d3.forceManyBody().strength(-520))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 12));
+
+    const linkGroup = g.append("g").attr("class", "links");
+    const nodeGroup = g.append("g").attr("class", "nodes");
+    const labelGroup = g.append("g").attr("class", "labels");
+
+    const link = linkGroup.selectAll("path")
+        .data(links)
+        .enter().append("path")
+        .attr("class", d => "link " + (d.type === "attack" ? "attack-link" : d.type === "vuln" ? "vuln-link" : d.type === "threatintel" ? "threatintel-link" : "link"))
+        .attr("marker-end", d => d.type === "attack" ? "url(#arrowhead-attack)" : "url(#arrowhead)")
+        .on("mouseover", (e,d) => { showEdgeTip(e,d); })
+        .on("mouseout", hideEdgeTip);
+
+    const linkLabel = labelGroup.selectAll("text")
+        .data(links)
+        .enter().append("text")
+        .attr("class", d => d.isPath ? "link-label attack-label" : "link-label")
+        .text(d => d.label);
+
+    const node = nodeGroup.selectAll("g")
+        .data(nodes)
+        .enter().append("g")
+        .attr("class", d => {
+            let c = "node";
+            if (d.category === "ThreatActor") c += " attack-node";
+            if (d.category === "Vulnerability") c += " vuln-node";
+            return c;
+        })
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended))
+        .on("click", showInfo);
+
+    node.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+    node.append("text")
+        .attr("dy", d => d.size + 14)
+        .text(d => d.id);
+
+    // small tooltip for edges
+    const edgeTip = d3.select("body").append("div")
+        .style("position","absolute")
+        .style("pointer-events","none")
+        .style("padding","6px 10px")
+        .style("border-radius","6px")
+        .style("background","rgba(0,0,0,0.78)")
+        .style("color","#fff")
+        .style("font-size","12px")
+        .style("display","none")
+        .style("z-index",9999);
+
+    simulation.on("tick", () => {
+        link.attr("d", d => {
+            // straight line with target offset
+            const sx = d.source.x, sy = d.source.y;
+            const tx = d.target.x, ty = d.target.y;
+            const dx = tx - sx, dy = ty - sy;
+            const dr = Math.sqrt(dx*dx + dy*dy);
+            const offsetX = (dx * d.target.size) / dr;
+            const offsetY = (dy * d.target.size) / dr;
+            return `M ${sx} ${sy} L ${tx - offsetX} ${ty - offsetY}`;
+        });
+
+        linkLabel
+            .attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    // interactions and behaviors
+    function dragstarted(event,d){
+        if(!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+    }
+    function dragged(event,d){
+        d.fx = event.x; d.fy = event.y;
+    }
+    function dragended(event,d){
+        if(!event.active) simulation.alphaTarget(0);
+        // keep pinned on long press? for now unpin
+        d.fx = null; d.fy = null;
+    }
+
+    function showEdgeTip(event,d){
+        edgeTip.style("display","block")
+            .html(`<strong>${d.label}</strong><br>Type: ${d.type}`)
+            .style("left",(event.pageX+12)+"px")
+            .style("top",(event.pageY+8)+"px");
+    }
+    function hideEdgeTip(){ edgeTip.style("display","none"); }
+
+    // Info panel logic
+    const infoPanel = document.getElementById("infoPanel");
+    function showInfo(event,d){
+        document.getElementById("infoTitle").textContent = d.id;
+        document.getElementById("infoType").textContent = `Type: ${d.category || '—'}`;
+        const body = document.getElementById("infoBody");
+
+        // build details depending on type
+        let html = `<div style="font-size:0.92rem;margin-bottom:6px;">${d.descr ? d.descr : ''}</div>`;
+        if(d.category === "System"){
+            html += `<div class="badge">IP: ${d.ip || '—'}</div> <div class="badge">OS: ${d.os || '—'}</div><hr style="opacity:0.06">`;
+            html += `<div><strong>Possible Risks:</strong><ul style="margin:6px 0 0 18px;"><li>Unpatched CVEs</li><li>Credential theft</li><li>Lateral movement</li></ul></div>`;
+        } else if(d.category === "Vulnerability"){
+            html += `<div class="badge danger">CVSS: ${d.cvss || '—'}</div> <div style="margin-top:8px;"><strong>Remediation:</strong><br>Patch or apply vendor mitigations; network segmentation; monitoring</div>`;
+        } else if(d.category === "ThreatActor"){
+            html += `<div><strong>TTPs:</strong> Phishing, C2, Lateral movement</div>`;
+            html += `<div style="margin-top:6px;"><strong>Known IOCs:</strong><br>185.45.12.90, bad-domain[.]xyz</div>`;
+        } else if(d.category === "Indicator"){
+            html += `<div><strong>Kind:</strong> ${d.kind || '—'}</div><div style="margin-top:6px;">${d.descr || ''}</div>`;
+        } else if(d.category === "Control"){
+            html += `<div><strong>Mitigation:</strong> ${d.descr || ''}</div>`;
+        } else {
+            html += `<div>${d.descr || ''}</div>`;
+        }
+
+        html += `<hr style="opacity:0.06"><div style="font-size:0.85rem;color:#cfeffd;"><strong>Neighbors:</strong> ${neighborsOf(d.id).join(", ") || '—'}</div>`;
+        body.innerHTML = html;
+
+        infoPanel.style.display = "block";
+    }
+
+    function neighborsOf(nodeId){
+        const n = new Set();
+        links.forEach(l => {
+            if(l.source.id === nodeId || l.source === nodeId) n.add((l.target && l.target.id) || l.target);
+            if(l.target.id === nodeId || l.target === nodeId) n.add((l.source && l.source.id) || l.source);
+        });
+        return Array.from(n);
+    }
+
+    // Controls functionality
+    let attackHighlight = true;
+    function toggleAttackHighlight(){
+        attackHighlight = !attackHighlight;
+        document.getElementById("showAttackBtn").classList.toggle("active");
+        link.classed("attack-link", d => (d.type === "attack" && attackHighlight) );
+        node.classed("attack-node", d => (attackHighlight && d.category === "ThreatActor"));
+    }
+
+    let vulnHighlight = false;
+    function toggleVulnHighlight(){
+        vulnHighlight = !vulnHighlight;
+        document.getElementById("showVulnBtn").classList.toggle("active");
+        link.classed("vuln-link", d => (d.type === "vuln" && vulnHighlight) || d.type === "vuln");
+        node.classed("vuln-node", d => (vulnHighlight && d.category === "Vulnerability"));
+    }
+
+    function resetLayout(){
+        nodes.forEach(n => { n.fx = null; n.fy = null; });
+        simulation.alpha(1).restart();
+    }
+
+    function zoomToFit(){
+        try{
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.85 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+            svg.transition().duration(700).call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }catch(e){ /* bbox may be 0 when not rendered */ }
+    }
+
+    // Filtering
+    const hiddenCategories = new Set();
+    function filterCategory(category, checked){
+        if(!checked) hiddenCategories.add(category); else hiddenCategories.delete(category);
+        node.style("display", d => hiddenCategories.has(d.category) ? "none" : "block");
+        // also hide links attached to hidden nodes
+        link.style("display", l => {
+            const s = (l.source && l.source.id) || l.source;
+            const t = (l.target && l.target.id) || l.target;
+            const sNode = nodes.find(n => n.id === s), tNode = nodes.find(n => n.id === t);
+            if((sNode && hiddenCategories.has(sNode.category)) || (tNode && hiddenCategories.has(tNode.category))) return "none";
+            return "block";
+        });
+        linkLabel.style("display", l => {
+            const s = (l.source && l.source.id) || l.source;
+            const t = (l.target && l.target.id) || l.target;
+            const sNode = nodes.find(n => n.id === s), tNode = nodes.find(n => n.id === t);
+            if((sNode && hiddenCategories.has(sNode.category)) || (tNode && hiddenCategories.has(tNode.category))) return "none";
+            return "block";
+        });
+    }
+
+    // Detected attack paths (example)
+    const detectedPaths = [
+        {
+            name: "Lateral Ransomware Chain",
+            path: ["APT-BlackFox","Phishing Campaign 2025-09","Workstation-101","CVE-2025-YYYY","Jump Host","Database"],
+            severity: "HIGH",
+            notes: "Observed C2 reachability and data access."
+        }
+    ];
+
+    function showDetectedPaths(){
+        let s = "Detected Paths:\n\n";
+        detectedPaths.forEach((p,i) => {
+            s += `${i+1}. ${p.name}\n   Path: ${p.path.join(" → ")}\n   Severity: ${p.severity}\n   Notes: ${p.notes}\n\n`;
+        });
+        alert(s);
+    }
+
+    // Focus and neighbor highlight from info panel
+    function focusOnNode(){
+        const title = document.getElementById("infoTitle").textContent;
+        const n = nodes.find(x => x.id === title);
+        if(!n) return;
+        const scale = 1.6;
+        const translate = [width/2 - n.x*scale, height/2 - n.y*scale];
+        svg.transition().duration(700).call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+    }
+    function highlightRelated(){
+        const title = document.getElementById("infoTitle").textContent;
+        const nb = neighborsOf(title);
+        // dim non-neighbors
+        node.selectAll("circle").style("opacity", d => (d.id === title || nb.includes(d.id)) ? 1 : 0.12);
+        link.style("opacity", l => {
+            const s = (l.source && l.source.id) || l.source;
+            const t = (l.target && l.target.id) || l.target;
+            return (s === title || t === title || nb.includes(s) || nb.includes(t)) ? 1 : 0.06;
+        });
+        linkLabel.style("opacity", l => {
+            const s = (l.source && l.source.id) || l.source;
+            const t = (l.target && l.target.id) || l.target;
+            return (s === title || t === title || nb.includes(s) || nb.includes(t)) ? 1 : 0.06;
+        });
+        setTimeout(()=>{ // revert after 6s
+            node.selectAll("circle").style("opacity",1);
+            link.style("opacity",1);
+            linkLabel.style("opacity",1);
+        }, 6000);
+    }
+
+    // expose small helper to global (so controls can call)
+    window.resetLayout = resetLayout;
+    window.zoomToFit = zoomToFit;
+    window.toggleAttackHighlight = toggleAttackHighlight;
+    window.toggleVulnHighlight = toggleVulnHighlight;
+    window.showDetectedPaths = showDetectedPaths;
+    window.filterCategory = filterCategory;
+    window.focusOnNode = focusOnNode;
+    window.highlightRelated = highlightRelated;
+
+    // initial visual tweaks
+    // ensure attack highlight on by default
+    link.classed("attack-link", d => (d.type === "attack" && attackHighlight) );
+    node.classed("attack-node", d => (attackHighlight && d.category === "ThreatActor"));
+    // vuln links explicit style
+    link.classed("vuln-link", d => d.type === "vuln");
+    // label visibility
+    linkLabel.style("pointer-events","none");
+
+    // initial zoom fit after render
+    setTimeout(zoomToFit, 900);
+
+    // handle window resize
+    window.addEventListener("resize", () => {
+        const w = window.innerWidth, h = window.innerHeight;
+        svg.attr("width", w).attr("height", h);
+    });
+</script>
+</body>
+</html>

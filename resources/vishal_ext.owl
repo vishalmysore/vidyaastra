@@ -1,0 +1,172 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix vkm: <http://vishalmysore.github.io/vidyaastra/ontology#> .
+
+<http://vishalmysore.github.io/vidyaastra/ontology> rdf:type owl:Ontology ;
+    rdfs:label "Vishal Mysore Extended Knowledge Graph" .
+
+# ---------------------------------------------------------------------
+# 1. CLASS DEFINITIONS (Your Categories)
+# ---------------------------------------------------------------------
+
+vkm:Person rdf:type owl:Class ;
+    rdfs:label "Person" .
+
+vkm:Location rdf:type owl:Class ;
+    rdfs:label "Location" .
+
+vkm:Organization rdf:type owl:Class ;
+    rdfs:label "Organization" .
+
+vkm:SkillOrField rdf:type owl:Class ;
+    rdfs:label "Skill or Field" .
+
+vkm:Concept rdf:type owl:Class ;
+    rdfs:label "Concept" .
+
+vkm:Product rdf:type owl:Class ;
+    rdfs:label "Product" .
+
+vkm:Activity rdf:type owl:Class ;
+    rdfs:label "Activity" .
+
+# ---------------------------------------------------------------------
+# 2. OBJECT PROPERTIES (Your Relationships/Links)
+# ---------------------------------------------------------------------
+
+# General/Core Properties
+vkm:hasRole rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range vkm:Concept .
+
+vkm:hasSkills rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range vkm:SkillOrField .
+
+vkm:worksFor rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range vkm:Organization .
+
+vkm:bornIn rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range vkm:Location .
+
+vkm:livesIn rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range vkm:Location .
+
+vkm:practices rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range vkm:Activity .
+
+vkm:relatedTo rdf:type owl:ObjectProperty .
+
+vkm:includes rdf:type owl:ObjectProperty .
+
+vkm:uses rdf:type owl:ObjectProperty .
+
+# Specific Properties
+vkm:isLocatedIn rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Location ;
+    rdfs:range vkm:Location .
+
+vkm:hasCity rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Location ;
+    rdfs:range vkm:Location .
+
+vkm:knownFor rdf:type owl:ObjectProperty .
+
+vkm:producedFrom rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Product ;
+    rdfs:range vkm:Concept .
+
+vkm:popularIn rdf:type owl:ObjectProperty ;
+    rdfs:domain vkm:Product .
+
+# ---------------------------------------------------------------------
+# 3. DATATYPE PROPERTIES (For node attributes like description and years)
+# ---------------------------------------------------------------------
+
+vkm:hasDescription rdf:type owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+vkm:hasYearsOfExperience rdf:type owl:DatatypeProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range xsd:integer .
+
+vkm:holdsPatents rdf:type owl:DatatypeProperty ;
+    rdfs:domain vkm:Person ;
+    rdfs:range xsd:integer .
+
+# ---------------------------------------------------------------------
+# 4. INDIVIDUALS (Instances of Classes / Your Nodes)
+# ---------------------------------------------------------------------
+
+### Vishal Mysore (Person)
+vkm:Vishal_Mysore rdf:type vkm:Person ;
+    vkm:hasYearsOfExperience 25 ;
+    vkm:holdsPatents 10 ;
+    vkm:hasDescription "Director with 25 years of experience in AI and Software Engineering" ;
+    vkm:hasRole vkm:Director ;
+    vkm:hasSkills vkm:AI , vkm:Software_Engineering ;
+    vkm:worksFor vkm:Citibank ;
+    vkm:bornIn vkm:India ;
+    vkm:livesIn vkm:Canada ;
+    vkm:practices vkm:Yoga .
+
+### Organizations
+vkm:Citibank rdf:type vkm:Organization ;
+    vkm:hasDescription "Global banking institution" ;
+    vkm:relatedTo vkm:Banking , vkm:FinTec .
+
+vkm:Banking rdf:type vkm:Organization ;
+    vkm:hasDescription "Financial services industry" ;
+    vkm:requires vkm:Software_Engineering .
+
+vkm:FinTec rdf:type vkm:Organization ;
+    vkm:hasDescription "Financial Technology" ;
+    vkm:uses vkm:AI .
+
+### Locations
+vkm:India rdf:type vkm:Location ;
+    vkm:hasDescription "Country in South Asia" ;
+    vkm:hasCity vkm:Bangalore ;
+    vkm:knownFor vkm:Yoga .
+
+vkm:Bangalore rdf:type vkm:Location ;
+    vkm:hasDescription "IT Hub of India" ;
+    vkm:knownFor vkm:IT_Hub .
+
+vkm:Canada rdf:type vkm:Location ;
+    vkm:hasDescription "North American country" ;
+    vkm:isLocatedIn vkm:North_America ;
+    vkm:knownFor vkm:Maple_Trees .
+
+# ... (Other individuals can be added following this pattern)
+
+### Skills/Fields
+vkm:AI rdf:type vkm:SkillOrField ;
+    vkm:hasDescription "Artificial Intelligence expertise" ;
+    vkm:includes vkm:Machine_Learning , vkm:NLP , vkm:Computer_Vision .
+
+vkm:Software_Engineering rdf:type vkm:SkillOrField ;
+    vkm:hasDescription "Software development and engineering" ;
+    vkm:uses vkm:Python , vkm:Java , vkm:JavaScript ;
+    vkm:relatedTo vkm:Microservices .
+
+### Activities
+vkm:Yoga rdf:type vkm:Activity ;
+    vkm:hasDescription "Ancient practice of physical and mental discipline" ;
+    vkm:includes vkm:Meditation , vkm:Pranayama , vkm:Asanas .
+
+### Concepts
+vkm:Director rdf:type vkm:Concept ;
+    vkm:hasDescription "Leadership role" .
+
+vkm:IT_Hub rdf:type vkm:Concept ;
+    vkm:hasDescription "Technology center" .
+
+vkm:Maple_Trees rdf:type vkm:Concept ;
+    vkm:producedFrom vkm:Maple_Syrup .
