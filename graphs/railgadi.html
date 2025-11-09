@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Sample Indian Railways — Passenger Helping System (Interactive Graph)</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body { margin:0; font-family:Arial, Helvetica, sans-serif; background: linear-gradient(135deg,#0b3b5f 0%, #123a5a 100%); color:#fff; }
+        #graph { width:100vw; height:100vh; }
+        .controls{ position:absolute; left:16px; top:16px; background:rgba(0,0,0,0.6); padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); max-width:360px;}
+        .controls h3{ margin:4px 0 8px 0; color:#7fe3c3;}
+        .controls button{ margin:6px 4px 6px 0; padding:8px 12px; border-radius:6px; border:0; cursor:pointer; font-weight:600; background:#7fe3c3; color:#04323a;}
+        .controls button.toggle{ background:#ffb86b; color:#2a1f00;}
+        .legend{ position:absolute; right:16px; top:16px; background:rgba(0,0,0,0.6); padding:12px; border-radius:8px; max-width:320px; border:1px solid rgba(255,255,255,0.06);}
+        .legend h4{ margin:0 0 8px 0; color:#ffd37a; }
+        .info-panel{ position:absolute; right:16px; bottom:16px; background:rgba(0,0,0,0.7); padding:12px; border-radius:8px; width:360px; max-height:46vh; overflow:auto; border:1px solid rgba(255,255,255,0.06); display:none;}
+        .node circle{ stroke:#fff; stroke-width:1.5px; cursor:pointer; }
+        .node text{ pointer-events:none; font-size:11px; fill:#fff; text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+        .link{ stroke:rgba(180,220,255,0.2); fill:none; stroke-width:1.5px; }
+        .link.service{ stroke:rgba(127,227,195,0.9); stroke-width:2.5px; }
+        .link.support{ stroke:rgba(255,184,107,0.85); stroke-dasharray:4,3; stroke-width:2px; }
+        .link.emergency{ stroke:rgba(255,120,120,0.95); stroke-width:3px; filter: drop-shadow(0 0 6px rgba(255,120,120,0.2)); }
+        .badge{ display:inline-block; padding:4px 8px; border-radius:6px; background:rgba(255,255,255,0.06); margin:4px 6px 4px 0; font-size:12px; }
+        #footerCite{ position:fixed; left:16px; bottom:8px; color:#cfeee6; font-size:12px; opacity:0.95;}
+        svg { width:100%; height:100%; }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h3>Indian Railways — Passenger Help Graph</h3>
+    <div style="font-size:13px; margin-bottom:8px;">Filter services / quick actions</div>
+    <button onclick="filterBy('all')">Show All</button>
+    <button onclick="filterBy('amenity')">Station Amenities</button>
+    <button onclick="filterBy('support')">Support Systems</button>
+    <button onclick="filterBy('emergency')" class="toggle">Emergency / Help</button>
+    <button onclick="highlightCore()">Highlight Core Services</button>
+    <button onclick="resetLayout()">Reset Layout</button>
+    <button onclick="zoomToFit()">Zoom To Fit</button>
+    <div style="margin-top:8px; font-size:12px; color:#d9f7ee;">
+        <span class="badge">PNR via 139</span>
+        <span class="badge">NTES Live Train</span>
+        <span class="badge">IRCTC eQuery</span>
+    </div>
+</div>
+
+<div class="legend">
+    <h4>Legend</h4>
+    <div><span style="display:inline-block;width:14px;height:14px;background:#7fe3c3;border-radius:3px;margin-right:8px;"></span> Passenger Service</div>
+    <div><span style="display:inline-block;width:14px;height:14px;background:#ffd37a;border-radius:3px;margin-right:8px;"></span> Support / Backend</div>
+    <div><span style="display:inline-block;width:14px;height:14px;background:#ff7878;border-radius:3px;margin-right:8px;"></span> Emergency / Help</div>
+    <hr style="border:none;border-top:1px solid rgba(255,255,255,0.05);margin:8px 0;">
+    <div style="font-size:12px;">Click nodes for details. Drag nodes to rearrange.</div>
+</div>
+
+<div id="infoPanel" class="info-panel"></div>
+
+<svg id="graph"></svg>
+
+<div id="footerCite">
+    Sources: NTES (live enquiry), IRCTC (139/14646/eQuery), Indian Railways passenger amenities guidance, public APIs for train status. :contentReference[oaicite:6]{index=6}
+</div>
+
+<script>
+    /* ----- Sample nodes & links (public-service focused) -----
+       Nodes use only public-service names and common station names.
+       This is a client-side interactive demo. For live data, connect NTES/IRCTC/APIs.
+    */
+
+    const nodes = [
+      // Stations (sample major hubs)
+      { id: "New Delhi (NDLS)",  type:"station", category:"Station", size:20, description:"Major hub: enquiry counters, reservation, retiring rooms, Yatri Mitra assistance" },
+      { id: "Mumbai Central (MMCT)", type:"station", category:"Station", size:18, description:"Large terminus: pantry, enquiry, reservation desk" },
+      { id: "Howrah Junction (HWH)", type:"station", category:"Station", size:18, description:"Major eastern hub with passenger assistance" },
+      { id: "Chennai Central (MAS)", type:"station", category:"Station", size:18, description:"Southern hub with passenger services" },
+      { id: "Bengaluru (SBC)", type:"station", category:"Station", size:18, description:"Important tech-city station with multiple services" },
+
+      // Passenger services
+      { id: "PNR Enquiry (139)", type:"service", category:"Service", size:16, description:"PNR status by SMS/phone (139). Public service for PNR lookup." },
+      { id: "Live Train / NTES", type:"service", category:"Service", size:16, description:"Real-time train running status and 'Spot Your Train' (NTES)." },
+      { id: "Reservation Counter", type:"service", category:"Service", size:14, description:"Booking / Cancellation at stations; also IRCTC online." },
+      { id: "Platform Enquiry", type:"service", category:"Service", size:14, description:"Platform numbers, train arrivals/departures (station enquiry counters)." },
+      { id: "Wheelchair / Yatri Mitra", type:"service", category:"Service", size:14, description:"Assistance for elderly/disabled (Yatri Mitra services available at many stations)." },
+      { id: "First Aid / Medical", type:"service", category:"Service", size:14, description:"On-station first aid rooms / medical help." },
+      { id: "IRCTC eQuery (14646)", type:"service", category:"Service", size:14, description:"IRCTC customer care & eQuery service (phone and online)."},
+      { id: "Pantry / Food", type:"service", category:"Service", size:14, description:"IRCTC pantry, onboard catering & station food outlets." },
+      { id: "Retiring Room / Waiting Room", type:"service", category:"Service", size:14, description:"Short-stay rooms and waiting facilities for passengers." },
+
+      // Support/backend systems
+      { id: "CRIS / NTES Backend", type:"support", category:"Backend", size:14, description:"Centre for Railway Information Systems - supports NTES & ticketing systems." },
+      { id: "IRCTC System", type:"support", category:"Backend", size:14, description:"IRCTC eTicketing and customer care backend." },
+      { id: "Station Passenger Amenities", type:"support", category:"Backend", size:14, description:"Station infrastructure: water, toilets, ramps, signage per Indian Railways guidance." },
+
+      // Emergency / Help
+      { id: "Emergency Helpline", type:"emergency", category:"Emergency", size:14, description:"Railway emergency/helpdesk numbers & station controllers." },
+      { id: "Lost & Found", type:"emergency", category:"Emergency", size:14, description:"Station lost-and-found services and procedures." }
+    ];
+
+    const links = [
+      // Services available at stations (sample)
+      { source:"New Delhi (NDLS)", target:"PNR Enquiry (139)", type:"service" },
+      { source:"Mumbai Central (MMCT)", target:"PNR Enquiry (139)", type:"service" },
+      { source:"Howrah Junction (HWH)", target:"PNR Enquiry (139)", type:"service" },
+      { source:"Chennai Central (MAS)", target:"PNR Enquiry (139)", type:"service" },
+      { source:"Bengaluru (SBC)", target:"PNR Enquiry (139)", type:"service" },
+
+      { source:"New Delhi (NDLS)", target:"Live Train / NTES", type:"service" },
+      { source:"Mumbai Central (MMCT)", target:"Live Train / NTES", type:"service" },
+      { source:"Howrah Junction (HWH)", target:"Live Train / NTES", type:"service" },
+
+      { source:"New Delhi (NDLS)", target:"Reservation Counter", type:"service" },
+      { source:"Mumbai Central (MMCT)", target:"Reservation Counter", type:"service" },
+
+      { source:"New Delhi (NDLS)", target:"Wheelchair / Yatri Mitra", type:"service" },
+      { source:"Bengaluru (SBC)", target:"Wheelchair / Yatri Mitra", type:"service" },
+
+      { source:"New Delhi (NDLS)", target:"First Aid / Medical", type:"service" },
+      { source:"Howrah Junction (HWH)", target:"First Aid / Medical", type:"service" },
+
+      { source:"IRCTC System", target:"PNR Enquiry (139)", type:"support" },
+      { source:"CRIS / NTES Backend", target:"Live Train / NTES", type:"support" },
+      { source:"Station Passenger Amenities", target:"Wheelchair / Yatri Mitra", type:"support" },
+
+      { source:"New Delhi (NDLS)", target:"IRCTC eQuery (14646)", type:"service" },
+      { source:"Mumbai Central (MMCT)", target:"IRCTC eQuery (14646)", type:"service" },
+
+      // Emergency links
+      { source:"New Delhi (NDLS)", target:"Emergency Helpline", type:"emergency" },
+      { source:"Howrah Junction (HWH)", target:"Emergency Helpline", type:"emergency" },
+      { source:"Chennai Central (MAS)", target:"Lost & Found", type:"emergency" },
+
+      // Food & Retiring rooms
+      { source:"Bengaluru (SBC)", target:"Pantry / Food", type:"service" },
+      { source:"Chennai Central (MAS)", target:"Retiring Room / Waiting Room", type:"service" }
+    ];
+
+    /* D3 rendering & interactivity */
+    const width = window.innerWidth, height = window.innerHeight;
+    const svg = d3.select("#graph");
+    const g = svg.append("g");
+
+    // markers for arrowheads
+    svg.append("defs").append("marker")
+      .attr("id","arrow")
+      .attr("viewBox","0 -5 10 10")
+      .attr("refX",20)
+      .attr("refY",0)
+      .attr("markerWidth",7)
+      .attr("markerHeight",7)
+      .attr("orient","auto")
+      .append("path").attr("d","M0,-5L10,0L0,5").attr("fill","#7fe3c3");
+
+    const zoom = d3.zoom().scaleExtent([0.2,4]).on("zoom", (event)=> g.attr("transform", event.transform));
+    svg.call(zoom);
+
+    const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links).id(d => d.id).distance(160).strength(1))
+      .force("charge", d3.forceManyBody().strength(-700))
+      .force("center", d3.forceCenter(width/2, height/2))
+      .force("collision", d3.forceCollide().radius(d=>d.size + 12));
+
+    const link = g.append("g").selectAll("path")
+      .data(links).enter().append("path")
+      .attr("class", d => "link " + (d.type==="service"?"service":(d.type==="support"?"support":"emergency")))
+      .attr("marker-end","url(#arrow)");
+
+    const linkText = g.append("g").selectAll("text")
+      .data(links).enter().append("text")
+      .attr("font-size","11px")
+      .attr("fill","#e6fff5")
+      .text(d => d.type);
+
+    const node = g.append("g").selectAll("g")
+      .data(nodes).enter().append("g")
+      .attr("class","node")
+      .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended))
+      .on("click", showInfo);
+
+    // circle style by type
+    node.append("circle")
+      .attr("r", d => d.size)
+      .attr("fill", d => {
+        if (d.type==="service") return "#7fe3c3";
+        if (d.type==="support") return "#ffd37a";
+        if (d.type==="emergency") return "#ff7878";
+        return "#8ec0ff";
+      })
+      .attr("stroke","#012a2e")
+      .attr("stroke-width",1.6);
+
+    // labels
+    node.append("text")
+      .attr("dy", d=> d.size + 14)
+      .attr("text-anchor","middle")
+      .text(d => d.id.length>24 ? d.id.substring(0,22)+"..." : d.id);
+
+    simulation.on("tick", () => {
+      link.attr("d", d => {
+        const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y;
+        const dr = Math.sqrt(dx*dx + dy*dy);
+        const offsetX = (dx * d.target.size) / dr;
+        const offsetY = (dy * d.target.size) / dr;
+        return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+      });
+
+      linkText.attr("x", d => (d.source.x + d.target.x)/2 )
+              .attr("y", d => (d.source.y + d.target.y)/2 );
+
+      node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    /* drag */
+    function dragstarted(event,d){
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x; d.fy = d.y;
+    }
+    function dragged(event,d){ d.fx = event.x; d.fy = event.y; }
+    function dragended(event,d){ if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }
+
+    /* info panel */
+    const infoPanel = d3.select("#infoPanel");
+    function showInfo(event,d){
+      infoPanel.style("display","block");
+      infoPanel.html(`<h3 style="margin-top:0;color:#9fffe0">${d.id}</h3>
+        <div style="font-size:13px;color:#e9fff5">${d.description || ''}</div>
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:8px 0;">
+        <div style="font-size:12px;color:#cfeee6;">
+          <strong>Type:</strong> ${d.type} <br/>
+          <strong>Category:</strong> ${d.category || ''} <br/>
+          <br/>
+          <div style="font-size:12px;color:#d9f7ee;">Public references: NTES (live train), IRCTC SMS/139, station amenities guidance (Indian Railways)</div>
+        </div>`);
+    }
+
+    /* filters & actions */
+    function filterBy(kind){
+      if(kind==="all"){
+        node.style("display","block");
+        link.style("display","block");
+        linkText.style("display","block");
+      } else if(kind==="amenity"){
+        node.style("display", d => (d.type==="station" || d.type==="service") ? "block" : "none");
+        link.style("display", d => (d.type==="service") ? "block" : "none");
+        linkText.style("display", d => (d.type==="service") ? "block" : "none");
+      } else if(kind==="support"){
+        node.style("display", d => (d.type==="support" || d.type==="service") ? "block" : "none");
+        link.style("display", d => (d.type==="support") ? "block" : "none");
+        linkText.style("display", d => (d.type==="support") ? "block" : "none");
+      } else if(kind==="emergency"){
+        node.style("display", d => (d.type==="emergency" || d.type==="station") ? "block" : "none");
+        link.style("display", d => (d.type==="emergency") ? "block" : "none");
+        linkText.style("display", d => (d.type==="emergency") ? "block" : "none");
+      }
+    }
+
+    function highlightCore(){
+      node.selectAll("circle").attr("stroke-width", d=> d.type==="service" ? 3 : 1.2);
+      // small pulse animation for core service circles
+      node.selectAll("circle").transition().duration(600).attr("r", d => d.type==="service" ? d.size+4 : d.size)
+        .transition().duration(600).attr("r", d => d.size);
+    }
+
+    function resetLayout(){
+      nodes.forEach(n => { n.fx = null; n.fy = null; });
+      simulation.alpha(1).restart();
+    }
+
+    function zoomToFit(){
+      const bounds = g.node().getBBox();
+      const fullWidth = window.innerWidth;
+      const fullHeight = window.innerHeight;
+      const midX = bounds.x + bounds.width/2;
+      const midY = bounds.y + bounds.height/2;
+      const scale = 0.85 / Math.max(bounds.width/fullWidth, bounds.height/fullHeight);
+      const translate = [fullWidth/2 - scale*midX, fullHeight/2 - scale*midY];
+      svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+    }
+
+    /* animate a sample train route to show 'live' movement (mock) */
+    function animateTrainRoute(){
+      // create a temporary path following a sequence of stations
+      const route = ["New Delhi (NDLS)","Bengaluru (SBC)","Chennai Central (MAS)"];
+      // find positions from nodes
+      const coords = route.map(name => nodes.find(n=>n.id===name)).filter(Boolean);
+      if(coords.length<2) return alert("Route not ready");
+      // create a marker
+      const marker = g.append("circle").attr("r",8).attr("fill","#fff").attr("stroke","#00333a").attr("stroke-width",2).attr("opacity",0.95);
+      let idx=0;
+      function step(){
+        if(idx>=coords.length) { marker.remove(); return; }
+        marker.transition().duration(1500).attr("cx", coords[idx].x).attr("cy", coords[idx].y).on("end", ()=> { idx++; step(); });
+      }
+      step();
+    }
+
+    /* expose animate to window for button testing */
+    window.animateTrainRoute = animateTrainRoute;
+
+    /* zoom to fit shortly after layout stabilizes */
+    setTimeout(zoomToFit, 1200);
+
+</script>
+
+<!-- small footer note for public sources -->
+</body>
+</html>

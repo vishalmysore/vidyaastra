@@ -22,7 +22,9 @@ https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection  - Fraud Detect
 https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection - Cycle Detection Graph Demo for Fraud Detection 
 https://vishalmysore.github.io/vidyaastra/graphs/bird_migration - Bird Migration Graph Demo  
 https://vishalmysore.github.io/vidyaastra/graphs/healthcare - Healthcare Graph Demo  
-https://vishalmysore.github.io/vidyaastra/graphs/cyber_security - Cyber Security Graph Demo  
+https://vishalmysore.github.io/vidyaastra/graphs/cyber_security - Cyber Security Graph Demo
+https://vishalmysore.github.io/vidyaastra/graphs/railgadi - Indian Railways Graph Demo
+https://vishalmysore.github.io/vidyaastra/graphs/iloveny - New York Tourism Graph Demo
 
 ## Module Descriptions
 

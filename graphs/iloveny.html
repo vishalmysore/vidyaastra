@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>NYC Subway — Passenger Help System (Interactive Graph)</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body { margin:0; font-family:Inter, Arial, Helvetica, sans-serif; background: linear-gradient(135deg,#081826 0%, #0b2a3a 100%); color:#fff; }
+        #graph { width:100vw; height:100vh; }
+        .controls{ position:absolute; left:16px; top:16px; background:rgba(0,0,0,0.6); padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); max-width:380px;}
+        .controls h3{ margin:4px 0 8px 0; color:#8fe3d1;}
+        .controls button{ margin:6px 4px 6px 0; padding:8px 12px; border-radius:6px; border:0; cursor:pointer; font-weight:600; background:#8fe3d1; color:#042a2a;}
+        .controls button.toggle{ background:#ffd37a; color:#2a1f00;}
+        .legend{ position:absolute; right:16px; top:16px; background:rgba(0,0,0,0.6); padding:12px; border-radius:8px; max-width:320px; border:1px solid rgba(255,255,255,0.06);}
+        .info-panel{ position:absolute; right:16px; bottom:16px; background:rgba(0,0,0,0.75); padding:12px; border-radius:8px; width:360px; max-height:48vh; overflow:auto; border:1px solid rgba(255,255,255,0.06); display:none;}
+        .node circle{ stroke:#fff; stroke-width:1.2px; cursor:pointer; }
+        .node text{ pointer-events:none; font-size:11px; fill:#fff; text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+        .link{ stroke:rgba(200,220,255,0.12); fill:none; stroke-width:1.5px; }
+        .link.fare{ stroke:rgba(143,227,209,0.95); stroke-width:2.2px; }
+        .link.access{ stroke:rgba(255,215,122,0.95); stroke-dasharray:4,3; stroke-width:2px; }
+        .link.emergency{ stroke:rgba(255,120,120,0.95); stroke-width:3px; }
+        .badge{ display:inline-block; padding:4px 8px; border-radius:6px; background:rgba(255,255,255,0.04); margin:4px 6px 4px 0; font-size:12px; }
+        #footerCite{ position:fixed; left:16px; bottom:8px; color:#cfeee6; font-size:12px; opacity:0.98;}
+        svg { width:100%; height:100%; }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h3>NYC Subway — Passenger Help Graph</h3>
+    <div style="font-size:13px; margin-bottom:8px;">Filter services & quick actions</div>
+    <button onclick="filterBy('all')">Show All</button>
+    <button onclick="filterBy('fare')">Fare / OMNY</button>
+    <button onclick="filterBy('access')">Accessibility / Elevators</button>
+    <button onclick="filterBy('support')" class="toggle">Customer Support (511/311)</button>
+    <button onclick="filterBy('emergency')">Emergency</button>
+    <button onclick="highlightADA()">Highlight ADA Stations</button>
+    <button onclick="resetLayout()">Reset Layout</button>
+    <button onclick="zoomToFit()">Zoom To Fit</button>
+    <div style="margin-top:8px; font-size:12px; color:#d9f7ee;">
+        <span class="badge">OMNY Tap</span>
+        <span class="badge">Elevator Status</span>
+        <span class="badge">511 / 311</span>
+    </div>
+</div>
+
+<div class="legend">
+    <h4 style="margin:0;color:#ffd37a;">Legend</h4>
+    <div><span style="display:inline-block;width:14px;height:14px;background:#8fe3d1;border-radius:3px;margin-right:8px;"></span> Fare / OMNY</div>
+    <div><span style="display:inline-block;width:14px;height:14px;background:#ffd37a;border-radius:3px;margin-right:8px;"></span> Accessibility / Elevators</div>
+    <div><span style="display:inline-block;width:14px;height:14px;background:#ff7878;border-radius:3px;margin-right:8px;"></span> Emergency / Help</div>
+    <hr style="border:none;border-top:1px solid rgba(255,255,255,0.05);margin:8px 0;">
+    <div style="font-size:12px;">Click nodes for details. Drag nodes to rearrange. Data references: MTA, OMNY, 511. :contentReference[oaicite:3]{index=3}</div>
+</div>
+
+<div id="infoPanel" class="info-panel"></div>
+<svg id="graph"></svg>
+
+<div id="footerCite">
+    Sources: MTA Service & Accessibility pages; OMNY contactless fares; 511NY customer line. :contentReference[oaicite:4]{index=4}
+</div>
+
+<script>
+    /* Sample nodes & links (public-service focused) */
+    const nodes = [
+      // Stations (representative hubs)
+      { id: "Times Square–42 St", type:"station", category:"Station", size:20, ada:true, description:"Major hub: multiple lines, station agents, OMNY readers, some elevators/escalators" },
+      { id: "Penn Station (34 St–Penn)", type:"station", category:"Station", size:18, ada:true, description:"Major intercity hub (LIRR/Amtrak/NJ Transit connections), OMNY readers, customer service nearby" },
+      { id: "Grand Central–42 St", type:"station", category:"Station", size:18, ada:true, description:"Major hub: Midtown east, OMNY readers, station agents, elevators (varies by entrance)" },
+      { id: "Fulton St", type:"station", category:"Station", size:18, ada:true, description:"Lower Manhattan transfer hub with many elevators and complex corridors" },
+      { id: "14 St–Union Sq", type:"station", category:"Station", size:16, ada:false, description:"Busy transfer station; partial elevator access at select entrances" },
+
+      // Passenger services
+      { id: "OMNY Tap", type:"fare", category:"Fare", size:14, description:"OMNY contactless payment: tap with card / phone / OMNY card. Weekly fare cap available." },
+      { id: "Elevator Status", type:"access", category:"Accessibility", size:14, description:"Elevator/escalator status & outages tracked by MTA. Check before travel." },
+      { id: "Station Agent / Enquiry", type:"support", category:"Service", size:14, description:"On-site station staff for travel help, directions, and emergency assistance." },
+      { id: "Lost & Found", type:"support", category:"Service", size:14, description:"MTA lost & found procedures and claims." },
+      { id: "ADA Assistance / Access-A-Ride info", type:"access", category:"Service", size:14, description:"Information on accessibility, reduced-fare, and paratransit services." },
+
+      // Backend/support systems
+      { id: "MTA Service Status", type:"support", category:"Backend", size:14, description:"Official service updates: delays, planned work, suspensions." },
+      { id: "OMNY System Backend", type:"support", category:"Backend", size:14, description:"Contactless payment backend (OMNY) used across MTA network." },
+
+      // Emergency / customer contact
+      { id: "511NY / MTA Customer Line", type:"support", category:"Support", size:14, description:"Dial 511 for MTA service info and customer assistance (automated + transfer options)." },
+      { id: "311 NYC Non-Emergency", type:"support", category:"Support", size:14, description:"311 for non-emergency city assistance; 911 for emergencies." },
+      { id: "Emergency (911)", type:"emergency", category:"Emergency", size:14, description:"Call 911 for immediate life-safety emergencies in stations or trains." }
+    ];
+
+    const links = [
+      // Fare coverage
+      { source:"Times Square–42 St", target:"OMNY Tap", type:"fare" },
+      { source:"Penn Station (34 St–Penn)", target:"OMNY Tap", type:"fare" },
+      { source:"Grand Central–42 St", target:"OMNY Tap", type:"fare" },
+
+      // Elevator / ADA links
+      { source:"Times Square–42 St", target:"Elevator Status", type:"access" },
+      { source:"Fulton St", target:"Elevator Status", type:"access" },
+      { source:"Grand Central–42 St", target:"Elevator Status", type:"access" },
+      { source:"14 St–Union Sq", target:"Elevator Status", type:"access" },
+
+      // Support links
+      { source:"Times Square–42 St", target:"Station Agent / Enquiry", type:"support" },
+      { source:"Penn Station (34 St–Penn)", target:"Station Agent / Enquiry", type:"support" },
+      { source:"MTA Service Status", target:"Times Square–42 St", type:"support" },
+      { source:"MTA Service Status", target:"Penn Station (34 St–Penn)", type:"support" },
+
+      { source:"OMNY System Backend", target:"OMNY Tap", type:"support" },
+      { source:"511NY / MTA Customer Line", target:"MTA Service Status", type:"support" },
+      { source:"311 NYC Non-Emergency", target:"Lost & Found", type:"support" },
+
+      // Emergency links
+      { source:"Times Square–42 St", target:"Emergency (911)", type:"emergency" },
+      { source:"Fulton St", target:"Emergency (911)", type:"emergency" }
+    ];
+
+    /* D3 rendering & interactivity (similar to previous demo) */
+    const width = window.innerWidth, height = window.innerHeight;
+    const svg = d3.select("#graph");
+    const g = svg.append("g");
+
+    // arrow marker
+    svg.append("defs").append("marker")
+      .attr("id","arrowNY")
+      .attr("viewBox","0 -5 10 10")
+      .attr("refX",20)
+      .attr("refY",0)
+      .attr("markerWidth",7)
+      .attr("markerHeight",7)
+      .attr("orient","auto")
+      .append("path").attr("d","M0,-5L10,0L0,5").attr("fill","#8fe3d1");
+
+    const zoom = d3.zoom().scaleExtent([0.25,4]).on("zoom", (event)=> g.attr("transform", event.transform));
+    svg.call(zoom);
+
+    const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links).id(d => d.id).distance(150).strength(1))
+      .force("charge", d3.forceManyBody().strength(-700))
+      .force("center", d3.forceCenter(width/2, height/2))
+      .force("collision", d3.forceCollide().radius(d=>d.size + 12));
+
+    const link = g.append("g").selectAll("path")
+      .data(links).enter().append("path")
+      .attr("class", d => "link " + (d.type==="fare"?"fare":(d.type==="access"?"access":"emergency")))
+      .attr("marker-end","url(#arrowNY)");
+
+    const linkText = g.append("g").selectAll("text")
+      .data(links).enter().append("text")
+      .attr("font-size","11px")
+      .attr("fill","#e6fff5")
+      .text(d => d.type);
+
+    const node = g.append("g").selectAll("g")
+      .data(nodes).enter().append("g")
+      .attr("class","node")
+      .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended))
+      .on("click", showInfo);
+
+    node.append("circle")
+      .attr("r", d => d.size)
+      .attr("fill", d => {
+        if (d.type==="fare") return "#8fe3d1";
+        if (d.type==="access") return "#ffd37a";
+        if (d.type==="emergency") return "#ff7878";
+        return "#6fa8ff";
+      })
+      .attr("stroke","#012a2e")
+      .attr("stroke-width",1.6);
+
+    node.append("text")
+      .attr("dy", d=> d.size + 14)
+      .attr("text-anchor","middle")
+      .text(d => d.id.length>26 ? d.id.substring(0,24)+"..." : d.id);
+
+    simulation.on("tick", () => {
+      link.attr("d", d => {
+        const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y;
+        const dr = Math.sqrt(dx*dx + dy*dy);
+        const offsetX = (dx * d.target.size) / dr;
+        const offsetY = (dy * d.target.size) / dr;
+        return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+      });
+
+      linkText.attr("x", d => (d.source.x + d.target.x)/2 )
+              .attr("y", d => (d.source.y + d.target.y)/2 );
+
+      node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event,d){
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x; d.fy = d.y;
+    }
+    function dragged(event,d){ d.fx = event.x; d.fy = event.y; }
+    function dragended(event,d){ if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }
+
+    const infoPanel = d3.select("#infoPanel");
+    function showInfo(event,d){
+      infoPanel.style("display","block");
+      // Provide links to official resources (text only) — user can refer to footer citations for official pages
+      infoPanel.html(`<h3 style="margin-top:0;color:#bfffe8">${d.id}</h3>
+        <div style="font-size:13px;color:#e9fff5">${d.description || ''}</div>
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.04);margin:8px 0;">
+        <div style="font-size:12px;color:#cfeee6;">
+          <strong>Type:</strong> ${d.type} <br/>
+          <strong>Category:</strong> ${d.category || ''} <br/>
+          <strong>ADA Accessible:</strong> ${d.ada ? 'Yes' : 'Partial / No'} <br/><br/>
+          <div style="font-size:12px;color:#d9f7ee;">Official info: MTA service updates, elevator status and OMNY fare details are available from MTA/OMNY pages (see footer sources). Call 511 for MTA help; 311 for non-emergency city services; 911 for emergencies. :contentReference[oaicite:5]{index=5}</div>
+        </div>`);
+    }
+
+    /* Filters & UI actions */
+    function filterBy(kind){
+      if(kind==="all"){
+        node.style("display","block");
+        link.style("display","block");
+        linkText.style("display","block");
+      } else if(kind==="fare"){
+        node.style("display", d => (d.type==="fare" || d.type==="station" || d.type==="support") ? "block" : "none");
+        link.style("display", d => (d.type==="fare") ? "block" : "none");
+        linkText.style("display", d => (d.type==="fare") ? "block" : "none");
+      } else if(kind==="access"){
+        node.style("display", d => (d.type==="access" || d.type==="station") ? "block" : "none");
+        link.style("display", d => (d.type==="access") ? "block" : "none");
+        linkText.style("display", d => (d.type==="access") ? "block" : "none");
+      } else if(kind==="support"){
+        node.style("display", d => (d.type==="support" || d.type==="station") ? "block" : "none");
+        link.style("display", d => (d.type==="support") ? "block" : "none");
+        linkText.style("display", d => (d.type==="support") ? "block" : "none");
+      } else if(kind==="emergency"){
+        node.style("display", d => (d.type==="emergency" || d.type==="station") ? "block" : "none");
+        link.style("display", d => (d.type==="emergency") ? "block" : "none");
+        linkText.style("display", d => (d.type==="emergency") ? "block" : "none");
+      }
+    }
+
+    function highlightADA(){
+      node.selectAll("circle").attr("stroke-width", d=> d.ada ? 4 : 1.2)
+        .transition().duration(600).attr("r", d => d.ada ? d.size+4 : d.size)
+        .transition().duration(600).attr("r", d => d.size);
+    }
+
+    function resetLayout(){
+      nodes.forEach(n => { n.fx = null; n.fy = null; });
+      simulation.alpha(1).restart();
+    }
+
+    function zoomToFit(){
+      const bounds = g.node().getBBox();
+      const fullWidth = window.innerWidth;
+      const fullHeight = window.innerHeight;
+      const midX = bounds.x + bounds.width/2;
+      const midY = bounds.y + bounds.height/2;
+      const scale = 0.85 / Math.max(bounds.width/fullWidth, bounds.height/fullHeight);
+      const translate = [fullWidth/2 - scale*midX, fullHeight/2 - scale*midY];
+      svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+    }
+
+    /* animate a sample train route to show 'live' movement (mock) */
+    function animateTrainRoute(){
+      const route = ["Times Square–42 St","14 St–Union Sq","Fulton St"];
+      const coords = route.map(name => nodes.find(n=>n.id===name)).filter(Boolean);
+      if(coords.length<2) return alert("Route not ready");
+      const marker = g.append("circle").attr("r",8).attr("fill","#fff").attr("stroke","#00333a").attr("stroke-width",2).attr("opacity",0.95);
+      let idx=0;
+      function step(){
+        if(idx>=coords.length) { marker.remove(); return; }
+        marker.transition().duration(1200).attr("cx", coords[idx].x).attr("cy", coords[idx].y).on("end", ()=> { idx++; step(); });
+      }
+      step();
+    }
+    window.animateTrainRoute = animateTrainRoute;
+
+    setTimeout(zoomToFit, 1100);
+</script>
+</body>
+</html>
