@@ -27,7 +27,7 @@ https://vishalmysore.github.io/vidyaastra/graphs/railgadi - Indian Railways Grap
 https://vishalmysore.github.io/vidyaastra/graphs/iloveny - New York Tourism Graph Demo
 https://vishalmysore.github.io/vidyaastra/graphs/supermarket - Supermarket Graph Demo  
 https://vishalmysore.github.io/vidyaastra/graphs/yoga - Yoga Graph Demo  
-https://vishalmysore.github.io/vidyaastra/graphs/reciipe_graph - Recipe Knowledge Graph Demo
+https://vishalmysore.github.io/vidyaastra/graphs/recipe_graph - Recipe Knowledge Graph Demo
 https://vishalmysore.github.io/vidyaastra/graphs/music_network - Music Network Graph Demo
 
 ## Module Descriptions
