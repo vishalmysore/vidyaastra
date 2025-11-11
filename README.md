@@ -1,347 +1,409 @@
-# Vidya Astra - Knowledge Tool 
+# 🚀 Vidya Astra - Knowledge Weapon
 
-This project implements multiple knowledge graphs using Neo4j and Spring Boot with Spring Data Neo4j for database interactions. It provides the following modules:
+> **"Vidya Astra: The Weapon of Knowledge"** - Powerful, scalable knowledge graphs for the modern era
 
-1) **Cricket** - Store and analyze cricket matches, players, teams, and performance statistics
-2) **Healthcare (HC)** - Medical knowledge graph covering diseases, treatments, medications, and healthcare providers
-3) **Yoga** - Yoga poses, practices, health benefits, and yoga-related knowledge
-4) **Supermarket (Supermart)** - Retail knowledge graph with departments, products, categories, brands, suppliers, customers, and promotions
-5) **Fraud Detection (FD)** - Fraud detection and prevention knowledge graph with fraud types, detection methods, indicators, and prevention strategies
-6) **Bird Migration** - Knowledge graph on bird species, migration patterns, habitats, and conservation status
+![Vidya Astra Architecture](reference.jpg)
 
+---
 
-What does Vidya Astra mean?  
-- Vidya means Knowledge/Wisdom in Sanskrit.
-- Astra means Tool/Weapon in Sanskrit.
-- So, Vidya Astra means "Tool of Knowledge" or "Weapon of Wisdom".
+## 🎯 What is Vidya Astra?
 
-## Live Demos 
+**Vidya Astra** is a comprehensive, multi-domain **knowledge graph platform** that harnesses the power of Neo4j and Spring Boot to create intelligent, interconnected knowledge systems. It's designed for organizations that need to:
 
-https://vishalmysore.github.io/vidyaastra/graphs/  - My Intro in Graph  
-https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection  - Fraud Detection Graph Demo  
-https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection - Cycle Detection Graph Demo for Fraud Detection 
-https://vishalmysore.github.io/vidyaastra/graphs/bird_migration - Bird Migration Graph Demo  
-https://vishalmysore.github.io/vidyaastra/graphs/healthcare - Healthcare Graph Demo  
-https://vishalmysore.github.io/vidyaastra/graphs/cyber_security - Cyber Security Graph Demo
-https://vishalmysore.github.io/vidyaastra/graphs/railgadi - Indian Railways Graph Demo
-https://vishalmysore.github.io/vidyaastra/graphs/iloveny - New York Tourism Graph Demo
-https://vishalmysore.github.io/vidyaastra/graphs/supermarket - Supermarket Graph Demo  
-https://vishalmysore.github.io/vidyaastra/graphs/yoga - Yoga Graph Demo  
-https://vishalmysore.github.io/vidyaastra/graphs/recipe_graph - Recipe Knowledge Graph Demo
-https://vishalmysore.github.io/vidyaastra/graphs/music_network - Music Network Graph Demo
+- 🧠 **Understand Complex Relationships** across multiple domains
+- 🔍 **Detect Patterns** and anomalies in connected data
+- 🎓 **Learn from Knowledge** through interactive visualizations
+- ⚡ **Scale Intelligently** with graph database technology
+- 🌍 **Adapt Across Domains** using consistent architecture
+- 💡 **Make Better Decisions** based on connected intelligence
 
-## Module Descriptions
-
-### 🏏 Cricket Module
-Stores and analyzes cricket matches, players, teams, and performance statistics. Track match results, player roles, and team achievements.
-
-**Key Entities:**
-- Team: name, country
-- Player: name, country, role (Batsman/Bowler), jerseyNumber
-- Match: venue, matchDate, matchType, result
-- PlayerScore: performance statistics
-
-### 🏥 Healthcare Module (HC)
-Medical knowledge graph covering diseases, treatments, medications, and healthcare providers. Build relationships between medical conditions and their remedies.
-
-**Key Entities:**
-- Disease: name, symptoms, severity
-- Treatment: name, description, type
-- Medication: name, dosage, sideEffects
-- Provider: name, specialization, location
-
-### 🧘 Yoga Module
-Yoga poses, practices, health benefits, and yoga-related knowledge. Organize yoga practices by difficulty level and target body areas.
-
-**Key Entities:**
-- Pose: name, difficulty, sanskritName
-- Practice: name, description, duration
-- Benefit: description, targetArea
-- Instructor: name, experience, specialization
-
-### 🛒 Supermarket Module (Supermart)
-Retail knowledge graph with departments, products, categories, brands, suppliers, customers, and promotions.
-
-**Key Entities:**
-- Department: name, description
-- Product: name, price, description
-- Category: name, classification
-- Brand: name, description
-- Supplier: name, contact
-- Customer: name, preferences
-- Promotion: name, discount, validity
-
-### 🚨 Fraud Detection Module (FD)
-Fraud detection and prevention knowledge graph with fraud types, detection methods, indicators, and prevention strategies.
-
-**Key Entities:**
-- FraudType: name, category, riskLevel
-- DetectionMethod: name, accuracy, description
-- FraudIndicator: name, riskScore, pattern
-- PreventionMethod: name, effectiveness
-- DetectionTool: name, type, provider
-
-##  Neo4j Queries
-
-1️⃣ List all teams and their players
-
-```sql 
-MATCH (t:Team)<-[r:PLAYS_FOR]-(p:Player)
-RETURN t.name, collect(p.name);
-``` 
-shows which players belong to each team.
-
-2️⃣ List all matches with teams and winners
-
-```sql 
-MATCH (m:Match)-[:TEAM_1]->(team1:Team),
-      (m)-[:TEAM_2]->(team2:Team),
-      (m)-[:WINNER]->(winner:Team)
-RETURN m.venue AS Venue, m.matchDate AS Date, 
-       team1.name AS Team1, team2.name AS Team2, 
-       winner.name AS Winner, m.result AS Result;
-```
-
-✅ Shows all match details in one table.
-
-3️⃣ Players grouped by role
-```sql 
-MATCH (p:Player)
-RETURN p.role AS Role, collect(p.name) AS PlayersByRole;
-```
-
-✅ Groups players by Batsman, Bowler, etc.
-
-4️⃣ Count of players per team
-```sql 
-MATCH (t:Team)<-[:PLAYS_FOR]-(p:Player)
-RETURN t.name AS Team, count(p) AS PlayerCount;
-```
-
-✅ Quick check if every team has correct number of players.
-
-5️⃣ List matches played by a specific team (e.g., India)
-```sql 
-MATCH (m:Match)-[:TEAM_1|TEAM_2]->(t:Team {name: "India"})
-RETURN m.matchDate AS Date, m.venue AS Venue, 
-       m.result AS Result;
-```
-
-✅ Shows all matches where India participated.
-
-6️⃣ Teams that have won matches
-```sql 
-MATCH (m:Match)-[:WINNER]->(t:Team)
-RETURN t.name AS WinningTeam, count(m) AS MatchesWon
-ORDER BY MatchesWon DESC;
-```
-
-✅ Gives a leaderboard of teams by wins.
-
-7️⃣ All players and their team
-```sql 
-MATCH (p:Player)-[:PLAYS_FOR]->(t:Team)
-RETURN p.name AS Player, t.name AS Team;
-```
-
-✅ Just a flat list for reference.
-
-8️⃣ Matches with players from both teams
-
-```sql 
-MATCH (m:Match)-[:TEAM_1]->(t1:Team)<-[:PLAYS_FOR]-(p1:Player),
-      (m)-[:TEAM_2]->(t2:Team)<-[:PLAYS_FOR]-(p2:Player)
-RETURN m.venue AS Venue, t1.name AS Team1, collect(p1.name) AS Team1Players,
-       t2.name AS Team2, collect(p2.name) AS Team2Players;
+### 📖 Etymology: Why "Vidya Astra"?
 
 ```
-
-✅ Shows each match and all players from both sides.
-
-9️⃣ Count matches per team
-```sql 
-MATCH (t:Team)<-[:TEAM_1|TEAM_2]-(m:Match)
-RETURN t.name AS Team, count(m) AS MatchesPlayed
-ORDER BY MatchesPlayed DESC;
+Vidya (विद्या)  =  Knowledge, Wisdom, Learning
+Astra (अस्त्र)  =  Tool, Weapon, Instrument
+───────────────────────────────────────────────
+         ⚔️  "The Weapon of Knowledge"  ⚔️
 ```
 
-✅ See how many matches each team has played.
+---
 
-1️⃣0️⃣ Find players who have won at least one match
-```sql 
-MATCH (p:Player)-[:PLAYS_FOR]->(t:Team)<-[:WINNER]-(m:Match)
-RETURN p.name AS Player, collect(m.result) AS Wins;
+## 🏗️ Architecture Overview
+
+Vidya Astra combines **multiple cutting-edge technologies**:
+
+```
+┌─────────────────────────────────────────────┐
+│         Interactive D3.js Visualizations    │
+│    (Real-time Knowledge Graph Exploration)  │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│       Spring Boot REST API Layer            │
+│   (Domain-Specific Microservices)           │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│     Spring Data Neo4j ORM Layer             │
+│   (Object-to-Graph Mapping)                 │
+└──────────────────┬──────────────────────────┘
+                   │
+┌──────────────────▼──────────────────────────┐
+│         Neo4j Graph Database                │
+│   (Native Graph Storage & Processing)       │
+└─────────────────────────────────────────────┘
 ```
 
-✅ Useful if you want a “winning players” list.
+---
 
-## Database Schema
+## 🗄️ Graph Database Technologies
 
-The project uses the following graph model:
-- Players (nodes) with properties: name, country, role, jerseyNumber
-- Teams (nodes) with properties: name, country
-- Matches (nodes) with properties: venue, matchDate, matchType, result
-- Relationships:
-  - PLAYS_FOR: Player → Team
-  - PLAYED_MATCH: Team → Match
-  - WINNER: Match → Team
-  - SCORED_IN: Player → Match (with performance statistics)
+Choose the right database for your knowledge graph needs:
 
-## Configuration
+| Database | Best For | Key Advantage | Use Case |
+|----------|----------|---------------|----------|
+| **Neo4j** ⭐ | General purpose, developers | Native graphs, Cypher, rich ecosystem | Fraud detection, recommendations |
+| **Oracle Graph** | Enterprise RDBMS | Converged DB + graph with SQL/PGQ | Financial systems, compliance |
+| **RushDB** | Rapid prototyping | Zero-config, auto-normalization | MVP, AI applications |
+| **TigerGraph** | Large-scale analytics | Turing-complete GSQL, parallel processing | Graph algorithms, analytics |
+| **Gremlin/JanusGraph** | Multi-backend systems | Universal traversal language | Portable graph solutions |
+| **Neptune, ArangoDB** | Specialized needs | GraphQL, multi-model, serverless | Cloud-native applications |
 
-1. Set up environment variables for Neo4j Aura connection:
+---
 
-```powershell
-# Windows PowerShell
-$env:NEO4J_PASSWORD="your-neo4j-password"
+## 📦 Domain Modules
+
+### 🏏 Cricket Analytics
+**Store and analyze cricket matches, players, teams, and performance statistics**
+
+```
+Entities: Teams, Players, Matches, Performance Stats
+Relationships: PLAYS_FOR, PLAYED_MATCH, WINNER, SCORED_IN
+Use Cases: Player selection, team analysis, performance tracking
 ```
 
-```bash
-# Linux/macOS
-export NEO4J_PASSWORD="your-neo4j-password"
+### 🏥 Healthcare Knowledge
+**Medical knowledge graph covering diseases, treatments, medications, and providers**
+
+```
+Entities: Diseases, Treatments, Medications, Providers, Patients
+Relationships: TREATS, HAS_SYMPTOM, PRESCRIBES, SPECIALIZES_IN
+Use Cases: Drug interactions, diagnosis support, treatment recommendations
 ```
 
-The application.properties already contains the connection details for:
-- URI: neo4j+s://bb3147a9.databases.neo4j.io
-- Username: neo4j
-- Database: neo4j
+### 🧘 Yoga & Wellness
+**Yoga poses, practices, health benefits, and wellness knowledge**
 
-## Building and Running
+```
+Entities: Poses, Practices, Benefits, Body Parts, Instructors
+Relationships: TARGETS, BENEFITS, IMPROVES, PRACTICED_BY
+Use Cases: Personalized yoga plans, injury prevention, wellness tracking
+```
+
+### 🛒 Supermarket & E-Commerce
+**Retail knowledge graph with departments, products, brands, and customer preferences**
+
+```
+Entities: Products, Departments, Brands, Suppliers, Customers, Promotions
+Relationships: IN_DEPARTMENT, MANUFACTURED_BY, PURCHASED_BY, ON_PROMOTION
+Use Cases: Product recommendations, inventory management, customer insights
+```
+
+### 🚨 Fraud Detection
+**Fraud detection and prevention with types, methods, indicators, and prevention strategies**
+
+```
+Entities: Fraud Types, Detection Methods, Indicators, Prevention Strategies
+Relationships: DETECTS, INDICATES_FRAUD, PREVENTS, HAS_RISK_LEVEL
+Use Cases: Fraud ring detection, anomaly detection, risk assessment
+```
+
+### 🐦 Bird Migration Ecology
+**Knowledge graph on bird species, migration patterns, habitats, and conservation**
+
+```
+Entities: Bird Species, Migration Routes, Habitats, Seasons, Stopovers
+Relationships: MIGRATES_VIA, HABITATS_IN, ENDANGERED_BY, MONITORED_BY
+Use Cases: Conservation tracking, climate impact analysis, ecology research
+```
+
+### 🍽️ Recipe & Food Pairing ✨ NEW
+**Culinary knowledge graph with recipes, ingredients, cuisines, and dietary requirements**
+
+```
+Entities: Recipes, Ingredients, Cuisines, Chefs, Dietary Requirements, Allergens
+Relationships: USES_INGREDIENT, PART_OF_CUISINE, CREATED_BY, PAIRS_WITH
+Use Cases: Menu planning, allergen warnings, recipe recommendations
+Features: 100% vegetarian, ingredient substitutions, cuisine fusion
+```
+
+### 🎵 Music Recommendation Network ✨ NEW
+**Music knowledge graph with artists, songs, albums, genres, and playlists**
+
+```
+Entities: Artists, Songs, Albums, Genres, Producers, Playlists, Users
+Relationships: CREATES, FEATURES_IN, PRODUCED_BY, IN_GENRE, IN_PLAYLIST
+Use Cases: Music recommendations, collaboration discovery, playlist curation
+Features: Genre evolution, artist networks, personalized recommendations
+```
+
+---
+
+## 🌐 Live Interactive Demos
+
+Explore Vidya Astra's knowledge graphs in action:
+
+| Demo | Description | Link |
+|------|-------------|------|
+| 🏠 **Main Portal** | Interactive introduction to Vidya Astra | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/) |
+| 🚨 **Fraud Detection** | Real-time fraud pattern visualization | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection) |
+| 🔍 **Cycle Detection** | Detect fraud rings and circular patterns | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection) |
+| 🐦 **Bird Migration** | Track global bird migration patterns | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/bird_migration) |
+| 🏥 **Healthcare** | Medical knowledge and drug interactions | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/healthcare) |
+| 🔐 **Cybersecurity** | Security threat and vulnerability mapping | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cyber_security) |
+| 🚂 **Indian Railways** | Railway network and route optimization | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/railgadi) |
+| 🗽 **New York Tourism** | NYC attractions and travel recommendations | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/iloveny) |
+| 🛒 **Supermarket** | Product catalog and customer behavior | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/supermarket) |
+| 🧘 **Yoga** | Poses, benefits, and practice sequences | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/yoga) |
+| 🍽️ **Recipe Graph** | Culinary knowledge and food pairings | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/recipe_graph) |
+| 🎵 **Music Network** | Artist collaborations and recommendations | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/music_network) |
+
+---
+
+## 🔥 Key Features
+
+✨ **Multi-Domain Support** - 9+ ready-to-use knowledge graph templates
+🔄 **Real-Time Visualization** - Interactive D3.js-powered graph exploration
+🧠 **Intelligent Querying** - Cypher query language for complex relationships
+🚀 **Scalable Architecture** - Spring Boot microservices pattern
+🔐 **Data Safety** - Neo4j Aura cloud-hosted database
+📊 **Rich Analytics** - Pattern detection, cycle detection, recommendations
+🎨 **Beautiful UI** - Modern, responsive web interface with legend and controls
+⚡ **Fast Performance** - Graph database optimized for relationship traversal
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
+- Java 17+
+- Maven 3.8+
+- Neo4j Aura account (or local Neo4j instance)
 
-1. Set up environment variables for Neo4j Aura connection:
+### Installation
 
-```powershell
-# Windows Command Prompt
-set NEO4J_PASSWORD=your-neo4j-password
-
-# Windows PowerShell
-$env:NEO4J_PASSWORD="your-neo4j-password"
+1. **Clone the Repository**
+```bash
+git clone https://github.com/vishalmysore/VidyaAstra.git
+cd VidyaAstra
 ```
 
+2. **Set Environment Variables**
 ```bash
+# Windows
+set NEO4J_PASSWORD=your-neo4j-password
+
 # Linux/macOS
 export NEO4J_PASSWORD="your-neo4j-password"
 ```
 
-The application.properties already contains the connection details for:
-- URI: neo4j+s://bb3147a9.databases.neo4j.io
-- Username: neo4j
-- Database: neo4j
-
-### Build the Project
-
+3. **Build the Project**
 ```bash
 mvn clean install
 ```
 
-### Running Individual Modules
-
-Each module can be run independently by specifying the active profile. Use the `-Dspring.profiles.active=` parameter:
-
-**Cricket Module:**
-```cmd
-set NEO4J_PASSWORD=your-neo4j-password
+4. **Run a Module**
+```bash
+# Cricket Module
 mvn spring-boot:run -Dspring.profiles.active=cricket
-```
 
-**Healthcare Module (HC):**
-```cmd
-set NEO4J_PASSWORD=your-neo4j-password
+# Healthcare Module
 mvn spring-boot:run -Dspring.profiles.active=hc
-```
 
-**Yoga Module:**
-```cmd
-set NEO4J_PASSWORD=your-neo4j-password
-mvn spring-boot:run -Dspring.profiles.active=yoga
-```
-
-**Supermarket Module (Supermart):**
-```cmd
-set NEO4J_PASSWORD=your-neo4j-password
-mvn spring-boot:run -Dspring.profiles.active=supermart
-```
-
-**Fraud Detection Module (FD):**
-```cmd
-set NEO4J_PASSWORD=your-neo4j-password
+# Fraud Detection
 mvn spring-boot:run -Dspring.profiles.active=fd
 ```
 
-For Linux/macOS, use `export` instead of `set`.
+---
 
-### Batch Scripts (Windows)
+## 📚 Neo4j Cypher Queries
 
-You can create batch files for quick execution. For example, `run-hc.bat`:
+### Cricket Module Examples
 
-```batch
-@echo off
-set NEO4J_PASSWORD=your-neo4j-password
-mvn spring-boot:run -Dspring.profiles.active=hc
-pause
+**1️⃣ List all teams and their players**
+```cypher
+MATCH (t:Team)<-[r:PLAYS_FOR]-(p:Player)
+RETURN t.name, collect(p.name) AS Players;
 ```
 
-Then simply run:
-```cmd
-run-hc.bat
+**2️⃣ Teams ranked by wins**
+```cypher
+MATCH (m:Match)-[:WINNER]->(t:Team)
+RETURN t.name AS Team, count(m) AS Wins
+ORDER BY Wins DESC;
 ```
 
-The application will:
-- Connect to Neo4j database
-- Create the graph schema
-- Load sample cricket match data (through CricketDataLoader)
+**3️⃣ Players by role**
+```cypher
+MATCH (p:Player)
+RETURN p.role, collect(p.name) AS Players;
+```
 
-## Available Queries
+**4️⃣ Matches between specific teams**
+```cypher
+MATCH (m:Match)-[:TEAM_1|TEAM_2]->(t:Team {name: "India"})
+RETURN m.matchDate, m.venue, m.result;
+```
 
-The application supports various queries through repository interfaces:
+### Fraud Detection Examples
 
-### Player Queries
-- Find players by team
-- Find players by country
-- Find players who won Man of the Match
+**1️⃣ Find fraud rings (cycles)**
+```cypher
+MATCH (n)-[r*]->(n)
+WHERE length(r) > 1
+RETURN n, r;
+```
 
-### Team Queries
-- Find teams by number of wins
-- Find teams by matches played
-- Find team by name
+**2️⃣ High-risk transactions**
+```cypher
+MATCH (f:FraudType)-[:HAS_INDICATOR]->(i:Indicator {riskScore: "High"})
+RETURN f.name, i.pattern;
+```
 
-### Match Queries
-- Find matches by type (T20, ODI, Test)
-- Find matches by venue
-- Find matches won by a specific team
-- Find matches between dates
+**3️⃣ Detection method effectiveness**
+```cypher
+MATCH (d:DetectionMethod)-[:DETECTS]->(f:FraudType)
+RETURN d.name, d.accuracy, count(f) AS FraudTypesDetected
+ORDER BY d.accuracy DESC;
+```
 
-## Sample Data
+---
 
-The application includes a data loader (`CricketDataLoader.java`) that populates the database with sample data including:
-- Teams (India, Australia)
-- Players (Virat Kohli, Rohit Sharma, Steve Smith, Pat Cummins)
-- A sample match between India and Australia
+## 🏗️ Database Schema
 
-## Testing
+### Node Labels
+- `Team`, `Player`, `Match` (Cricket)
+- `Disease`, `Medicine`, `Treatment` (Healthcare)
+- `Pose`, `Practice`, `Benefit` (Yoga)
+- `Product`, `Department`, `Brand` (Supermarket)
+- `FraudType`, `DetectionMethod`, `Indicator` (Fraud Detection)
+- `Recipe`, `Ingredient`, `Cuisine` (Recipes)
+- `Artist`, `Song`, `Album`, `Genre` (Music)
 
-To run the tests:
+### Relationship Types
+- `PLAYS_FOR`, `PLAYED_MATCH`, `WINNER` (Cricket)
+- `HAS_DIAGNOSIS`, `TREATS`, `PRESCRIBES` (Healthcare)
+- `TARGETS`, `BENEFITS`, `IMPROVES` (Yoga)
+- `USES_INGREDIENT`, `PART_OF_CUISINE`, `PAIRS_WITH` (Recipes)
+- `CREATES`, `FEATURES_IN`, `IN_GENRE` (Music)
+
+---
+
+## ⚙️ Configuration
+
+### application.properties
+```properties
+spring.neo4j.uri=neo4j+s://your-instance.databases.neo4j.io
+spring.neo4j.authentication.username=neo4j
+spring.neo4j.authentication.password=${NEO4J_PASSWORD}
+spring.neo4j.database=neo4j
+```
+
+---
+
+## 🧪 Testing
+
+Run the complete test suite:
 ```bash
 mvn test
 ```
 
-## Troubleshooting
+Test specific module:
+```bash
+mvn test -Dtest=CricketServiceTest
+mvn test -Dtest=HealthcareServiceTest
+mvn test -Dtest=CycleDetectionServiceTest
+```
 
-1. **Connection Issues**
-   - Verify your Neo4j password is correctly set in environment variables
-   - Check if the Neo4j Aura instance is running
-   - Verify network connectivity to Neo4j Aura
+---
 
-2. **Build Issues**
-   - Ensure Java 17 is installed and JAVA_HOME is properly set
-   - Clear Maven cache if needed: `mvn clean`
+## 🐛 Troubleshooting
 
-## Contributing
+| Issue | Solution |
+|-------|----------|
+| **Neo4j Connection Failed** | Verify NEO4J_PASSWORD is set and Neo4j instance is running |
+| **Build Fails** | Clear cache: `mvn clean`, verify Java 17+, check internet connection |
+| **Graph Not Displaying** | Check browser console for errors, verify all node references exist |
+| **Slow Queries** | Add indexes to frequently queried properties in Neo4j |
 
-Feel free to submit issues and enhancement requests.
+---
 
-## License
+## 📈 Performance Optimization
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### Neo4j Best Practices
+```cypher
+-- Create indexes for frequently queried properties
+CREATE INDEX ON :Player(name);
+CREATE INDEX ON :Team(name);
+CREATE INDEX ON :Disease(name);
+
+-- Use EXPLAIN to analyze query performance
+EXPLAIN MATCH (p:Player)-[:PLAYS_FOR]->(t:Team) RETURN p, t;
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Vishal Mysore**  
+Knowledge Graph Architect & Graph Database Enthusiast
+
+- GitHub: [@vishalmysore](https://github.com/vishalmysore)
+- Project: [Vidya Astra on GitHub](https://github.com/vishalmysore/VidyaAstra)
+
+---
+
+## 🙏 Acknowledgments
+
+- **Neo4j** - For the amazing graph database platform
+- **Spring Boot** - For the powerful framework
+- **D3.js** - For incredible data visualization
+- **Open Source Community** - For endless inspiration
+
+---
+
+## 📞 Support
+
+- 📖 **Documentation**: Check the `/docs` folder
+- 🐛 **Issues**: Report bugs on [GitHub Issues](https://github.com/vishalmysore/VidyaAstra/issues)
+- 💬 **Discussions**: Join our community discussions
+- 📧 **Email**: Contact for enterprise support
+
+---
+
+<div align="center">
+
+### ⭐ If Vidya Astra helps you, please star the repository!
+
+**"Knowledge is Power. Graph Databases are Faster."** 🚀
+
+</div>
+
