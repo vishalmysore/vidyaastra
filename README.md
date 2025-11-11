@@ -1,6 +1,6 @@
-# 🚀 Vidya Astra - Knowledge Weapon
+# 🚀 Vidya Astra - Knowledge Toolkit
 
-> **"Vidya Astra: The Weapon of Knowledge"** - Powerful, scalable knowledge graphs for the modern era
+> **"Vidya Astra: The Toolkit of Knowledge"** - Powerful, scalable knowledge graphs for the modern era
 
 ![Vidya Astra Architecture](reference.jpg)
 
