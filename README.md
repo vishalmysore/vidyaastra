@@ -25,6 +25,10 @@ https://vishalmysore.github.io/vidyaastra/graphs/healthcare - Healthcare Graph D
 https://vishalmysore.github.io/vidyaastra/graphs/cyber_security - Cyber Security Graph Demo
 https://vishalmysore.github.io/vidyaastra/graphs/railgadi - Indian Railways Graph Demo
 https://vishalmysore.github.io/vidyaastra/graphs/iloveny - New York Tourism Graph Demo
+https://vishalmysore.github.io/vidyaastra/graphs/supermarket - Supermarket Graph Demo  
+https://vishalmysore.github.io/vidyaastra/graphs/yoga - Yoga Graph Demo  
+https://vishalmysore.github.io/vidyaastra/graphs/reciipe_graph - Recipe Knowledge Graph Demo
+https://vishalmysore.github.io/vidyaastra/graphs/music_network - Music Network Graph Demo
 
 ## Module Descriptions
 

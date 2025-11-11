@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra Music Recommendation Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0033 0%, #330066 50%, #4d0099 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.3);
+        }
+
+        .node text {
+            font-size: 11px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(150, 100, 255, 0.7);
+            stroke-width: 2px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link:hover {
+            stroke: rgba(200, 150, 255, 1);
+            stroke-width: 3px;
+        }
+
+        .link-label {
+            font-size: 10px;
+            font-weight: bold;
+            fill: #d946ef;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 320px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #d946ef;
+            font-size: 1.6em;
+        }
+
+        .controls h3 {
+            font-size: 1em;
+            color: #d946ef;
+            margin: 10px 0 5px 0;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #d946ef, #a855f7);
+            color: #1a0033;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: linear-gradient(135deg, #a855f7, #d946ef);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(217, 70, 239, 0.4);
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 350px;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border: 2px solid #d946ef;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #d946ef;
+            font-size: 1.3em;
+        }
+
+        .info-panel .category-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .info-panel .details {
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border-radius: 12px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .legend h3 {
+            margin: 0 0 12px 0;
+            color: #d946ef;
+            font-size: 1.2em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>🎵 Music Network</h2>
+        <h3>Project: Vidya Astra</h3>
+        <p style="font-size: 0.9em; margin-bottom: 15px;">Discover music collaborations and recommendations. Drag nodes and click for details.</p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+    </div>
+
+    <div class="legend">
+        <h3>🎨 Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ec4899;"></div>Artist</div>
+        <div class="legend-item"><div class="legend-color" style="background: #06b6d4;"></div>Song</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f59e0b;"></div>Album</div>
+        <div class="legend-item"><div class="legend-color" style="background: #8b5cf6;"></div>Genre</div>
+        <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div>Producer</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f97316;"></div>Playlist</div>
+        <div class="legend-item"><div class="legend-color" style="background: #14b8a6;"></div>User</div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <div id="categoryTag" class="category-tag"></div>
+        <div class="details" id="nodeDescription"></div>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Artists
+            {id: "The Weeknd", type: "artist", category: "Artist", size: 22, description: "Canadian singer-songwriter. Known for R&B and pop. Grammy award winner. Collaborates with many producers."},
+            {id: "Taylor Swift", type: "artist", category: "Artist", size: 22, description: "American pop-country artist. Known for storytelling and re-recording albums. Top streaming artist."},
+            {id: "Bad Bunny", type: "artist", category: "Artist", size: 21, description: "Puerto Rican rapper and singer. Pioneer of Latin trap and reggaeton. Global sensation."},
+            {id: "Ariana Grande", type: "artist", category: "Artist", size: 21, description: "American pop singer. Known for high vocal range and vocal arrangements. Hit maker."},
+            {id: "Drake", type: "artist", category: "Artist", size: 21, description: "Canadian rapper. Known for rap-singing hybrid style. Most streamed artist globally."},
+            {id: "Dua Lipa", type: "artist", category: "Artist", size: 20, description: "British-Kosovar pop singer. Known for danceable pop hits. Grammy award winner."},
+            {id: "Post Malone", type: "artist", category: "Artist", size: 20, description: "American rapper-singer. Known for genre-blending approach. Multi-platinum artist."},
+            {id: "Billie Eilish", type: "artist", category: "Artist", size: 19, description: "American singer-songwriter. Known for whisper-singing and dark pop. Young superstar."},
+            {id: "Ed Sheeran", type: "artist", category: "Artist", size: 20, description: "British singer-songwriter. Known for acoustic-pop ballads. Hit songwriter and composer."},
+            {id: "Weeknd (Remix)", type: "artist", category: "Artist", size: 18, description: "The Weeknd remix project with multiple producers."},
+
+            // Songs
+            {id: "Blinding Lights", type: "song", category: "Song", size: 18, description: "The Weeknd's mega-hit. Synth-pop style. Over 4 billion streams. Grammy winner."},
+            {id: "Levitating", type: "song", category: "Song", size: 18, description: "Dua Lipa disco-pop hit. Features DaBaby. Multi-platinum worldwide."},
+            {id: "Anti-Hero", type: "song", category: "Song", size: 17, description: "Taylor Swift from Midnights. Dark pop introspection. Grammy winner."},
+            {id: "Un x Cien", type: "song", category: "Song", size: 17, description: "Bad Bunny reggaeton hit. Smooth beats. Cultural phenomenon."},
+            {id: "One Dance", type: "song", category: "Song", size: 17, description: "Drake featuring Wizkid & Kyla. Dance-pop crossover. Billboard chart topper."},
+            {id: "God's Plan", type: "song", category: "Song", size: 16, description: "Drake hip-hop anthem. Charity theme. Over 3 billion streams."},
+            {id: "thank u, next", type: "song", category: "Song", size: 16, description: "Ariana Grande breakup anthem. Sampling multiple songs. Cultural reference."},
+            {id: "Industry Baby", type: "song", category: "Song", size: 16, description: "Lil Nas X featuring Jack Harlow. Hip-hop pop collaboration."},
+            {id: "Bad Habit", type: "song", category: "Song", size: 15, description: "Steve Lacy indie-pop hit. Gen-Z anthem. TikTok viral."},
+            {id: "As It Was", type: "song", category: "Song", size: 16, description: "Harry Styles pop hit. Nostalgic 80s vibes. Multiple Grammy nominations."},
+            {id: "Save Your Tears", type: "song", category: "Song", size: 15, description: "The Weeknd & Ariana Grande. R&B pop duet. Grammy winner."},
+
+            // Albums
+            {id: "After Hours", type: "album", category: "Album", size: 17, description: "The Weeknd's album. Dark R&B aesthetic. Multiple Grammy wins. Iconic visual era."},
+            {id: "Midnights", type: "album", category: "Album", size: 17, description: "Taylor Swift album. Dark storytelling. Multiple Grammy wins. Surprise album format."},
+            {id: "30", type: "album", category: "Album", size: 16, description: "Adele album. Breakup themes. Grammy winner. Emotional depth."},
+            {id: "Eternal Sunshine", type: "album", category: "Album", size: 16, description: "Ariana Grande pop album. Experimental sounds. Marks new era."},
+            {id: "Certified Lover Boy", type: "album", category: "Album", size: 16, description: "Drake hip-hop album. Many features. Chart success. Collaborative project."},
+            {id: "Future Nostalgia", type: "album", category: "Album", size: 16, description: "Dua Lipa disco-pop album. Dance-oriented. Club banger vibes."},
+            {id: "Hollywood's Bleeding", type: "album", category: "Album", size: 15, description: "Post Malone hip-hop album. Introspective lyrics. Commercial success."},
+            {id: "When We All Fall Asleep", type: "album", category: "Album", size: 15, description: "Billie Eilish debut album. Whisper vocals. Young artist breakthrough."},
+
+            // Genres
+            {id: "Pop", type: "genre", category: "Genre", size: 17, description: "Popular music genre. Catchy melodies. Radio-friendly. Mass appeal."},
+            {id: "Hip-Hop", type: "genre", category: "Genre", size: 17, description: "Rap and hip-hop music. Rhythmic speech. Street culture roots."},
+            {id: "R&B", type: "genre", category: "Genre", size: 16, description: "Rhythm and blues. Smooth vocals. Soul influences. Contemporary variations."},
+            {id: "Reggaeton", type: "genre", category: "Genre", size: 15, description: "Latin urban music. Trap-influenced. Dance beats. Global phenomenon."},
+            {id: "Indie Pop", type: "genre", category: "Genre", size: 14, description: "Independent pop music. Experimental sounds. DIY ethos. Artistic freedom."},
+            {id: "Disco", type: "genre", category: "Genre", size: 14, description: "Dance music. Groovy beats. Retro revival. Euphoric energy."},
+            {id: "Dark Pop", type: "genre", category: "Genre", size: 13, description: "Moody pop music. Introspective lyrics. Atmospheric production."},
+
+            // Producers
+            {id: "Max Martin", type: "producer", category: "Producer", size: 16, description: "Swedish pop producer. Created countless hits. 30+ Grammy wins. Industry legend."},
+            {id: "Oscar Holter", type: "producer", category: "Producer", size: 15, description: "Producer for The Weeknd. Dark synth-pop specialist. Grammy winner."},
+            {id: "Jack Antonoff", type: "producer", category: "Producer", size: 15, description: "Producer for Taylor Swift and Lana Del Rey. Alternative pop sounds. Multi-talented musician."},
+            {id: "Taura Stinson", type: "producer", category: "Producer", size: 14, description: "Producer for reggaeton and Latin music. Trap beats. Cultural innovator."},
+            {id: "Metro Boomin", type: "producer", category: "Producer", size: 15, description: "Hip-hop producer. Hi-Tek beats. Drake collaborator. Trap pioneer."},
+            {id: "Billie Eilish & Finneas", type: "producer", category: "Producer", size: 14, description: "Sibling producer team. Minimalist production. Bedroom pop pioneers."},
+
+            // Playlists
+            {id: "Sad Vibes", type: "playlist", category: "Playlist", size: 15, description: "Melancholic songs for introspection. Breakup anthems. Rainy day playlist."},
+            {id: "Dance Hits", type: "playlist", category: "Playlist", size: 15, description: "High-energy dance tracks. Club bangers. Summer vibes."},
+            {id: "Chill Vibes", type: "playlist", category: "Playlist", size: 14, description: "Relaxing background music. Study playlist. Lo-fi beats."},
+            {id: "Hip-Hop Classics", type: "playlist", category: "Playlist", size: 14, description: "Essential hip-hop tracks. Rap legends. Cultural impact songs."},
+            {id: "Pop Bangers", type: "playlist", category: "Playlist", size: 14, description: "Top pop hits. Chart toppers. Radio-friendly tracks."},
+            {id: "Latin Party", type: "playlist", category: "Playlist", size: 13, description: "Latin music hits. Reggaeton and trap latino. Party playlist."},
+
+            // Users
+            {id: "User_Emma", type: "user", category: "User", size: 13, description: "Listener aged 22. Likes pop and indie. Creates mood playlists."},
+            {id: "User_James", type: "user", category: "User", size: 13, description: "Listener aged 28. Hip-hop enthusiast. Deep catalog explorer."},
+            {id: "User_Sofia", type: "user", category: "User", size: 13, description: "Listener aged 19. Gen-Z pop fan. TikTok discovery platform user."},
+            {id: "User_Marcus", type: "user", category: "User", size: 12, description: "Listener aged 35. Jazz and R&B lover. Appreciates smooth vocals."}
+        ];
+
+        const links = [
+            // Artist to Song relationships
+            {source: "The Weeknd", target: "Blinding Lights", label: "creates"},
+            {source: "The Weeknd", target: "Save Your Tears", label: "creates"},
+            {source: "Dua Lipa", target: "Levitating", label: "creates"},
+            {source: "Taylor Swift", target: "Anti-Hero", label: "creates"},
+            {source: "Bad Bunny", target: "Un x Cien", label: "creates"},
+            {source: "Drake", target: "One Dance", label: "creates"},
+            {source: "Drake", target: "God's Plan", label: "creates"},
+            {source: "Ariana Grande", target: "thank u, next", label: "creates"},
+            {source: "Ariana Grande", target: "Save Your Tears", label: "features in"},
+            {source: "Ed Sheeran", target: "As It Was", label: "creates"},
+            {source: "The Weeknd", target: "Industry Baby", label: "features in"},
+            {source: "Post Malone", target: "Bad Habit", label: "features in"},
+
+            // Song to Album relationships
+            {source: "Blinding Lights", target: "After Hours", label: "from"},
+            {source: "Save Your Tears", target: "After Hours", label: "from"},
+            {source: "Anti-Hero", target: "Midnights", label: "from"},
+            {source: "One Dance", target: "Certified Lover Boy", label: "from"},
+            {source: "God's Plan", target: "Certified Lover Boy", label: "from"},
+            {source: "thank u, next", target: "Eternal Sunshine", label: "from"},
+            {source: "Levitating", target: "Future Nostalgia", label: "from"},
+            {source: "As It Was", target: "When We All Fall Asleep", label: "from (remix)"},
+
+            // Artist to Album relationships
+            {source: "The Weeknd", target: "After Hours", label: "releases"},
+            {source: "Taylor Swift", target: "Midnights", label: "releases"},
+            {source: "Ariana Grande", target: "Eternal Sunshine", label: "releases"},
+            {source: "Drake", target: "Certified Lover Boy", label: "releases"},
+            {source: "Dua Lipa", target: "Future Nostalgia", label: "releases"},
+            {source: "Post Malone", target: "Hollywood's Bleeding", label: "releases"},
+            {source: "Billie Eilish", target: "When We All Fall Asleep", label: "releases"},
+
+            // Artist to Genre relationships
+            {source: "The Weeknd", target: "R&B", label: "performs"},
+            {source: "The Weeknd", target: "Pop", label: "performs"},
+            {source: "The Weeknd", target: "Dark Pop", label: "pioneered"},
+            {source: "Taylor Swift", target: "Pop", label: "performs"},
+            {source: "Drake", target: "Hip-Hop", label: "performs"},
+            {source: "Drake", target: "R&B", label: "blends"},
+            {source: "Bad Bunny", target: "Reggaeton", label: "performs"},
+            {source: "Ariana Grande", target: "Pop", label: "performs"},
+            {source: "Ariana Grande", target: "R&B", label: "influences"},
+            {source: "Dua Lipa", target: "Pop", label: "performs"},
+            {source: "Dua Lipa", target: "Disco", label: "revives"},
+            {source: "Billie Eilish", target: "Dark Pop", label: "pioneers"},
+            {source: "Billie Eilish", target: "Indie Pop", label: "explores"},
+
+            // Producer to Song relationships
+            {source: "Max Martin", target: "Anti-Hero", label: "produces"},
+            {source: "Oscar Holter", target: "Blinding Lights", label: "produces"},
+            {source: "Jack Antonoff", target: "Anti-Hero", label: "co-produces"},
+            {source: "Metro Boomin", target: "God's Plan", label: "produces"},
+            {source: "Billie Eilish & Finneas", target: "Bad Habit", label: "produces"},
+            {source: "Oscar Holter", target: "Save Your Tears", label: "produces"},
+
+            // Producer to Artist relationships
+            {source: "Max Martin", target: "The Weeknd", label: "collaborates with"},
+            {source: "Max Martin", target: "Taylor Swift", label: "works with"},
+            {source: "Jack Antonoff", target: "Taylor Swift", label: "works with"},
+            {source: "Oscar Holter", target: "The Weeknd", label: "regular producer"},
+            {source: "Metro Boomin", target: "Drake", label: "collaborates with"},
+            {source: "Billie Eilish & Finneas", target: "Billie Eilish", label: "produces"},
+
+            // Song to Genre relationships
+            {source: "Blinding Lights", target: "Synth Pop", label: "is"},
+            {source: "Anti-Hero", target: "Dark Pop", label: "is"},
+            {source: "One Dance", target: "Hip-Hop", label: "blends"},
+            {source: "One Dance", target: "Pop", label: "blends"},
+            {source: "thank u, next", target: "Pop", label: "is"},
+            {source: "Un x Cien", target: "Reggaeton", label: "is"},
+            {source: "Levitating", target: "Disco", label: "revives"},
+            {source: "Bad Habit", target: "Indie Pop", label: "is"},
+
+            // Playlist to Song relationships
+            {source: "Sad Vibes", target: "Anti-Hero", label: "includes"},
+            {source: "Sad Vibes", target: "Save Your Tears", label: "includes"},
+            {source: "Dance Hits", target: "Levitating", label: "includes"},
+            {source: "Dance Hits", target: "One Dance", label: "includes"},
+            {source: "Pop Bangers", target: "Blinding Lights", label: "includes"},
+            {source: "Pop Bangers", target: "thank u, next", label: "includes"},
+            {source: "Hip-Hop Classics", target: "God's Plan", label: "includes"},
+            {source: "Latin Party", target: "Un x Cien", label: "includes"},
+            {source: "Chill Vibes", target: "As It Was", label: "includes"},
+
+            // Playlist to Genre relationships
+            {source: "Dance Hits", target: "Disco", label: "focused on"},
+            {source: "Hip-Hop Classics", target: "Hip-Hop", label: "focused on"},
+            {source: "Latin Party", target: "Reggaeton", label: "focused on"},
+            {source: "Sad Vibes", target: "Dark Pop", label: "features"},
+            {source: "Pop Bangers", target: "Pop", label: "focused on"},
+
+            // User to Playlist relationships
+            {source: "User_Emma", target: "Sad Vibes", label: "creates"},
+            {source: "User_Emma", target: "Pop Bangers", label: "follows"},
+            {source: "User_James", target: "Hip-Hop Classics", label: "creates"},
+            {source: "User_Sofia", target: "Dance Hits", label: "follows"},
+            {source: "User_Sofia", target: "Pop Bangers", label: "follows"},
+            {source: "User_Marcus", target: "Chill Vibes", label: "creates"},
+
+            // User to Artist relationships (for recommendations)
+            {source: "User_Emma", target: "Taylor Swift", label: "listens to"},
+            {source: "User_Emma", target: "Billie Eilish", label: "listens to"},
+            {source: "User_James", target: "Drake", label: "listens to"},
+            {source: "User_James", target: "Post Malone", label: "listens to"},
+            {source: "User_Sofia", target: "Ariana Grande", label: "listens to"},
+            {source: "User_Sofia", target: "The Weeknd", label: "listens to"},
+            {source: "User_Marcus", target: "Ed Sheeran", label: "listens to"},
+            {source: "User_Marcus", target: "Dua Lipa", label: "listens to"},
+
+            // Collaboration/Feature relationships
+            {source: "The Weeknd", target: "Ariana Grande", label: "collaborates"},
+            {source: "Drake", target: "Bad Bunny", label: "collaborates"},
+            {source: "Taylor Swift", target: "The Weeknd", label: "collaborates"},
+            {source: "Post Malone", target: "The Weeknd", label: "collaborates"},
+
+            // Artist to Artist collaborations
+            {source: "Drake", target: "Post Malone", label: "collabs with"},
+            {source: "The Weeknd", target: "Ariana Grande", label: "duets"},
+            {source: "Dua Lipa", target: "The Weeknd", label: "remixes with"}
+        ];
+
+        const categoryColors = {
+            "Artist": "#ec4899",
+            "Song": "#06b6d4",
+            "Album": "#f59e0b",
+            "Genre": "#8b5cf6",
+            "Producer": "#10b981",
+            "Playlist": "#f97316",
+            "User": "#14b8a6"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(150, 100, 255, 0.9)")
+            .attr("stroke", "rgba(150, 100, 255, 0.9)");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            const categoryTag = document.getElementById("categoryTag");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+            categoryTag.textContent = d.category;
+            categoryTag.style.background = categoryColors[d.category];
+            categoryTag.style.color = "#fff";
+            panel.style.display = "block";
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.75 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>
+

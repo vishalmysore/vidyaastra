@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra Recipe & Food Pairing Knowledge Graph</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #3a6b4a 100%);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: brightness(1.3);
+        }
+
+        .node text {
+            font-size: 11px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 100, 0.7);
+            stroke-width: 2px;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .link:hover {
+            stroke: rgba(0, 255, 100, 1);
+            stroke-width: 3px;
+        }
+
+        .link-label {
+            font-size: 10px;
+            font-weight: bold;
+            fill: #00ff64;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 320px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .controls h2 {
+            margin: 0 0 15px 0;
+            color: #00ff64;
+            font-size: 1.6em;
+        }
+
+        .controls h3 {
+            font-size: 1em;
+            color: #00ff64;
+            margin: 10px 0 5px 0;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #00ff64, #00b84a);
+            color: #1a472a;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: linear-gradient(135deg, #00b84a, #00ff64);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,255,100,0.4);
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fff;
+            max-width: 350px;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border: 2px solid #00ff64;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #00ff64;
+            font-size: 1.3em;
+        }
+
+        .info-panel .category-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .info-panel .details {
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px;
+            border-radius: 12px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .legend h3 {
+            margin: 0 0 12px 0;
+            color: #00ff64;
+            font-size: 1.2em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h2>🍽️ Recipe & Food Graph</h2>
+        <h3>Project: Vidya Astra</h3>
+        <p style="font-size: 0.9em; margin-bottom: 15px;">Explore recipes, ingredients, and food pairings. Drag nodes and click for details.</p>
+        <button onclick="resetSimulation()">Reset Layout</button>
+        <button onclick="zoomToFit()">Zoom to Fit</button>
+    </div>
+
+    <div class="legend">
+        <h3>🎨 Categories</h3>
+        <div class="legend-item"><div class="legend-color" style="background: #ff6b9d;"></div>Recipe</div>
+        <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Ingredient</div>
+        <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Cuisine</div>
+        <div class="legend-item"><div class="legend-color" style="background: #95e1d3;"></div>Chef</div>
+        <div class="legend-item"><div class="legend-color" style="background: #a8dadc;"></div>Dietary Requirement</div>
+        <div class="legend-item"><div class="legend-color" style="background: #f4a261;"></div>Allergen</div>
+        <div class="legend-item"><div class="legend-color" style="background: #e76f51;"></div>Flavor Profile</div>
+    </div>
+
+    <div class="info-panel" id="infoPanel">
+        <h3 id="nodeTitle"></h3>
+        <div id="categoryTag" class="category-tag"></div>
+        <div class="details" id="nodeDescription"></div>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        const nodes = [
+            // Recipes
+            {id: "Pasta Carbonara", type: "recipe", category: "Recipe", size: 22, description: "Classic Roman pasta with eggs, cheese, and pancetta. Quick weeknight dinner. Vegetarian option available."},
+            {id: "Margherita Pizza", type: "recipe", category: "Recipe", size: 21, description: "Traditional Italian pizza with tomato, mozzarella, and basil. Simple yet elegant. Contains gluten."},
+            {id: "Thai Green Curry", type: "recipe", category: "Recipe", size: 20, description: "Spicy Thai dish with coconut milk and green chilies. Gluten-free option available. Peanut-free."},
+            {id: "Caesar Salad", type: "recipe", category: "Recipe", size: 19, description: "Fresh romaine lettuce with parmesan and croutons. Can be made dairy-free. Contains anchovies in dressing."},
+            {id: "Sushi Roll Assortment", type: "recipe", category: "Recipe", size: 20, description: "Assorted fresh sushi with rice and nori. Gluten-free options available. Raw fish present."},
+            {id: "Vegetable Stir-fry", type: "recipe", category: "Recipe", size: 18, description: "Quick asian-inspired dish with mixed vegetables and ginger. Vegan and gluten-free friendly."},
+            {id: "Beef Tacos", type: "recipe", category: "Recipe", size: 19, description: "Mexican street tacos with seasoned ground beef. Can use corn tortillas for gluten-free."},
+            {id: "Chocolate Lava Cake", type: "recipe", category: "Recipe", size: 18, description: "Decadent dessert with molten chocolate center. Contains dairy and eggs. Nut-free version available."},
+            {id: "Butter Chicken", type: "recipe", category: "Recipe", size: 19, description: "Creamy Indian dish with tender chicken in tomato sauce. Contains dairy and spices. Medium heat level."},
+            {id: "Caprese Salad", type: "recipe", category: "Recipe", size: 17, description: "Simple Italian salad with fresh tomatoes, mozzarella, basil. Contains dairy. Quick to prepare."},
+
+            // Ingredients
+            {id: "Eggs", type: "ingredient", category: "Ingredient", size: 16, description: "Versatile ingredient, rich in protein. Allergen: May cause allergic reactions."},
+            {id: "Pasta", type: "ingredient", category: "Ingredient", size: 16, description: "Carbohydrate base for many dishes. Contain gluten (unless whole wheat). Store dry."},
+            {id: "Cheese", type: "ingredient", category: "Ingredient", size: 16, description: "Dairy product, rich in calcium. Allergen: Dairy. Many vegan alternatives available."},
+            {id: "Tomato", type: "ingredient", category: "Ingredient", size: 15, description: "Fresh vegetable, rich in lycopene. Naturally vegan and gluten-free. Base for many sauces."},
+            {id: "Basil", type: "ingredient", category: "Ingredient", size: 14, description: "Fresh herb, aromatic compound. Vegan and gluten-free. Pairs well with tomato."},
+            {id: "Chicken", type: "ingredient", category: "Ingredient", size: 16, description: "Lean protein source. May contain bacteria if undercooked. Dairy-free."},
+            {id: "Rice", type: "ingredient", category: "Ingredient", size: 15, description: "Staple carbohydrate grain. Naturally gluten-free. Contains no major allergens."},
+            {id: "Coconut Milk", type: "ingredient", category: "Ingredient", size: 15, description: "Creamy liquid from coconut. Vegan and gluten-free. Contains coconut allergen."},
+            {id: "Green Chilies", type: "ingredient", category: "Ingredient", size: 14, description: "Spicy ingredient, adds heat. Vegan and gluten-free. May cause digestive upset."},
+            {id: "Lettuce", type: "ingredient", category: "Ingredient", size: 14, description: "Fresh vegetable, low calorie. Vegan and gluten-free. Highly perishable."},
+            {id: "Beef", type: "ingredient", category: "Ingredient", size: 16, description: "Red meat, rich in iron. Gluten-free. May contain saturated fat."},
+            {id: "Chocolate", type: "ingredient", category: "Ingredient", size: 14, description: "Sweet ingredient from cacao beans. Allergen: May contain nuts. Contains caffeine."},
+            {id: "Butter", type: "ingredient", category: "Ingredient", size: 14, description: "Dairy fat for cooking and baking. Contains dairy allergen. High in saturated fat."},
+            {id: "Soy Sauce", type: "ingredient", category: "Ingredient", size: 13, description: "Asian condiment made from soybeans. Contains gluten and allergen: soy."},
+            {id: "Nori", type: "ingredient", category: "Ingredient", size: 13, description: "Dried seaweed sheets for sushi. Gluten-free and vegan. Contains iodine."},
+
+            // Cuisines
+            {id: "Italian", type: "cuisine", category: "Cuisine", size: 18, description: "Mediterranean cuisine known for pasta, olive oil, fresh herbs, and cheese."},
+            {id: "Thai", type: "cuisine", category: "Cuisine", size: 17, description: "Southeast Asian cuisine with balance of sweet, sour, salty, spicy flavors."},
+            {id: "Mexican", type: "cuisine", category: "Cuisine", size: 17, description: "Central American cuisine with corn, beans, chili peppers, and fresh ingredients."},
+            {id: "Japanese", type: "cuisine", category: "Cuisine", size: 17, description: "East Asian cuisine featuring rice, fresh fish, and minimalist presentation."},
+            {id: "Indian", type: "cuisine", category: "Cuisine", size: 17, description: "South Asian cuisine rich in spices, curries, and layered flavors."},
+            {id: "Asian Fusion", type: "cuisine", category: "Cuisine", size: 15, description: "Modern blend of Asian culinary traditions. Contemporary and creative."},
+
+            // Chefs
+            {id: "Chef Marco", type: "chef", category: "Chef", size: 16, description: "Italian chef specializing in traditional recipes. 20 years experience. Michelin-starred restaurant."},
+            {id: "Chef Anita", type: "chef", category: "Chef", size: 15, description: "Indian chef known for authentic curries and spice blending. Award-winning. Vegan specialist."},
+            {id: "Chef Tomás", type: "chef", category: "Chef", size: 15, description: "Mexican chef passionate about street food and traditional recipes. Farm-to-table approach."},
+            {id: "Chef Yuki", type: "chef", category: "Chef", size: 15, description: "Japanese sushi master with 25 years experience. Trained in Tokyo. Precision-focused."},
+            {id: "Chef Alex", type: "chef", category: "Chef", size: 14, description: "Fusion cuisine specialist combining Asian and Western techniques. Health-conscious cooking."},
+
+            // Dietary Requirements
+            {id: "Vegetarian", type: "dietary", category: "Dietary Requirement", size: 15, description: "No meat, poultry, or fish. Includes dairy and eggs."},
+            {id: "Vegan", type: "dietary", category: "Dietary Requirement", size: 15, description: "No animal products whatsoever. Plant-based only."},
+            {id: "Gluten-Free", type: "dietary", category: "Dietary Requirement", size: 15, description: "No wheat, barley, or rye. Safe for celiac disease."},
+            {id: "Dairy-Free", type: "dietary", category: "Dietary Requirement", size: 14, description: "No milk products or cheese. Often for lactose intolerance."},
+            {id: "Low-Carb", type: "dietary", category: "Dietary Requirement", size: 14, description: "Reduced carbohydrate content. Often for weight management or blood sugar control."},
+            {id: "High-Protein", type: "dietary", category: "Dietary Requirement", size: 14, description: "Elevated protein content. Popular for fitness and muscle building."},
+
+            // Allergens
+            {id: "Peanut Allergy", type: "allergen", category: "Allergen", size: 14, description: "Severe allergic reaction to peanuts. Can be life-threatening. Requires emergency care."},
+            {id: "Tree Nut Allergy", type: "allergen", category: "Allergen", size: 14, description: "Allergy to nuts like almonds, cashews, walnuts. Can cause anaphylaxis."},
+            {id: "Shellfish Allergy", type: "allergen", category: "Allergen", size: 13, description: "Reaction to crustaceans and mollusks. Can be severe."},
+            {id: "Dairy Allergy", type: "allergen", category: "Allergen", size: 13, description: "Allergic reaction to milk proteins. Different from lactose intolerance."},
+            {id: "Gluten Sensitivity", type: "allergen", category: "Allergen", size: 13, description: "Celiac disease or non-celiac gluten sensitivity. Intestinal inflammation possible."},
+
+            // Flavor Profiles
+            {id: "Sweet", type: "flavor", category: "Flavor Profile", size: 13, description: "Sugar-based flavors, desserts, and glazes."},
+            {id: "Spicy", type: "flavor", category: "Flavor Profile", size: 13, description: "Heat from chili peppers, black pepper, ginger."},
+            {id: "Savory", type: "flavor", category: "Flavor Profile", size: 13, description: "Umami-rich flavors from soy, mushrooms, aged cheese."},
+            {id: "Tangy", type: "flavor", category: "Flavor Profile", size: 12, description: "Acidic flavors from vinegar, citrus, fermented ingredients."},
+            {id: "Umami", type: "flavor", category: "Flavor Profile", size: 12, description: "Fifth taste - savory, rich, mouth-filling sensation."}
+        ];
+
+        const links = [
+            // Recipe to Ingredient relationships
+            {source: "Pasta Carbonara", target: "Pasta", label: "uses"},
+            {source: "Pasta Carbonara", target: "Eggs", label: "uses"},
+            {source: "Pasta Carbonara", target: "Cheese", label: "uses"},
+            {source: "Pasta Carbonara", target: "Butter", label: "uses"},
+
+            {source: "Margherita Pizza", target: "Tomato", label: "uses"},
+            {source: "Margherita Pizza", target: "Cheese", label: "uses"},
+            {source: "Margherita Pizza", target: "Basil", label: "uses"},
+
+            {source: "Thai Green Curry", target: "Chicken", label: "uses"},
+            {source: "Thai Green Curry", target: "Coconut Milk", label: "uses"},
+            {source: "Thai Green Curry", target: "Green Chilies", label: "uses"},
+            {source: "Thai Green Curry", target: "Rice", label: "pairs with"},
+
+            {source: "Caesar Salad", target: "Lettuce", label: "uses"},
+            {source: "Caesar Salad", target: "Cheese", label: "uses"},
+            {source: "Caesar Salad", target: "Eggs", label: "uses in dressing"},
+
+            {source: "Sushi Roll Assortment", target: "Rice", label: "uses"},
+            {source: "Sushi Roll Assortment", target: "Nori", label: "uses"},
+            {source: "Sushi Roll Assortment", target: "Soy Sauce", label: "accompanies"},
+
+            {source: "Vegetable Stir-fry", target: "Rice", label: "pairs with"},
+            {source: "Vegetable Stir-fry", target: "Soy Sauce", label: "uses"},
+            {source: "Vegetable Stir-fry", target: "Green Chilies", label: "optional"},
+
+            {source: "Beef Tacos", target: "Beef", label: "uses"},
+            {source: "Beef Tacos", target: "Tomato", label: "uses"},
+
+            {source: "Chocolate Lava Cake", target: "Chocolate", label: "uses"},
+            {source: "Chocolate Lava Cake", target: "Eggs", label: "uses"},
+            {source: "Chocolate Lava Cake", target: "Butter", label: "uses"},
+
+            {source: "Butter Chicken", target: "Chicken", label: "uses"},
+            {source: "Butter Chicken", target: "Butter", label: "uses"},
+            {source: "Butter Chicken", target: "Cheese", label: "uses"},
+            {source: "Butter Chicken", target: "Tomato", label: "uses"},
+            {source: "Butter Chicken", target: "Rice", label: "pairs with"},
+
+            {source: "Caprese Salad", target: "Tomato", label: "uses"},
+            {source: "Caprese Salad", target: "Cheese", label: "uses"},
+            {source: "Caprese Salad", target: "Basil", label: "uses"},
+
+            // Recipe to Cuisine relationships
+            {source: "Pasta Carbonara", target: "Italian", label: "is part of"},
+            {source: "Margherita Pizza", target: "Italian", label: "is part of"},
+            {source: "Caprese Salad", target: "Italian", label: "is part of"},
+            {source: "Thai Green Curry", target: "Thai", label: "is part of"},
+            {source: "Vegetable Stir-fry", target: "Asian Fusion", label: "is part of"},
+            {source: "Beef Tacos", target: "Mexican", label: "is part of"},
+            {source: "Sushi Roll Assortment", target: "Japanese", label: "is part of"},
+            {source: "Butter Chicken", target: "Indian", label: "is part of"},
+            {source: "Caesar Salad", target: "Italian", label: "is part of"},
+
+            // Recipe to Chef relationships
+            {source: "Pasta Carbonara", target: "Chef Marco", label: "created by"},
+            {source: "Margherita Pizza", target: "Chef Marco", label: "created by"},
+            {source: "Butter Chicken", target: "Chef Anita", label: "created by"},
+            {source: "Beef Tacos", target: "Chef Tomás", label: "created by"},
+            {source: "Sushi Roll Assortment", target: "Chef Yuki", label: "created by"},
+            {source: "Vegetable Stir-fry", target: "Chef Alex", label: "created by"},
+            {source: "Thai Green Curry", target: "Chef Alex", label: "adapted by"},
+            {source: "Chef Marco", target: "Italian", label: "specializes in"},
+            {source: "Chef Anita", target: "Indian", label: "specializes in"},
+            {source: "Chef Tomás", target: "Mexican", label: "specializes in"},
+            {source: "Chef Yuki", target: "Japanese", label: "specializes in"},
+            {source: "Chef Alex", target: "Asian Fusion", label: "specializes in"},
+
+            // Recipe to Dietary Requirements
+            {source: "Margherita Pizza", target: "Vegetarian", label: "suitable for"},
+            {source: "Vegetable Stir-fry", target: "Vegan", label: "suitable for"},
+            {source: "Vegetable Stir-fry", target: "Gluten-Free", label: "suitable for"},
+            {source: "Sushi Roll Assortment", target: "Gluten-Free", label: "can be"},
+            {source: "Thai Green Curry", target: "Gluten-Free", label: "can be"},
+            {source: "Beef Tacos", target: "Gluten-Free", label: "can be"},
+            {source: "Caesar Salad", target: "Dairy-Free", label: "can be"},
+            {source: "Butter Chicken", target: "High-Protein", label: "suitable for"},
+            {source: "Thai Green Curry", target: "High-Protein", label: "suitable for"},
+            {source: "Pasta Carbonara", target: "High-Protein", label: "suitable for"},
+
+            // Recipe to Allergen warnings
+            {source: "Chocolate Lava Cake", target: "Tree Nut Allergy", label: "may contain"},
+            {source: "Caesar Salad", target: "Shellfish Allergy", label: "may contain (anchovy)"},
+            {source: "Pasta Carbonara", target: "Dairy Allergy", label: "contains"},
+            {source: "Margherita Pizza", target: "Dairy Allergy", label: "contains"},
+            {source: "Butter Chicken", target: "Dairy Allergy", label: "contains"},
+            {source: "Pasta Carbonara", target: "Gluten Sensitivity", label: "contains"},
+            {source: "Margherita Pizza", target: "Gluten Sensitivity", label: "contains"},
+            {source: "Sushi Roll Assortment", target: "Gluten Sensitivity", label: "may contain"},
+
+            // Ingredient pairings
+            {source: "Tomato", target: "Basil", label: "pairs with"},
+            {source: "Cheese", target: "Basil", label: "pairs with"},
+            {source: "Chicken", target: "Coconut Milk", label: "pairs with"},
+            {source: "Green Chilies", target: "Coconut Milk", label: "pairs with"},
+            {source: "Rice", target: "Soy Sauce", label: "pairs with"},
+            {source: "Tomato", target: "Cheese", label: "classic pairing"},
+            {source: "Butter", target: "Eggs", label: "pairs with"},
+            {source: "Beef", target: "Tomato", label: "traditional pairing"},
+
+            // Flavor profiles
+            {source: "Chocolate Lava Cake", target: "Sweet", label: "has"},
+            {source: "Thai Green Curry", target: "Spicy", label: "has"},
+            {source: "Green Chilies", target: "Spicy", label: "provides"},
+            {source: "Butter Chicken", target: "Savory", label: "has"},
+            {source: "Cheese", target: "Umami", label: "provides"},
+            {source: "Soy Sauce", target: "Umami", label: "provides"},
+            {source: "Caprese Salad", target: "Tangy", label: "can have"},
+            {source: "Caesar Salad", target: "Tangy", label: "has"}
+        ];
+
+        const categoryColors = {
+            "Recipe": "#ff6b9d",
+            "Ingredient": "#4ecdc4",
+            "Cuisine": "#ffe66d",
+            "Chef": "#95e1d3",
+            "Dietary Requirement": "#a8dadc",
+            "Allergen": "#f4a261",
+            "Flavor Profile": "#e76f51"
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        svg.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "rgba(100, 200, 100, 0.9)")
+            .attr("stroke", "rgba(100, 200, 100, 0.9)");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-400))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+        const link = g.append("g")
+            .selectAll("path")
+            .data(links)
+            .enter().append("path")
+            .attr("class", "link");
+
+        const linkLabel = g.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = g.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+            .on("click", showInfo);
+
+        node.append("circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => categoryColors[d.category] || "#ccc");
+
+        node.append("text")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link.attr("d", d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+
+                const targetRadius = d.target.size;
+                const offsetX = (dx * targetRadius) / dr;
+                const offsetY = (dy * targetRadius) / dr;
+
+                return `M ${d.source.x} ${d.source.y} L ${d.target.x - offsetX} ${d.target.y - offsetY}`;
+            });
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showInfo(event, d) {
+            const panel = document.getElementById("infoPanel");
+            const categoryTag = document.getElementById("categoryTag");
+            document.getElementById("nodeTitle").textContent = d.id;
+            document.getElementById("nodeDescription").textContent = d.description;
+            categoryTag.textContent = d.category;
+            categoryTag.style.background = categoryColors[d.category];
+            categoryTag.style.color = "#fff";
+            panel.style.display = "block";
+        }
+
+        function resetSimulation() {
+            nodes.forEach(node => {
+                node.fx = null;
+                node.fy = null;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        function zoomToFit() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.75 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        }
+
+        setTimeout(zoomToFit, 1000);
+    </script>
+</body>
+</html>
+
