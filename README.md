@@ -153,20 +153,20 @@ Features: Genre evolution, artist networks, personalized recommendations
 
 Explore Vidya Astra's knowledge graphs in action:
 
-| Demo | Description | Link |
-|------|-------------|------|
-| 🏠 **Main Portal** | Interactive introduction to Vidya Astra | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/) |
-| 🚨 **Fraud Detection** | Real-time fraud pattern visualization | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection) |
-| 🔍 **Cycle Detection** | Detect fraud rings and circular patterns | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection) |
-| 🐦 **Bird Migration** | Track global bird migration patterns | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/bird_migration) |
-| 🏥 **Healthcare** | Medical knowledge and drug interactions | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/healthcare) |
-| 🔐 **Cybersecurity** | Security threat and vulnerability mapping | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cyber_security) |
-| 🚂 **Indian Railways** | Railway network and route optimization | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/railgadi) |
+| Demo | Description                                | Link |
+|------|--------------------------------------------|------|
+| 🏠 **Main Portal** | Interactive introduction to Yours Truly !  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/) |
+| 🚨 **Fraud Detection** | Real-time fraud pattern visualization      | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection) |
+| 🔍 **Cycle Detection** | Detect fraud rings and circular patterns   | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection) |
+| 🐦 **Bird Migration** | Track global bird migration patterns       | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/bird_migration) |
+| 🏥 **Healthcare** | Medical knowledge and drug interactions    | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/healthcare) |
+| 🔐 **Cybersecurity** | Security threat and vulnerability mapping  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cyber_security) |
+| 🚂 **Indian Railways** | Railway network and route optimization     | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/railgadi) |
 | 🗽 **New York Tourism** | NYC attractions and travel recommendations | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/iloveny) |
-| 🛒 **Supermarket** | Product catalog and customer behavior | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/supermarket) |
-| 🧘 **Yoga** | Poses, benefits, and practice sequences | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/yoga) |
-| 🍽️ **Recipe Graph** | Culinary knowledge and food pairings | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/recipe_graph) |
-| 🎵 **Music Network** | Artist collaborations and recommendations | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/music_network) |
+| 🛒 **Supermarket** | Product catalog and customer behavior      | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/supermarket) |
+| 🧘 **Yoga** | Poses, benefits, and practice sequences    | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/yoga) |
+| 🍽️ **Recipe Graph** | Culinary knowledge and food pairings       | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/recipe_graph) |
+| 🎵 **Music Network** | Artist collaborations and recommendations  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/music_network) |
 
 ---
 
