@@ -9,7 +9,7 @@
 ## 🎯 What is Vidya Astra?
 
 **Vidya Astra** is a comprehensive, multi-domain **knowledge graph platform** that harnesses the power of Neo4j and Spring Boot to create intelligent, interconnected knowledge systems. It's designed for organizations that need to:
-
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/vishalmysore/vidyaastra)  
 - 🧠 **Understand Complex Relationships** across multiple domains
 - 🔍 **Detect Patterns** and anomalies in connected data
 - 🎓 **Learn from Knowledge** through interactive visualizations
