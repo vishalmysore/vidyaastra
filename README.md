@@ -10,17 +10,16 @@ Explore Vidya Astra's knowledge graphs in action:
 
 | Demo                    | Description                                               | Link                                                                            |
 |-------------------------|-----------------------------------------------------------|---------------------------------------------------------------------------------|
-
 | 🏹 **Mahabharata Epic** | Mahabharat 64 Main Characters and 2700 , several events ! | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/mahabharata)       |
 | 🐒 **Ramayana Epic**    | Ramayana Epic Knowledge Graph                             | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/ramayana)          |
-| ☁️ Meghdoot                | Kalidasa's Meghdoot Knowledge Graph                       | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/meghdoot)          |
-| 📜 Valaypathi              | Valayapathi Tamil Epic                                    | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/valayapathi)       |
-| 💞 Nala Damayanti           | Nala Damayanti Epic Knowledge Graph                       | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/nala_damayanti)    |
-| 🌸 Kundalakesi            | Kundalakesi Tamil Epic Knowledge Graph                    | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/kundalakesi)       |
-| 🌿 Dushyant Shakuntala      | Dushyant Shakuntala Epic Knowledge Graph                  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/dushyant_shakuntala) |
-| 🏰 Ponniyin Selvan        | Ponniyin Selvan Epic Knowledge Graph                      | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/pselvan)           |
-| 🕊️ Samrat Ashoka         | Samrat Ashoka Epic Knowledge Graph                        | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/samrat_ashoka)     |
-| 🔔 Cillapadikaram          | Cillapadikaram Tamil Epic Knowledge Graph                 | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cillapadikaram)    |
+| ☁️ **Meghdoot**         | Kalidasa's Meghdoot Knowledge Graph                       | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/meghdoot)          |
+| 📜 **Valayapathi**      | Valayapathi Tamil Epic                                    | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/valayapathi)       |
+| 💞 **Nala Damayanti**    | Nala Damayanti Epic Knowledge Graph                       | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/nala_damayanti)    |
+| 🌸 **Kundalakesi**      | Kundalakesi Tamil Epic Knowledge Graph                    | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/kundalakesi)       |
+| 🌿 **Dushyant Shakuntala** | Dushyant Shakuntala Epic Knowledge Graph                  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/dushyant_shakuntala) |
+| 🏰 **Ponniyin Selvan**  | Ponniyin Selvan Epic Knowledge Graph                      | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/pselvan)           |
+| 🕊️ **Samrat Ashoka**   | Samrat Ashoka Epic Knowledge Graph                        | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/samrat_ashoka)     |
+| 🔔 **Cilappatikaram**   | Cilappatikaram Tamil Epic Knowledge Graph                 | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cillapadikaram)    |
 | 🚨 **Fraud Detection**  | Real-time fraud pattern visualization                     | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection)   |
 | 🔍 **Cycle Detection**  | Detect fraud rings and circular patterns                  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection)   |
 | 🐦 **Bird Migration**   | Track global bird migration patterns                      | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/bird_migration)    |
@@ -32,7 +31,7 @@ Explore Vidya Astra's knowledge graphs in action:
 | 🧘 **Yoga**             | Poses, benefits, and practice sequences                   | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/yoga)              |
 | 🍽️ **Recipe Graph**    | Culinary knowledge and food pairings                      | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/recipe_graph)      |
 | 🎵 **Music Network**    | Artist collaborations and recommendations                 | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/music_network)     |
-| 🏠 **Who is Vishal Mysore**      | Interactive introduction to Yours Truly !                 | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/)                  |
+| 🏠 **Who is Vishal Mysore** | Interactive introduction to Yours Truly !                 | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/)                  |
 ---
 
 ![Vidya Astra Architecture](reference.jpg)
