@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra: The Ramayana - Epic Network (Stabilized Scholarly Edition)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        /* CSS styles updated for Ramayana theme: Greens, Golds, Browns, and Purple for Divine */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a4d2e 0%, #1a2f3f 50%, #2d1b4e 100%);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        svg {
+            display: block;
+            background: transparent;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
+        }
+
+        .node text {
+            font-size: 9px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.2);
+            stroke-width: 1px;
+            fill: none;
+        }
+
+        .link.battle {
+            stroke: #ff6b6b; /* Red for Conflict */
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+
+        .link.family {
+            stroke: #9d6b3d; /* Earthy Brown for Family */
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.alliance {
+            stroke: #4ecdc4; /* Cyan for Alliance/Friendship */
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link.mentor {
+            stroke: #34d399; /* Green for Mentorship/Guide */
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link.divine {
+            stroke: #a78bfa; /* Purple for Divine connection */
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.timeline {
+            stroke: #ffaa00;
+            stroke-width: 3px;
+            stroke-dasharray: 5, 5;
+            opacity: 0.8;
+        }
+
+        .link.event {
+            stroke: #34d399;
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link-label {
+            font-size: 8px;
+            fill: #d4a574; /* Goldish for labels */
+            text-anchor: middle;
+            pointer-events: none;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(26, 45, 46, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 400px;
+            border: 2px solid #9d6b3d;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .controls h2 {
+            margin: 0 0 10px 0;
+            color: #d4a574;
+            font-size: 1.3em;
+            text-shadow: 0 0 10px #d4a574;
+        }
+
+        .controls h3 {
+            margin: 12px 0 8px 0;
+            color: #4ecdc4;
+            font-size: 0.9em;
+            border-bottom: 1px solid #9d6b3d;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            border: 1px solid #4ecdc4;
+            padding: 6px 10px;
+            margin: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8em;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .filter-btn.active {
+            background: #d4a574;
+            color: #1a2f3f;
+            box-shadow: 0 0 10px #d4a574;
+        }
+
+        .controls button {
+            background: #4ecdc4;
+            color: #1a2f3f;
+            border: none;
+            padding: 8px 15px;
+            margin: 4px 4px 4px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #d4a574;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 45, 46, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            border: 2px solid #4ecdc4;
+            max-height: 85vh;
+            overflow-y: auto;
+            max-width: 280px;
+            z-index: 9;
+            font-size: 0.8em;
+        }
+
+        .legend h3 {
+            margin: 0 0 10px 0;
+            color: #d4a574;
+            font-size: 0.95em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 0.75em;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #fff;
+            flex-shrink: 0;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 45, 46, 0.98);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 380px;
+            display: none;
+            border: 2px solid #4ecdc4;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 10;
+            font-size: 0.85em;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 8px 0;
+            color: #d4a574;
+            font-size: 0.95em;
+        }
+
+        .info-section {
+            background: rgba(78, 205, 196, 0.1);
+            padding: 8px;
+            margin: 6px 0;
+            border-left: 2px solid #4ecdc4;
+            border-radius: 2px;
+            font-size: 0.8em;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            pointer-events: none;
+            display: none;
+            border: 1px solid #d4a574;
+            z-index: 20;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h2>🏹 RAMAYANA </h2>
+    <p style="font-size: 0.8em; margin-bottom: 8px;">Project VidyaAstra</p>
+
+    <h3>Filter by Type</h3>
+    <div>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">🏹 Heroes</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('demon')">👿 Demons</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">🎲 Events</button>
+    </div>
+
+    <h3 style="margin-top: 12px;">Actions</h3>
+    <button onclick="resetSimulation()">🔄 Reset</button>
+    <button onclick="showStats()">📊 Stats</button>
+</div>
+
+<div class="legend">
+    <h3>LEGEND</h3>
+    <strong style="color: #d4a574;">Character Types</strong>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #4ecdc4;"></div>
+        <span>Main Heroes (Rama, Sita, Brothers)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #9d6b3d;"></div>
+        <span>Royal Family (Ayodhya)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #a78bfa;"></div>
+        <span>Divine Beings / Gods</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ff6b6b;"></div>
+        <span>Demons / Rakshasas (Lanka)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #34d399;"></div>
+        <span>Allies / Supporting Figures</span>
+    </div>
+    <hr style="border-color: rgba(78, 205, 196, 0.3); margin: 8px 0;">
+    <strong style="color: #d4a574;">Relationships</strong>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #9d6b3d; margin-right: 8px;"></div>
+        Family
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #ff6b6b; margin-right: 8px;"></div>
+        Battle/Conflict
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #4ecdc4; margin-right: 8px;"></div>
+        Alliance
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #34d399; margin-right: 8px;"></div>
+        Mentor/Guide
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; border-bottom: 3px dashed #ffaa00; margin-right: 8px;"></div>
+        Timeline/Event Flow
+    </div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <h3 id="nodeTitle"></h3>
+    <div id="nodeDescription"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<svg id="graph"></svg>
+
+<script>
+    // *** START NODES ***
+    const nodes = [
+        // RAMA & IMMEDIATE FAMILY (Kosala Kingdom)
+        {id: "Rama", type: "hero", faction: "hero", color: "#4ecdc4", size: 32, description: "👑 7th avatar of Vishnu | Perfect man (Purushottama) | Hero of Ramayana | Exiled prince who became king"},
+        {id: "Sita", type: "hero", faction: "hero", color: "#4ecdc4", size: 28, description: "👸 Wife of Rama | Born from earth | Abducted by Ravana | Symbol of virtue and devotion"},
+        {id: "Lakshman", type: "hero", faction: "hero", color: "#4ecdc4", size: 27, description: "🗡️ Younger brother of Rama | Devoted companion | Served with unwavering loyalty | Incarnation of Shesha"},
+        {id: "Bharata", type: "hero", faction: "hero", color: "#4ecdc4", size: 24, description: "🤴 Half-brother of Rama | Served as regent | Kept Rama's sandals on throne"},
+        {id: "Shatrughna", type: "hero", faction: "hero", color: "#4ecdc4", size: 22, description: "⚔️ Youngest brother of Rama | Twin with Lakshman | Great warrior"},
+        {id: "Dasharatha", type: "character", faction: "royal", color: "#9d6b3d", size: 24, description: "🤴 King of Kosala | Father of Rama | Died of grief after Rama's exile"},
+        {id: "Kaushalya", type: "character", faction: "royal", color: "#9d6b3d", size: 22, description: "👸 Queen of Kosala | Mother of Rama | Mourned during his exile"},
+        {id: "Kaikeyi", type: "character", faction: "royal", color: "#9d6b3d", size: 21, description: "👑 Second queen | Mother of Bharata | Demanded Rama's exile using boons"},
+        {id: "Sumitra", type: "character", faction: "royal", color: "#9d6b3d", size: 20, description: "👸 Third queen | Mother of Lakshman and Shatrughna"},
+        {id: "Urmila", type: "character", faction: "royal", color: "#9d6b3d", size: 18, description: "👰 Sister of Sita | Wife of Lakshman | Waited faithfully"},
+        {id: "Janaka", type: "character", faction: "royal", color: "#9d6b3d", size: 20, description: "🤴 King of Mithila | Father of Sita | Arranged Rama's marriage"},
+
+
+        // AYODHYA ALLIES & SUPPORTERS (Vanaras, Sages, etc.)
+        {id: "Hanuman", type: "hero", faction: "ally", color: "#34d399", size: 29, description: "🐒 Vanara hero | Son of Vayu | Devoted follower of Rama | Bridge builder | Master of devotion"},
+        {id: "Sugriva", type: "hero", faction: "ally", color: "#34d399", size: 25, description: "🦁 King of Vanaras | Exiled by Vali | Ally to Rama | Helped find Sita"},
+        {id: "Vali", type: "character", faction: "ally", color: "#34d399", size: 23, description: "⚔️ King of Vanaras | Defeated by Rama | Sugriva's brother"},
+        {id: "Jambavan", type: "character", faction: "ally", color: "#34d399", size: 22, description: "🐻 Wise bear king | Elder of Vanaras | Strategic advisor"},
+        {id: "Vibhishana", type: "hero", faction: "ally", color: "#34d399", size: 24, description: "😇 Brother of Ravana | Demon who sided with Rama | Became king of Lanka"},
+        {id: "Valmiki", type: "character", faction: "ally", color: "#34d399", size: 21, description: "📖 Sage | Poet | Author of Ramayana | Adopted Sita and her sons"},
+        {id: "Vasishtha", type: "character", faction: "ally", color: "#34d399", size: 20, description: "🧙 Guru of Rama | Advisor to Dasharatha"},
+        {id: "Vishwamitra", type: "character", faction: "ally", color: "#34d399", size: 19, description: "🔮 Great sage | Trained Rama in youth | Gave him divine weapons"},
+        {id: "Jatayu", type: "character", faction: "ally", color: "#34d399", size: 20, description: "🦅 Divine eagle | Tried to save Sita from Ravana | Died fighting"},
+        {id: "Sampati", type: "character", faction: "ally", color: "#34d399", size: 19, description: "🦅 Brother of Jatayu | Told Vanaras of Sita's location"},
+        {id: "Trijata", type: "character", faction: "ally", color: "#34d399", size: 18, description: "👹 Rakshasa woman | Comforted Sita in Lanka | Kind-hearted demon"},
+
+        // RAVANA & DEMONS (Lanka)
+        {id: "Ravana", type: "demon", faction: "demon", color: "#ff6b6b", size: 30, description: "👿 10-headed demon king | Lord of Lanka | Abducted Sita | Ultimate antagonist | Killed by Rama"},
+        {id: "Mandodari", type: "character", faction: "demon", color: "#ff6b6b", size: 22, description: "👸 Queen of Lanka | Wise wife of Ravana | Warned him about consequences"},
+        {id: "Kumbhakarna", type: "character", faction: "demon", color: "#ff6b6b", size: 26, description: "😴 Brother of Ravana | Slept for months | Woke for battle | Killed by Rama"},
+        {id: "Indrajit", type: "hero", faction: "demon", color: "#ff6b6b", size: 25, description: "⚡ Son of Ravana | Able to use Brahmastra | Defeated by Lakshman"},
+        {id: "Maricha", type: "character", faction: "demon", color: "#ff6b6b", size: 20, description: "🦌 Demon shapeshifter | Took form of golden deer | Tricked Rama"},
+        {id: "Shurpanakha", type: "character", faction: "demon", color: "#ff6b6b", size: 20, description: "👹 Sister of Ravana | Attempted to seduce Rama | Nose cut by Lakshman"},
+        {id: "Khara", type: "character", faction: "demon", color: "#ff6b6b", size: 19, description: "👹 Demon chieftain | Fought Rama | Killed in battle"},
+        {id: "Dushana", type: "character", faction: "demon", color: "#ff6b6b", size: 18, description: "😈 Demon ally of Ravana | Killed by Rama"},
+
+        // DIVINE BEINGS & GODS
+        {id: "Vishnu", type: "divine", faction: "divine", color: "#a78bfa", size: 31, description: "✨ Supreme deity | Rama is his 7th avatar | Preserver of universe"},
+        {id: "Shiva", type: "divine", faction: "divine", color: "#a78bfa", size: 28, description: "🔱 Destroyer god | Granted boons to both Rama and Ravana"},
+        {id: "Brahma", type: "divine", faction: "divine", color: "#a78bfa", size: 26, description: "🙏 Creator god | Gave boons of immortality to Ravana"},
+        {id: "Agni", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "🔥 Fire god | Witnessed Sita's purity test"},
+        {id: "Vayu", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "💨 Wind god | Father of Hanuman"},
+        {id: "Garuda", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "🦅 Divine eagle | King of birds | Vahana of Vishnu"},
+        {id: "Surya", type: "divine", faction: "divine", color: "#a78bfa", size: 20, description: "☀️ Sun god | Father of Sugriva"},
+
+        // KEY LOCATIONS & EVENTS
+        {id: "Ayodhya", type: "event", color: "#9d6b3d", size: 20, description: "🏰 Kingdom of Kosala | Rama's capital | Represented duty and order"},
+        {id: "Forest Exile", type: "event", color: "#ffaa00", size: 22, description: "🌲 14-year forest exile | Quest and trials period"},
+        {id: "Sita Abduction", type: "event", color: "#ff6b6b", size: 21, description: "👸 Ravana abducts Sita | Central turning point of epic"},
+        {id: "Bridge to Lanka", type: "event", color: "#4ecdc4", size: 20, description: "🌉 Hanuman and Vanaras build bridge | Path to final battle"},
+        {id: "Battle of Lanka", type: "event", color: "#ff6b6b", size: 23, description: "⚔️ Final war between Rama and Ravana | Destruction of Lanka"},
+        {id: "Sita's Trial", type: "event", color: "#a78bfa", size: 19, description: "🔥 Agni test of Sita's purity | Proof of chastity"},
+        {id: "Return to Ayodhya", type: "event", color: "#4ecdc4", size: 20, description: "👑 Rama's coronation and return | Restoration of kingdom"},
+    ];
+
+    // *** START LINKS ***
+    const links = [
+        // FAMILY - RAMA'S IMMEDIATE FAMILY
+        {source: "Dasharatha", target: "Rama", type: "family", label: "Father"},
+        {source: "Dasharatha", target: "Bharata", type: "family", label: "Father"},
+        {source: "Dasharatha", target: "Lakshman", type: "family", label: "Father"},
+        {source: "Dasharatha", target: "Shatrughna", type: "family", label: "Father"},
+        {source: "Kaushalya", target: "Rama", type: "family", label: "Mother"},
+        {source: "Kaikeyi", target: "Bharata", type: "family", label: "Mother"},
+        {source: "Sumitra", target: "Lakshman", type: "family", label: "Mother"},
+        {source: "Sumitra", target: "Shatrughna", type: "family", label: "Mother"},
+        {source: "Rama", target: "Sita", type: "family", label: "Husband/Wife"},
+        {source: "Lakshman", target: "Urmila", type: "family", label: "Husband/Wife"},
+        {source: "Janaka", target: "Sita", type: "family", label: "Father"},
+        {source: "Rama", target: "Lakshman", type: "family", label: "Brothers"},
+        {source: "Rama", target: "Bharata", type: "family", label: "Brothers"},
+
+        // DEMON FAMILY
+        {source: "Ravana", target: "Mandodari", type: "family", label: "Husband/Wife"},
+        {source: "Ravana", target: "Indrajit", type: "family", label: "Father/Son"},
+        {source: "Ravana", target: "Kumbhakarna", type: "family", label: "Brother"},
+        {source: "Ravana", target: "Vibhishana", type: "family", label: "Brother"},
+        {source: "Ravana", target: "Shurpanakha", type: "family", label: "Brother/Sister"},
+
+        // VANARA ALLIANCES & CONFLICTS
+        {source: "Rama", target: "Hanuman", type: "alliance", label: "Devotee/Ally"},
+        {source: "Rama", target: "Sugriva", type: "alliance", label: "Allied with"},
+        {source: "Hanuman", target: "Sugriva", type: "alliance", label: "Minister/Ally"},
+        {source: "Sugriva", target: "Vali", type: "battle", label: "Rival Brothers"},
+        {source: "Rama", target: "Vali", type: "battle", label: "Killed for Sugriva"},
+
+        // IMPORTANT ALLIES & MENTORSHIP
+        {source: "Vibhishana", target: "Rama", type: "alliance", label: "Defected to"},
+        {source: "Vishwamitra", target: "Rama", type: "mentor", label: "Guru"},
+        {source: "Vasishtha", target: "Dasharatha", type: "mentor", label: "Royal Guru"},
+        {source: "Valmiki", target: "Sita", type: "alliance", label: "Sheltered"},
+        {source: "Jatayu", target: "Rama", type: "alliance", label: "Tried to save Sita"},
+        {source: "Sampati", target: "Hanuman", type: "alliance", label: "Revealed Sita's location"},
+
+        // BATTLE CONFLICTS
+        {source: "Rama", target: "Ravana", type: "battle", label: "⚔️ Final Battle"},
+        {source: "Lakshman", target: "Indrajit", type: "battle", label: "⚔️ Killed"},
+        {source: "Rama", target: "Kumbhakarna", type: "battle", label: "⚔️ Killed"},
+        {source: "Rama", target: "Maricha", type: "battle", label: "⚔️ Killed"},
+        {source: "Lakshman", target: "Shurpanakha", type: "battle", label: "Mutilated"},
+        {source: "Rama", target: "Khara", type: "battle", label: "⚔️ Killed"},
+
+        // DIVINE RELATIONSHIPS
+        {source: "Vishnu", target: "Rama", type: "divine", label: "Avatar"},
+        {source: "Vayu", target: "Hanuman", type: "divine", label: "Divine Father"},
+        {source: "Surya", target: "Sugriva", type: "divine", label: "Divine Father"},
+        {source: "Brahma", target: "Ravana", type: "divine", label: "Granted boons"},
+        {source: "Agni", target: "Sita's Trial", type: "divine", label: "Conducted test"},
+        {source: "Lakshman", target: "Vishnu", type: "divine", label: "Incarnation of Shesha"},
+
+        // EVENT CONNECTIONS (Timeline Flow)
+        {source: "Dasharatha", target: "Forest Exile", type: "timeline", label: "Initiated by Kaikeyi's Boon"},
+        {source: "Rama", target: "Forest Exile", type: "timeline", label: "Entered"},
+        {source: "Forest Exile", target: "Sita Abduction", type: "timeline", label: "Led to"},
+        {source: "Ravana", target: "Sita Abduction", type: "event", label: "Perpetrator"},
+        {source: "Hanuman", target: "Bridge to Lanka", type: "event", label: "Led Construction"},
+        {source: "Bridge to Lanka", target: "Battle of Lanka", type: "timeline", label: "Precedes"},
+        {source: "Battle of Lanka", target: "Sita's Trial", type: "timeline", label: "Follows"},
+        {source: "Sita's Trial", target: "Return to Ayodhya", type: "timeline", label: "Leads to"},
+        {source: "Rama", target: "Return to Ayodhya", type: "event", label: "Coronation"},
+        {source: "Return to Ayodhya", target: "Ayodhya", type: "event", label: "Rules from"},
+    ];
+
+    let activeFilters = {hero: true, character: true, divine: true, demon: true, event: true};
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("#graph")
+        .attr("width", width)
+        .attr("height", height);
+
+    // D3 FORCE SIMULATION Setup
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(120).strength(0.7))
+        .force("charge", d3.forceManyBody().strength(-450)) // Stronger repulsion for stable graph
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 15)); // Larger collision radius
+
+    const linkGroup = svg.append("g").attr("class", "links");
+    const link = linkGroup.selectAll("line")
+        .data(links).enter().append("line")
+        .attr("class", d => `link ${d.type}`)
+        .attr("stroke-width", d => d.type === "family" ? 2.5 : 1.5);
+
+    const linkLabels = linkGroup.selectAll(".link-label")
+        .data(links).enter().append("text")
+        .attr("class", "link-label")
+        .attr("dy", -5)
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+
+    const node = svg.append("g").selectAll("g")
+        .data(nodes).enter().append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    node.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => d.color);
+
+    node.append("text")
+        .text(d => d.id)
+        .attr("y", d => d.size + 12);
+
+    node.on("mouseover", function(event, d) {
+        showTooltip(event, d);
+    }).on("mouseout", function() {
+        hideTooltip();
+    }).on("click", function(event, d) {
+        showInfo(d);
+    });
+
+    simulation.on("tick", () => {
+        link.attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function showTooltip(event, d) {
+        d3.select("#tooltip")
+            .style("display", "block")
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px")
+            .html(`<strong>${d.id}</strong><br/>${d.description}`);
+    }
+
+    function hideTooltip() {
+        d3.select("#tooltip").style("display", "none");
+    }
+
+    function showInfo(d) {
+        document.getElementById("nodeTitle").textContent = d.id + (d.type ? ` (${d.type})` : "");
+
+        let factionInfo = d.faction ? `<div class="info-section"><strong>Faction:</strong> ${d.faction.charAt(0).toUpperCase() + d.faction.slice(1)}</div>` : '';
+
+        document.getElementById("nodeDescription").innerHTML =
+            `<div class="info-section"><strong>Type:</strong> ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div>` +
+            factionInfo +
+            `<div class="info-section"><strong>Description:</strong> ${d.description}</div>`;
+        document.getElementById("infoPanel").style.display = "block";
+    }
+
+    function closeInfo() {
+        document.getElementById("infoPanel").style.display = "none";
+    }
+
+    function toggleFilter(type) {
+        activeFilters[type] = !activeFilters[type];
+        document.querySelector(`[onclick="toggleFilter('${type}')"]`).classList.toggle("active");
+        updateVisibility();
+    }
+
+    function updateVisibility() {
+        node.style("display", d => activeFilters[d.type] ? "block" : "none");
+
+        link.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+
+        linkLabels.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+    }
+
+    function resetSimulation() {
+        simulation.alpha(0.3).restart();
+    }
+
+    function showStats() {
+        alert(`📊 RAMAYANA STATISTICS\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThis comprehensive knowledge graph covers all major characters from the Ramayana epic including the main heroes, royal families, demons, divine beings, and key events.`);
+    }
+
+    updateVisibility();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+@prefix vid: <http://vidyaastra.org/resource/> .
+@prefix rel: <http://vidyaastra.org/relations/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+vid:Arjuna a vid:Hero ;
+    rdfs:label "Arjuna" ;
+    rel:memberOf vid:Pandava ;
+    rel:hasSpouse vid:Draupadi, vid:Chitrangada, vid:Uloopi ;
+    rel:hasChild vid:Abhimanyu ;
+    rel:allyOf vid:Satyaki, vid:Krishna ;
+    rel:teacherOf vid:Dronacharya ;   # interpreted as "teacher relationship shown" (adjust as needed)
+    rel:met vid:Hanuman ;
+    prov:wasDerivedFrom <file:///mnt/data/9af04c9c-a729-4f9f-9f4f-0b82cc09a651.png> .
+
+vid:Pandava rdfs:label "Pandava" .
+vid:Draupadi rdfs:label "Draupadi" .
+vid:Chitrangada rdfs:label "Chitrangada" .
+vid:Uloopi rdfs:label "Uloopi" .
+vid:Abhimanyu rdfs:label "Abhimanyu" .
+vid:Satyaki rdfs:label "Satyaki" .
+vid:Dronacharya rdfs:label "Dronacharya" .
+vid:Krishna rdfs:label "Krishna" .
+vid:Hanuman rdfs:label "Hanuman" .

@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://example.org/valayapathi#"
+     xml:base="http://example.org/valayapathi"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+    <owl:Ontology rdf:about="http://example.org/valayapathi">
+        <rdfs:comment>Ontology for the fragmentary Tamil epic Valayapathi (reconstructed nodes &amp; relationships).</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- Annotation Properties -->
+    <owl:AnnotationProperty rdf:about="http://example.org/valayapathi#displayColor"/>
+    <owl:AnnotationProperty rdf:about="http://example.org/valayapathi#nodeSize"/>
+
+    <!-- Classes -->
+    <owl:Class rdf:about="http://example.org/valayapathi#Person"/>
+    <owl:Class rdf:about="http://example.org/valayapathi#Hero">
+        <rdfs:subClassOf rdf:resource="http://example.org/valayapathi#Person"/>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/valayapathi#Character">
+        <rdfs:subClassOf rdf:resource="http://example.org/valayapathi#Person"/>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/valayapathi#Royalty">
+        <rdfs:subClassOf rdf:resource="http://example.org/valayapathi#Person"/>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/valayapathi#Group"/>
+    <owl:Class rdf:about="http://example.org/valayapathi#Place"/>
+    <owl:Class rdf:about="http://example.org/valayapathi#Event"/>
+    <owl:Class rdf:about="http://example.org/valayapathi#Polity"/>
+
+    <!-- Object Properties -->
+    <owl:ObjectProperty rdf:about="http://example.org/valayapathi#hasPolity"/>
+    <owl:ObjectProperty rdf:about="http://example.org/valayapathi#memberOf"/>
+    <owl:ObjectProperty rdf:about="http://example.org/valayapathi#spouseOf">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://example.org/valayapathi#occursAt"/>
+    <owl:ObjectProperty rdf:about="http://example.org/valayapathi#guides"/>
+    <owl:ObjectProperty rdf:about="http://example.org/valayapathi#timelinePrecedes"/>
+    <owl:ObjectProperty rdf:about="http://example.org/valayapathi#involvesPlace"/>
+
+    <!-- Polity Individuals -->
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#CholaPolity">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Polity"/>
+        <rdfs:label>Chola</rdfs:label>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#PandyaPolity">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Polity"/>
+        <rdfs:label>Pandya</rdfs:label>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#CheraPolity">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Polity"/>
+        <rdfs:label>Chera</rdfs:label>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#NeutralPolity">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Polity"/>
+        <rdfs:label>Neutral</rdfs:label>
+    </owl:NamedIndividual>
+
+    <!-- Individuals with property assertions -->
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#Valayapathi">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Hero"/>
+        <hasPolity rdf:resource="http://example.org/valayapathi#NeutralPolity"/>
+        <spouseOf rdf:resource="http://example.org/valayapathi#Spouse"/>
+        <memberOf rdf:resource="http://example.org/valayapathi#MerchantGuild"/>
+        <rdfs:comment>Merchant-hero in a Jain-themed narrative; fragmentary.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">28</nodeSize>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#Spouse">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Character"/>
+        <hasPolity rdf:resource="http://example.org/valayapathi#NeutralPolity"/>
+        <spouseOf rdf:resource="http://example.org/valayapathi#Valayapathi"/>
+        <rdfs:comment>Family relations (reconstructed).</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#MerchantGuild">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Group"/>
+        <rdfs:comment>Community of traders.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#JainMonk">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Character"/>
+        <hasPolity rdf:resource="http://example.org/valayapathi#NeutralPolity"/>
+        <guides rdf:resource="http://example.org/valayapathi#RenunciationEvent"/>
+        <rdfs:comment>Spiritual teacher promoting renunciation.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#RoyalPatron">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Royalty"/>
+        <hasPolity rdf:resource="http://example.org/valayapathi#NeutralPolity"/>
+        <rdfs:comment>Court that hosts debates / offers patronage.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+
+    <!-- Places -->
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#PuharPort">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Place"/>
+        <hasPolity rdf:resource="http://example.org/valayapathi#CholaPolity"/>
+        <rdfs:comment>Maritime trade hub.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#SeaVoyage">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Place"/>
+        <rdfs:comment>Routes of commerce and peril.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">19</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#JainMonastery">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Place"/>
+        <rdfs:comment>Ascetic learning center.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#RoyalCourt">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Place"/>
+        <rdfs:comment>Venue for philosophical debates.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+
+    <!-- Events with properties -->
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#ProsperousTrade">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Event"/>
+        <occursAt rdf:resource="http://example.org/valayapathi#PuharPort"/>
+        <involvesPlace rdf:resource="http://example.org/valayapathi#SeaVoyage"/>
+        <timelinePrecedes rdf:resource="http://example.org/valayapathi#LossAndCrisis"/>
+        <rdfs:comment>Rise through maritime trade.</rdfs:comment>
+        <displayColor>#60a5fa</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#LossAndCrisis">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Event"/>
+        <timelinePrecedes rdf:resource="http://example.org/valayapathi#DebateAtCourt"/>
+        <rdfs:comment>Setback that triggers reflection.</rdfs:comment>
+        <displayColor>#ef4444</displayColor><nodeSize rdf:datatype="xsd:int">19</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#DebateAtCourt">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Event"/>
+        <occursAt rdf:resource="http://example.org/valayapathi#RoyalCourt"/>
+        <timelinePrecedes rdf:resource="http://example.org/valayapathi#RenunciationEvent"/>
+        <rdfs:comment>Public discourse on ethics &amp; renunciation.</rdfs:comment>
+        <displayColor>#9333ea</displayColor><nodeSize rdf:datatype="xsd:int">19</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/valayapathi#RenunciationEvent">
+        <rdf:type rdf:resource="http://example.org/valayapathi#Event"/>
+        <occursAt rdf:resource="http://example.org/valayapathi#JainMonastery"/>
+        <rdfs:comment>Turns to ascetic life (Jain).</rdfs:comment>
+        <displayColor>#10b981</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+
+
+</rdf:RDF>

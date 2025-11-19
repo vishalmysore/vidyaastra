@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:vid="http://vidyaastra.org/resource/"
+    xmlns:rel="http://vidyaastra.org/relations/"
+    xmlns:prov="http://www.w3.org/ns/prov#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+  <!-- Entities -->
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Arjuna">
+    <rdfs:label>Arjuna</rdfs:label>
+    <rdf:type rdf:resource="http://vidyaastra.org/resource/Hero"/>
+    <rel:memberOf rdf:resource="http://vidyaastra.org/resource/Pandava"/>
+    <rel:hasSpouse rdf:resource="http://vidyaastra.org/resource/Draupadi"/>
+    <rel:hasSpouse rdf:resource="http://vidyaastra.org/resource/Chitrangada"/>
+    <rel:hasSpouse rdf:resource="http://vidyaastra.org/resource/Uloopi"/>
+    <rel:hasChild rdf:resource="http://vidyaastra.org/resource/Abhimanyu"/>
+    <rel:allyOf rdf:resource="http://vidyaastra.org/resource/Satyaki"/>
+    <rel:teacherOf rdf:resource="http://vidyaastra.org/resource/Dronacharya"/>
+    <rel:allyOf rdf:resource="http://vidyaastra.org/resource/Krishna"/>
+    <rel:met rdf:resource="http://vidyaastra.org/resource/Hanuman"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Pandava">
+    <rdfs:label>Pandava</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Draupadi">
+    <rdfs:label>Draupadi</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Chitrangada">
+    <rdfs:label>Chitrangada</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Uloopi">
+    <rdfs:label>Uloopi</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Abhimanyu">
+    <rdfs:label>Abhimanyu</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Satyaki">
+    <rdfs:label>Satyaki</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Dronacharya">
+    <rdfs:label>Dronacharya</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Krishna">
+    <rdfs:label>Krishna</rdfs:label>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Hanuman">
+    <rdfs:label>Hanuman</rdfs:label>
+  </rdf:Description>
+
+  <!-- Provenance: graph derived from uploaded image -->
+  <rdf:Description rdf:about="http://vidyaastra.org/resource/Arjuna">
+    <prov:wasDerivedFrom rdf:resource="file:///mnt/data/9af04c9c-a729-4f9f-9f4f-0b82cc09a651.png"/>
+  </rdf:Description>
+
+</rdf:RDF>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra: Cīvaka Cintāmaṇi - Epic Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); overflow: hidden; color: #fff; }
+        svg { display: block; background: transparent; }
+        .node circle { stroke: #fff; stroke-width: 2px; cursor: pointer; transition: all 0.3s; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
+        .node:hover circle { stroke-width: 4px; filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }
+        .node text { font-size: 10px; font-weight: bold; pointer-events: none; text-anchor: middle; fill: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); }
+        .link { stroke: rgba(100, 200, 255, 0.2); stroke-width: 1px; fill: none; }
+        .link.family { stroke: #ffd700; stroke-width: 2px; opacity: 0.7; }
+        .link.alliance { stroke: #4ecdc4; stroke-width: 1.8px; opacity: 0.6; }
+        .link.divine { stroke: #a78bfa; stroke-width: 2px; opacity: 0.7; }
+        .link.event { stroke: #34d399; stroke-width: 1.8px; opacity: 0.6; }
+        .link.timeline { stroke: #ffaa00; stroke-width: 3px; stroke-dasharray: 5, 5; opacity: 0.85; }
+        .link-label { font-size: 8px; fill: #ffd700; text-anchor: middle; pointer-events: none; font-weight: bold; text-shadow: 0 0 3px rgba(0,0,0,0.8); }
+        .controls { position: absolute; top: 20px; left: 20px; background: rgba(15, 52, 96, 0.95); padding: 20px; border-radius: 10px; color: #fff; max-width: 420px; border: 2px solid #ffd700; max-height: 85vh; overflow-y: auto; z-index: 10; }
+        .controls h2 { margin: 0 0 10px 0; color: #ffd700; font-size: 1.3em; text-shadow: 0 0 10px #ffd700; }
+        .controls h3 { margin: 12px 0 8px 0; color: #4ecdc4; font-size: 0.9em; border-bottom: 1px solid #ffd700; padding-bottom: 5px; }
+        .filter-btn { background: rgba(78, 205, 196, 0.2); color: #4ecdc4; border: 1px solid #4ecdc4; padding: 6px 10px; margin: 3px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.8em; transition: all 0.3s; display: inline-block; }
+        .filter-btn.active { background: #ffd700; color: #0f3460; box-shadow: 0 0 10px #ffd700; }
+        .controls button.action { background: #4ecdc4; color: #0f3460; border: none; padding: 8px 15px; margin: 4px 4px 4px 0; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.85em; transition: all 0.3s; }
+        .controls button.action:hover { background: #ffd700; }
+        .legend { position: absolute; top: 20px; right: 20px; background: rgba(15, 52, 96, 0.95); padding: 15px; border-radius: 10px; color: #fff; border: 2px solid #4ecdc4; max-height: 85vh; overflow-y: auto; max-width: 300px; z-index: 9; font-size: 0.8em; }
+        .legend h3 { margin: 0 0 10px 0; color: #ffd700; font-size: 0.95em; }
+        .legend-item { display: flex; align-items: center; margin: 5px 0; font-size: 0.75em; }
+        .legend-color { width: 15px; height: 15px; border-radius: 50%; margin-right: 8px; border: 1px solid #fff; flex-shrink: 0; }
+        .info-panel { position: absolute; bottom: 20px; right: 20px; background: rgba(15, 52, 96, 0.98); padding: 15px; border-radius: 10px; color: #fff; max-width: 380px; display: none; border: 2px solid #4ecdc4; max-height: 400px; overflow-y: auto; z-index: 10; font-size: 0.85em; }
+        .info-panel h3 { margin: 0 0 8px 0; color: #ffd700; font-size: 0.95em; }
+        .info-section { background: rgba(78, 205, 196, 0.1); padding: 8px; margin: 6px 0; border-left: 2px solid #4ecdc4; border-radius: 2px; font-size: 0.8em; }
+        .tooltip { position: absolute; background: rgba(0,0,0,0.9); color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 0.8em; pointer-events: none; display: none; border: 1px solid #ffd700; z-index: 20; }
+        .close-btn { position: absolute; top: 8px; right: 8px; background: #ff6b6b; color: #fff; border: none; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h2>🛡️ CĪVAKA CINTĀMAṆI</h2>
+    <p style="font-size: 0.8em; margin-bottom: 8px;">Project VidyaAstra</p>
+
+    <h3>Filter by Type</h3>
+    <div>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">🗡️ Protagonists</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('royalty')">👑 Royalty</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('place')">🏛️ Places</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">📜 Events</button>
+    </div>
+
+    <h3 style="margin-top: 12px;">Actions</h3>
+    <button class="action" onclick="resetSimulation()">🔄 Reset</button>
+    <button class="action" onclick="showStats()">📊 Stats</button>
+</div>
+
+<div class="legend">
+    <h3>LEGEND</h3>
+    <strong style="color: #ffd700;">Polities</strong>
+    <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div><span>Chola</span></div>
+    <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div><span>Pandya</span></div>
+    <div class="legend-item"><div class="legend-color" style="background: #a78bfa;"></div><span>Chera</span></div>
+    <div class="legend-item"><div class="legend-color" style="background: #34d399;"></div><span>Neutral</span></div>
+    <hr style="border-color: rgba(78, 205, 196, 0.3); margin: 8px 0;">
+    <strong style="color: #ffd700;">Relationships</strong>
+    <div class="legend-item"><div style="width: 20px; height: 2px; background: #ffd700; margin-right: 8px;"></div>Family</div>
+    <div class="legend-item"><div style="width: 20px; height: 2px; background: #4ecdc4; margin-right: 8px;"></div>Alliance/Patronage</div>
+    <div class="legend-item"><div style="width: 20px; height: 2px; background: #34d399; margin-right: 8px;"></div>Event/Action</div>
+    <div class="legend-item"><div style="width: 20px; height: 2px; border-bottom: 3px dashed #ffaa00; margin-right: 8px;"></div>Timeline</div>
+    <div class="legend-item"><div style="width: 20px; height: 2px; background: #a78bfa; margin-right: 8px;"></div>Divine</div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <h3 id="nodeTitle"></h3>
+    <div id="nodeDescription"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<svg id="graph"></svg>
+
+<script>
+    const nodes = [
+        // Protagonist
+        {id: "Jivaka (Civakan)", type: "hero", faction: "neutral", color: "#34d399", size: 30, description: "Peerless hero; victories, marriages, coronation; later renunciation"},
+
+        // Mentors & Sages
+        {id: "Jain Acharya", type: "character", faction: "neutral", color: "#34d399", size: 20, description: "Spiritual guide leading to renunciation"},
+
+        // Courts & Royals (generic for multiple realms)
+        {id: "Royal Court", type: "place", faction: "neutral", color: "#34d399", size: 22, description: "Seat of power where Jivaka is crowned"},
+        {id: "Rival Kings", type: "character", faction: "neutral", color: "#34d399", size: 18, description: "Opponents subdued in conquests"},
+
+        // Places
+        {id: "Battlefields", type: "place", faction: "neutral", color: "#34d399", size: 20, description: "Sites of valor and victory"},
+        {id: "Jain Monastery", type: "place", faction: "neutral", color: "#34d399", size: 20, description: "Where Jivaka embraces ascetic life"},
+
+        // Major Events
+        {id: "Miraculous Birth", type: "event", color: "#9333ea", size: 18, description: "Extraordinary origins of Jivaka"},
+        {id: "Great Conquests", type: "event", color: "#ef4444", size: 22, description: "Series of victories over many kings"},
+        {id: "Multiple Marriages", type: "event", color: "#f59e0b", size: 20, description: "Jivaka weds several princesses"},
+        {id: "Coronation", type: "event", color: "#60a5fa", size: 20, description: "Ascends the throne and rules"},
+        {id: "Renunciation", type: "event", color: "#10b981", size: 20, description: "Abandons wealth to embrace Jain asceticism"}
+    ];
+
+    const links = [
+        // Alliances & Conflicts
+        {source: "Jivaka (Civakan)", target: "Rival Kings", type: "event", label: "Subdues"},
+        {source: "Jivaka (Civakan)", target: "Royal Court", type: "event", label: "Rules from"},
+
+        // Mentorship
+        {source: "Jain Acharya", target: "Renunciation", type: "event", label: "Guides"},
+
+        // Places
+        {source: "Great Conquests", target: "Battlefields", type: "event", label: "Fought at"},
+        {source: "Renunciation", target: "Jain Monastery", type: "event", label: "At"},
+
+        // Timeline
+        {source: "Miraculous Birth", target: "Great Conquests", type: "timeline", label: "Then"},
+        {source: "Great Conquests", target: "Multiple Marriages", type: "timeline", label: "Then"},
+        {source: "Multiple Marriages", target: "Coronation", type: "timeline", label: "Then"},
+        {source: "Coronation", target: "Renunciation", type: "timeline", label: "Finally"}
+    ];
+
+    let activeFilters = {hero: true, character: true, royalty: true, divine: true, place: true, event: true};
+
+    const width = window.innerWidth; const height = window.innerHeight;
+    const svg = d3.select("#graph").attr("width", width).attr("height", height);
+
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(120).strength(0.7))
+        .force("charge", d3.forceManyBody().strength(-450))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+    const linkGroup = svg.append("g").attr("class", "links");
+    const link = linkGroup.selectAll("line").data(links).enter().append("line")
+        .attr("class", d => `link ${d.type}`).attr("stroke-width", d => d.type === "family" ? 2.5 : 1.5);
+
+    const linkLabels = linkGroup.selectAll(".link-label").data(links).enter().append("text")
+        .attr("class", "link-label").attr("dy", -5).attr("text-anchor", "middle").text(d => d.label);
+
+    const node = svg.append("g").selectAll("g").data(nodes).enter().append("g").attr("class", "node")
+        .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended));
+
+    node.append("circle").attr("r", d => d.size).attr("fill", d => d.color);
+    node.append("text").text(d => d.id).attr("y", d => d.size + 12);
+
+    node.on("mouseover", (e, d) => showTooltip(e, d)).on("mouseout", () => hideTooltip()).on("click", (e, d) => showInfo(d));
+
+    simulation.on("tick", () => {
+        link.attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2).attr("y", d => (d.source.y + d.target.y) / 2);
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event, d){ if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; }
+    function dragged(event, d){ d.fx=event.x; d.fy=event.y; }
+    function dragended(event, d){ if (!event.active) simulation.alphaTarget(0); d.fx=null; d.fy=null; }
+
+    function showTooltip(event, d){ d3.select("#tooltip").style("display", "block").style("left", (event.pageX+10)+"px").style("top", (event.pageY-10)+"px").html(`<strong>${d.id}</strong><br/>${d.description}`); }
+    function hideTooltip(){ d3.select("#tooltip").style("display", "none"); }
+
+    function showInfo(d){
+        document.getElementById("nodeTitle").textContent = d.id + (d.type ? ` (${d.type})` : "");
+        document.getElementById("nodeDescription").innerHTML = `<div class="info-section"><strong>Type:</strong> ${d.type}</div><div class="info-section"><strong>Description:</strong> ${d.description}</div>`;
+        document.getElementById("infoPanel").style.display = "block";
+    }
+    function closeInfo(){ document.getElementById("infoPanel").style.display = "none"; }
+    function toggleFilter(type){ activeFilters[type]=!activeFilters[type]; document.querySelector(`[onclick="toggleFilter('${type}')"]`).classList.toggle("active"); updateVisibility(); }
+    function updateVisibility(){ node.style("display", d => activeFilters[d.type] ? "block" : "none"); link.style("display", d => (activeFilters[d.source.type] && activeFilters[d.target.type]) ? "block" : "none"); linkLabels.style("display", d => (activeFilters[d.source.type] && activeFilters[d.target.type]) ? "block" : "none"); }
+    function resetSimulation(){ simulation.alpha(0.3).restart(); }
+    function showStats(){ alert(`📊 CĪVAKA CINTĀMAṆI STATISTICS\n\nTotal Entities & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nArc:\n• Miraculous birth → Conquests → Marriages → Coronation → Renunciation`); }
+
+    updateVisibility();
+</script>
+</body>
+</html>

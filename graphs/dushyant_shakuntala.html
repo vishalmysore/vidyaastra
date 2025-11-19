@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra: Dushyant-Shakuntala - Epic Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d1b4e 0%, #1a2f3f 50%, #1a4d2e 100%);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        svg {
+            display: block;
+            background: transparent;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
+        }
+
+        .node text {
+            font-size: 9px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.2);
+            stroke-width: 1px;
+            fill: none;
+        }
+
+        .link.battle {
+            stroke: #ff6b6b;
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+
+        .link.family {
+            stroke: #e8b366;
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+
+        .link.alliance {
+            stroke: #4ecdc4;
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link.mentor {
+            stroke: #34d399;
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link.divine {
+            stroke: #a78bfa;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.romance {
+            stroke: #ff69b4;
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+
+        .link.event {
+            stroke: #ffa500;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link-label {
+            font-size: 8px;
+            fill: #ffd700;
+            text-anchor: middle;
+            pointer-events: none;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(26, 45, 46, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 400px;
+            border: 2px solid #e8b366;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .controls h2 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+            font-size: 1.3em;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .controls h3 {
+            margin: 12px 0 8px 0;
+            color: #4ecdc4;
+            font-size: 0.9em;
+            border-bottom: 1px solid #e8b366;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            border: 1px solid #4ecdc4;
+            padding: 6px 10px;
+            margin: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8em;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .filter-btn.active {
+            background: #ffd700;
+            color: #1a2f3f;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .controls button {
+            background: #4ecdc4;
+            color: #1a2f3f;
+            border: none;
+            padding: 8px 15px;
+            margin: 4px 4px 4px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #ffd700;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 45, 46, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            border: 2px solid #4ecdc4;
+            max-height: 85vh;
+            overflow-y: auto;
+            max-width: 280px;
+            z-index: 9;
+            font-size: 0.8em;
+        }
+
+        .legend h3 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+            font-size: 0.95em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 0.75em;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #fff;
+            flex-shrink: 0;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 45, 46, 0.98);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 380px;
+            display: none;
+            border: 2px solid #4ecdc4;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 10;
+            font-size: 0.85em;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 8px 0;
+            color: #ffd700;
+            font-size: 0.95em;
+        }
+
+        .info-section {
+            background: rgba(78, 205, 196, 0.1);
+            padding: 8px;
+            margin: 6px 0;
+            border-left: 2px solid #4ecdc4;
+            border-radius: 2px;
+            font-size: 0.8em;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            pointer-events: none;
+            display: none;
+            border: 1px solid #ffd700;
+            z-index: 20;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h2>💫 DUSHYANT-SHAKUNTALA</h2>
+    <p style="font-size: 0.8em; margin-bottom: 8px;">From Mahabharata & Kalidasa's Play</p>
+
+    <h3>Filter by Type</h3>
+    <div>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">🏹 Heroes</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('sage')">🧙 Sages</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">🎭 Events</button>
+    </div>
+
+    <h3 style="margin-top: 12px;">Actions</h3>
+    <button onclick="resetSimulation()">🔄 Reset</button>
+    <button onclick="showStats()">📊 Stats</button>
+</div>
+
+<div class="legend">
+    <h3>LEGEND</h3>
+    <strong style="color: #ffd700;">Character Types</strong>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #4ecdc4;"></div>
+        <span>Main Heroes</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #e8b366;"></div>
+        <span>Royal Family</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #a78bfa;"></div>
+        <span>Divine Beings</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #34d399;"></div>
+        <span>Sages & Mentors</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ff69b4;"></div>
+        <span>Apsaras/Celestials</span>
+    </div>
+    <hr style="border-color: rgba(78, 205, 196, 0.3); margin: 8px 0;">
+    <strong style="color: #ffd700;">Relationships</strong>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #e8b366; margin-right: 8px;"></div>
+        Family
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #ff69b4; margin-right: 8px;"></div>
+        Romance/Love
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #4ecdc4; margin-right: 8px;"></div>
+        Alliance
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #34d399; margin-right: 8px;"></div>
+        Mentor/Guide
+    </div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <h3 id="nodeTitle"></h3>
+    <div id="nodeDescription"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<svg id="graph"></svg>
+
+<script>
+    // *** START NODES ***
+    const nodes = [
+        // MAIN HEROES
+        {id: "Dushyant", type: "hero", faction: "royal", color: "#4ecdc4", size: 32, description: "👑 Legendary king of Puru dynasty | Famous for performing the Ashvamedha ritual | Powerful and virtuous ruler | Married Shakuntala through Gandharva marriage"},
+        {id: "Shakuntala", type: "hero", faction: "royal", color: "#4ecdc4", size: 30, description: "👸 Wife of Dushyant | Adopted daughter of Kanva Rishi | Born in the forest | Symbol of virtue and grace"},
+        {id: "Bharata", type: "hero", faction: "royal", color: "#4ecdc4", size: 28, description: "👑 Son of Dushyant and Shakuntala | Founder of Bharata dynasty | Emperor of India | Became extremely powerful and righteous"},
+
+        // SHAKUNTALA'S BIRTH & FAMILY
+        {id: "Menaka", type: "character", faction: "celestial", color: "#ff69b4", size: 24, description: "✨ Celestial apsara | Mother of Shakuntala | Sent by Indra to distract sage Vishvamitra"},
+        {id: "Vishvamitra", type: "sage", faction: "sage", color: "#34d399", size: 23, description: "🧙 Great sage | Father of Shakuntala | Cursed her initially | Later blessed her"},
+        {id: "Kanva Rishi", type: "sage", faction: "sage", color: "#34d399", size: 24, description: "🧙 Foster father of Shakuntala | Adopted her | Raised her in hermitage | Blessed her wedding"},
+        // *** FIX APPLIED HERE ***
+        {id: "Priyamvada", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👧 Friend of Shakuntala | Daughter of Marichi Rishi | Confidante and playmate"},
+        {id: "Anusuya", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👧 Friend of Shakuntala | Daughter of Gautama Rishi | Devoted companion"},
+        // *** END FIX ***
+
+        // DUSHYANT'S FAMILY & COURT
+        {id: "King Ajamidha", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👑 Ancestor of Dushyant | Founder of the dynasty"},
+        {id: "Puru", type: "character", faction: "royal", color: "#e8b366", size: 19, description: "👑 Founder of Puru dynasty | Ancestor of Dushyant"},
+        {id: "Queen Sudeshna", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👑 Queen of Hastinapur | Cared for Bharata | Helped during confusion"},
+        {id: "General Raivatak", type: "character", faction: "royal", color: "#e8b366", size: 18, description: "⚔️ Commander of Dushyant's army | Loyal general | Fought Ashvamedha war"},
+
+        // CELESTIAL & DIVINE BEINGS
+        {id: "Indra", type: "divine", faction: "divine", color: "#a78bfa", size: 25, description: "⚡ King of gods | Sent Menaka to distract Vishvamitra | Supporter of Dushyant"},
+        {id: "Brahma", type: "divine", faction: "divine", color: "#a78bfa", size: 23, description: "🙏 Creator god | Blessed Shakuntala | Confirmed her marriage"},
+        {id: "Matali", type: "divine", faction: "divine", color: "#a78bfa", size: 21, description: "🦅 Celestial charioteer | Took Dushyant to heaven | Indra's messenger"},
+        {id: "Marichi", type: "sage", faction: "sage", color: "#34d399", size: 21, description: "🧙 Ancient sage | Father of Priyamvada | Blessed the events"},
+        {id: "Gautama Rishi", type: "sage", faction: "sage", color: "#34d399", size: 20, description: "🧙 Father of Anusuya | Dweller of the hermitage"},
+        {id: "Bharadvaja", type: "sage", faction: "sage", color: "#34d399", size: 20, description: "🧙 Great sage | Connected to the story | Mentor of many"},
+
+        // CHARACTERS INVOLVED IN COMPLICATIONS
+        {id: "Durvasa", type: "sage", faction: "sage", color: "#34d399", size: 21, description: "🧙 Powerful sage with temperamental nature | Cursed Shakuntala for forgetting him | Curse caused the separation"},
+        {id: "Madhavya", type: "character", faction: "royal", color: "#e8b366", size: 18, description: "🤡 Jester/buffoon | Dushyant's companion | Comic relief | Loyal friend"},
+        {id: "Vetravati", type: "character", faction: "royal", color: "#e8b366", size: 17, description: "👧 Servant in the hermitage | Helped Shakuntala"},
+        {id: "Doorkeeper", type: "character", faction: "royal", color: "#e8b366", size: 16, description: "🚪 Palace official | Refused Shakuntala entry | Caused initial rejection"},
+
+        // KEY LOCATIONS & EVENTS
+        {id: "Kanva Hermitage", type: "event", color: "#ffa500", size: 20, description: "🌲 Forest hermitage | Where Shakuntala grew up | Meeting place of Dushyant and Shakuntala"},
+        {id: "First Meeting", type: "event", color: "#ff69b4", size: 19, description: "💕 Dushyant hunted near hermitage | Love at first sight | Epic romance begins"},
+        {id: "Gandharva Marriage", type: "event", color: "#ff69b4", size: 21, description: "💍 Secret wedding ceremony | No witnesses required | Mutual consent marriage | Gandharva tradition"},
+        {id: "Durvasa's Curse", type: "event", color: "#ff6b6b", size: 20, description: "😔 Shakuntala forgot sage Durvasa | Sage cursed her to be forgotten | Central turning point"},
+        {id: "Separation", type: "event", color: "#ff6b6b", size: 20, description: "💔 Dushyant doesn't recognize Shakuntala | Heartbroken rejection | Separation tragedy"},
+        {id: "Token Discovery", type: "event", color: "#ffa500", size: 19, description: "💎 Ring found in fish | Dushyant's memory returns | Recognition moment"},
+        {id: "Reunion", type: "event", color: "#4ecdc4", size: 20, description: "💕 Dushyant recognizes Shakuntala | Passionate reunion | Joy and celebration"},
+        {id: "Ashvamedha Ritual", type: "event", color: "#ffa500", size: 20, description: "🐴 Vedic horse sacrifice ritual | Performed by Dushyant | Sign of imperial power"},
+        {id: "Bharata's Birth", type: "event", color: "#4ecdc4", size: 19, description: "👶 Son born during separation | Later recognized by Dushyant | Became emperor"},
+    ];
+
+    // *** START LINKS ***
+    const links = [
+        // ROMANTIC RELATIONSHIPS
+        {source: "Dushyant", target: "Shakuntala", type: "romance", label: "💕 Loves/Marries"},
+        {source: "Shakuntala", target: "Dushyant", type: "romance", label: "💕 Loves/Marries"},
+
+        // FAMILY RELATIONSHIPS
+        {source: "Dushyant", target: "Bharata", type: "family", label: "Father"},
+        {source: "Shakuntala", target: "Bharata", type: "family", label: "Mother"},
+        {source: "Menaka", target: "Shakuntala", type: "family", label: "Mother"},
+        {source: "Vishvamitra", target: "Shakuntala", type: "family", label: "Father"},
+        {source: "Kanva Rishi", target: "Shakuntala", type: "family", label: "Foster Father"},
+        {source: "Shakuntala", target: "Priyamvada", type: "alliance", label: "Friend"},
+        {source: "Shakuntala", target: "Anusuya", type: "alliance", label: "Friend"},
+
+        // DUSHYANT'S FAMILY LINEAGE
+        {source: "Puru", target: "Dushyant", type: "family", label: "Ancestor"},
+        {source: "Dushyant", target: "Queen Sudeshna", type: "family", label: "Queen/Court"},
+
+        // DIVINE & SAGE CONNECTIONS
+        {source: "Indra", target: "Menaka", type: "divine", label: "Sent her"},
+        {source: "Indra", target: "Dushyant", type: "alliance", label: "Allied with"},
+        {source: "Brahma", target: "Shakuntala", type: "divine", label: "Blessed"},
+        {source: "Brahma", target: "Dushyant", type: "divine", label: "Blessed"},
+        {source: "Matali", target: "Dushyant", type: "divine", label: "Celestial Guide"},
+        {source: "Vishvamitra", target: "Menaka", type: "romance", label: "Enchanted by"},
+        {source: "Marichi", target: "Priyamvada", type: "family", label: "Father"},
+        {source: "Gautama Rishi", target: "Anusuya", type: "family", label: "Father"},
+
+        // SAGE RELATIONSHIPS
+        {source: "Kanva Rishi", target: "Gautama Rishi", type: "alliance", label: "Colleague"},
+        {source: "Kanva Rishi", target: "Marichi", type: "alliance", label: "Colleague"},
+        {source: "Durvasa", target: "Vishvamitra", type: "alliance", label: "Fellow Sage"},
+
+        // MAJOR EVENTS
+        {source: "Dushyant", target: "Kanva Hermitage", type: "event", label: "Visited"},
+        {source: "Shakuntala", target: "Kanva Hermitage", type: "event", label: "Grew up in"},
+        {source: "Dushyant", target: "First Meeting", type: "event", label: "Participated in"},
+        {source: "Shakuntala", target: "First Meeting", type: "event", label: "Participated in"},
+        {source: "Dushyant", target: "Gandharva Marriage", type: "event", label: "Married in"},
+        {source: "Shakuntala", target: "Gandharva Marriage", type: "event", label: "Married in"},
+        {source: "Durvasa", target: "Durvasa's Curse", type: "event", label: "Initiated"},
+        {source: "Shakuntala", target: "Durvasa's Curse", type: "event", label: "Victim of"},
+        {source: "Dushyant", target: "Separation", type: "event", label: "Caused by forgetting"},
+        {source: "Shakuntala", target: "Separation", type: "event", label: "Suffered by"},
+        {source: "Dushyant", target: "Token Discovery", type: "event", label: "Memory restored by"},
+        {source: "Dushyant", target: "Reunion", type: "event", label: "Reunited in"},
+        {source: "Shakuntala", target: "Reunion", type: "event", label: "Reunited in"},
+        {source: "Bharata", target: "Bharata's Birth", type: "event", label: "Born during"},
+        {source: "Dushyant", target: "Ashvamedha Ritual", type: "event", label: "Performed"},
+        {source: "Bharata", target: "Dushyant", type: "family", label: "Recognized by"},
+
+        // SUPPORTING CHARACTERS
+        {source: "Madhavya", target: "Dushyant", type: "alliance", label: "Companion"},
+        {source: "General Raivatak", target: "Dushyant", type: "alliance", label: "General"},
+        {source: "Doorkeeper", target: "Dushyant", type: "alliance", label: "Palace official"},
+        {source: "Vetravati", target: "Shakuntala", type: "alliance", label: "Servant"},
+        {source: "Queen Sudeshna", target: "Bharata", type: "family", label: "Cared for"},
+    ];
+
+    let activeFilters = {hero: true, character: true, divine: true, sage: true, event: true};
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("#graph")
+        .attr("width", width)
+        .attr("height", height);
+
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(120).strength(0.7))
+        .force("charge", d3.forceManyBody().strength(-450))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+    const linkGroup = svg.append("g").attr("class", "links");
+    const link = linkGroup.selectAll("line")
+        .data(links).enter().append("line")
+        .attr("class", d => `link ${d.type}`)
+        .attr("stroke-width", d => d.type === "family" || d.type === "romance" ? 2.5 : 1.5);
+
+    const linkLabels = linkGroup.selectAll(".link-label")
+        .data(links).enter().append("text")
+        .attr("class", "link-label")
+        .attr("dy", -5)
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+
+    const node = svg.append("g").selectAll("g")
+        .data(nodes).enter().append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    node.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => d.color);
+
+    node.append("text")
+        .text(d => d.id)
+        .attr("y", d => d.size + 12);
+
+    node.on("mouseover", function(event, d) {
+        showTooltip(event, d);
+    }).on("mouseout", function() {
+        hideTooltip();
+    }).on("click", function(event, d) {
+        showInfo(d);
+    });
+
+    simulation.on("tick", () => {
+        link.attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function showTooltip(event, d) {
+        d3.select("#tooltip")
+            .style("display", "block")
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px")
+            .html(`<strong>${d.id}</strong><br/>${d.description}`);
+    }
+
+    function hideTooltip() {
+        d3.select("#tooltip").style("display", "none");
+    }
+
+    function showInfo(d) {
+        document.getElementById("nodeTitle").textContent = d.id + (d.type ? ` (${d.type})` : "");
+
+        let factionInfo = d.faction ? `<div class="info-section"><strong>Faction:</strong> ${d.faction.charAt(0).toUpperCase() + d.faction.slice(1)}</div>` : '';
+
+        document.getElementById("nodeDescription").innerHTML =
+            `<div class="info-section"><strong>Type:</strong> ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div>` +
+            factionInfo +
+            `<div class="info-section"><strong>Description:</strong> ${d.description}</div>`;
+        document.getElementById("infoPanel").style.display = "block";
+    }
+
+    function closeInfo() {
+        document.getElementById("infoPanel").style.display = "none";
+    }
+
+    function toggleFilter(type) {
+        activeFilters[type] = !activeFilters[type];
+        document.querySelector(`[onclick="toggleFilter('${type}')"]`).classList.toggle("active");
+        updateVisibility();
+    }
+
+    function updateVisibility() {
+        node.style("display", d => activeFilters[d.type] ? "block" : "none");
+
+        link.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+
+        linkLabels.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+    }
+
+    function resetSimulation() {
+        simulation.alpha(0.3).restart();
+    }
+
+    function showStats() {
+        alert(`📊 DUSHYANT-SHAKUNTALA STATISTICS\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThis knowledge graph covers the romantic epic story of Dushyant and Shakuntala, including characters from the play by Kalidasa and the Mahabharata account. It showcases one of literature's greatest love stories with themes of duty, separation, and reunion.`);
+    }
+
+    updateVisibility();
+</script>
+</body>
+</html>

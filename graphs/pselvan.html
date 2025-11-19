@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra: Ponniyin Selvan - Chola Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        /* CSS styles updated for Ponniyin Selvan theme: Deep Reds, Golds, and Royal Blues */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #380202 0%, #6e2c07 50%, #8b4513 100%);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        svg {
+            display: block;
+            background: transparent;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
+        }
+
+        .node text {
+            font-size: 9px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .link {
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 1px;
+            fill: none;
+        }
+
+        .link.family {
+            stroke: #ffd700; /* Gold for Family Ties */
+            stroke-width: 3px;
+            opacity: 0.9;
+        }
+
+        .link.loyalty {
+            stroke: #3498db; /* Blue for Loyalty/Service */
+            stroke-width: 2px;
+            opacity: 0.7;
+        }
+
+        .link.conspiracy {
+            stroke: #e74c3c; /* Red for Antagonism/Plot */
+            stroke-width: 2.5px;
+            opacity: 0.8;
+            stroke-dasharray: 5, 3;
+        }
+
+        .link.love {
+            stroke: #f1c40f; /* Yellow for Romantic connection */
+            stroke-width: 2px;
+            opacity: 0.7;
+        }
+
+        .link-label {
+            font-size: 8px;
+            fill: #f1c40f;
+            text-anchor: middle;
+            pointer-events: none;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(56, 2, 2, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 400px;
+            border: 2px solid #ffd700;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .controls h2 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+            font-size: 1.3em;
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .controls h3 {
+            margin: 12px 0 8px 0;
+            color: #3498db;
+            font-size: 0.9em;
+            border-bottom: 1px solid #ffd700;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 1px solid #3498db;
+            padding: 6px 10px;
+            margin: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8em;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .filter-btn.active {
+            background: #ffd700;
+            color: #380202;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .controls button {
+            background: #3498db;
+            color: #380202;
+            border: none;
+            padding: 8px 15px;
+            margin: 4px 4px 4px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #ffd700;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(56, 2, 2, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            border: 2px solid #3498db;
+            max-height: 85vh;
+            overflow-y: auto;
+            max-width: 280px;
+            z-index: 9;
+            font-size: 0.8em;
+        }
+
+        .legend h3 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+            font-size: 0.95em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 0.75em;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #fff;
+            flex-shrink: 0;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(56, 2, 2, 0.98);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 380px;
+            display: none;
+            border: 2px solid #3498db;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 10;
+            font-size: 0.85em;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 8px 0;
+            color: #ffd700;
+            font-size: 0.95em;
+        }
+
+        .info-section {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 8px;
+            margin: 6px 0;
+            border-left: 2px solid #3498db;
+            border-radius: 2px;
+            font-size: 0.8em;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            pointer-events: none;
+            display: none;
+            border: 1px solid #ffd700;
+            z-index: 20;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h2>👑 PONNIYIN SELVAN NETWORK</h2>
+    <p style="font-size: 0.8em; margin-bottom: 8px;">The Chola Dynasty Saga</p>
+
+    <h3>Filter by Faction</h3>
+    <div>
+        <button class="filter-btn active" onclick="toggleFilter('chola')">🦁 Chola Royals</button>
+        <button class="filter-btn active" onclick="toggleFilter('vassal')">⚔️ Loyal Vassals</button>
+        <button class="filter-btn active" onclick="toggleFilter('antagonist')">🐍 Conspirators</button>
+        <button class="filter-btn active" onclick="toggleFilter('secret')">🎭 Secret/Mystery</button>
+    </div>
+
+    <h3 style="margin-top: 12px;">Actions</h3>
+    <button onclick="resetSimulation()">🔄 Reset</button>
+    <button onclick="showStats()">📊 Stats</button>
+</div>
+
+<div class="legend">
+    <h3>LEGEND</h3>
+    <strong style="color: #ffd700;">Node Types</strong>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #e74c3c;"></div>
+        <span>Antagonists/Conspirators</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ffd700;"></div>
+        <span>Chola Royal Family</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #3498db;"></div>
+        <span>Loyal Vassals/Heroes</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #9b59b6;"></div>
+        <span>Mystery/Secret Characters</span>
+    </div>
+    <hr style="border-color: rgba(52, 152, 219, 0.3); margin: 8px 0;">
+    <strong style="color: #ffd700;">Relationships</strong>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #ffd700; margin-right: 8px;"></div>
+        Family/Siblings
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #3498db; margin-right: 8px;"></div>
+        Loyalty/Messenger
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #e74c3c; margin-right: 8px;"></div>
+        Conspiracy/Conflict
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #f1c40f; margin-right: 8px;"></div>
+        Romantic Interest
+    </div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <h3 id="nodeTitle"></h3>
+    <div id="nodeDescription"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<svg id="graph"></svg>
+
+<script>
+    // *** START NODES ***
+    const nodes = [
+        // CHOLA ROYAL FAMILY (type: chola, color: #ffd700)
+        {id: "Sundara Chola", type: "chola", color: "#ffd700", size: 30, description: "👑 Reigning Emperor of the Chola Empire | Ailing and politically weak"},
+        {id: "Aditya Karikalan", type: "chola", color: "#ffd700", size: 35, description: "⚔️ Crown Prince and Commander of the Northern Armies | Hot-tempered and tragic figure | Eldest son"},
+        {id: "Kundavai", type: "chola", color: "#ffd700", size: 30, description: "👸 Chola Princess | Highly intelligent and politically astute | Elder daughter"},
+        {id: "Arunmozhi Varman", type: "chola", color: "#ffd700", size: 38, description: "🦁 Ponniyin Selvan (The Son of Ponni) | Younger Prince, popular with the people | Later Rajaraja I"},
+        {id: "Anbil Sundari", type: "chola", color: "#ffd700", size: 20, description: "🤫 The younger, secret daughter of Sundara Chola, raised in obscurity"},
+
+        // LOYAL VASSALS & HEROES (type: vassal, color: #3498db)
+        {id: "Vandiyathevan", type: "vassal", color: "#3498db", size: 40, description: "🐎 Valorous messenger from Vana clan | Protagonist, serving Aditya Karikalan and Kundavai | Love interest of Kundavai"},
+        {id: "Azhwarkadiyan Nambi", type: "vassal", color: "#3498db", size: 30, description: "🕵️‍♂️ Vaishnavite spy and intelligence agent | Brother of Nandini | Works for the Prime Minister"},
+        {id: "Periya Pazhuvettarayar", type: "vassal", color: "#3498db", size: 25, description: "🛡️ Lord of Pazhuvur and Chancellor | Elder statesman, fiercely loyal to the Chola throne but manipulated by his young wife"},
+        {id: "Aniruddha Brahmarayar", type: "vassal", color: "#3498db", size: 28, description: "🧠 Prime Minister | Chief strategist and spymaster | Commands Azhwarkadiyan"},
+
+        // ANTAGONISTS & CONSPIRATORS (type: antagonist, color: #e74c3c)
+        {id: "Nandini", type: "antagonist", color: "#e74c3c", size: 38, description: "🐍 Chief conspirator | Wife of Periya Pazhuvettarayar | Former lover of Karikalan | Beautiful and manipulative"},
+        {id: "Madurantaka Chola", type: "antagonist", color: "#e74c3c", size: 25, description: "👑 Claim to the throne | Supported by the conspiracy | Cousin of Sundara Chola (Later Uttama Chola)"},
+        {id: "Chinnapazhuvettarayar", type: "antagonist", color: "#e74c3c", size: 22, description: "⚔️ Lord of Tanjore Fort and Treasurer | Pazhuvur faction member, loyal to his brother Periya"},
+        {id: "Sambuvarayar", type: "antagonist", color: "#e74c3c", size: 20, description: "🏰 Feudal Lord and Conspirator | Provides the fort for the major conspiracy meeting"},
+        {id: "Pandya Conspirators", type: "antagonist", color: "#e74c3c", size: 20, description: "🗡️ Group sworn to avenge the death of Veerapandyan (their king)"},
+
+        // MYSTERY & HIDDEN CHARACTERS (type: secret, color: #9b59b6)
+        {id: "Veerapandyan", type: "secret", color: "#9b59b6", size: 20, description: "💀 Pandya King killed by Aditya Karikalan | His death drives the entire vengeance plot"},
+        {id: "Oomai Rani", type: "secret", color: "#9b59b6", size: 33, description: "🤫 The mute queen/woman | Appears mysteriously | Resembles Nandini and Sundara Chola's mother | Protects Arunmozhi"},
+        {id: "Mandakini", type: "secret", color: "#9b59b6", size: 25, description: "🌊 The true identity of Oomai Rani | Linked to Sundara Chola's past"},
+
+        // LOCATIONS (type: place, color: #2ecc71)
+        {id: "Thanjavur", type: "place", color: "#2ecc71", size: 25, description: "📍 Chola Capital | Seat of the Pazhuvettarayar's power"},
+        {id: "Eezham (Lanka)", type: "place", color: "#2ecc71", size: 22, description: "🏝️ Where Arunmozhi Varman is fighting and first introduced"},
+        {id: "Kadavur", type: "place", color: "#2ecc71", size: 20, description: "🏰 Sambuvarayar's fort, site of the midnight conspiracy meeting"},
+    ];
+
+    // *** START LINKS ***
+    const links = [
+        // CHOLA FAMILY TIES
+        {source: "Sundara Chola", target: "Aditya Karikalan", type: "family", label: "Father"},
+        {source: "Sundara Chola", target: "Kundavai", type: "family", label: "Father"},
+        {source: "Sundara Chola", target: "Arunmozhi Varman", type: "family", label: "Father"},
+        {source: "Aditya Karikalan", target: "Kundavai", type: "family", label: "Brother/Sister"},
+        {source: "Arunmozhi Varman", target: "Kundavai", type: "family", label: "Brother/Sister"},
+        {source: "Sundara Chola", target: "Anbil Sundari", type: "family", label: "Secret Father"},
+
+        // LOYALTY & SERVICE
+        {source: "Vandiyathevan", target: "Aditya Karikalan", type: "loyalty", label: "Serves/Messenger"},
+        {source: "Vandiyathevan", target: "Kundavai", type: "loyalty", label: "Serves/Aids"},
+        {source: "Aniruddha Brahmarayar", target: "Sundara Chola", type: "loyalty", label: "Prime Minister"},
+        {source: "Azhwarkadiyan Nambi", target: "Aniruddha Brahmarayar", type: "loyalty", label: "Spymaster"},
+        {source: "Periya Pazhuvettarayar", target: "Thanjavur", type: "loyalty", label: "Controls Fort"},
+        {source: "Chinnapazhuvettarayar", target: "Periya Pazhuvettarayar", type: "loyalty", label: "Brother/Ally"},
+
+        // CONSPIRACY & CONFLICT
+        {source: "Periya Pazhuvettarayar", target: "Nandini", type: "family", label: "Husband/Wife"},
+        {source: "Nandini", target: "Aditya Karikalan", type: "conspiracy", label: "Seeks Vengeance"},
+        {source: "Aditya Karikalan", target: "Veerapandyan", type: "conspiracy", label: "Killed"},
+        {source: "Nandini", target: "Pandya Conspirators", type: "conspiracy", label: "Leads Plot"},
+        {source: "Sambuvarayar", target: "Pandya Conspirators", type: "conspiracy", label: "Hosts Meeting"},
+        {source: "Madurantaka Chola", target: "Pandya Conspirators", type: "conspiracy", label: "Claimant"},
+        {source: "Nandini", target: "Madurantaka Chola", type: "conspiracy", label: "Aids Plot"},
+        {source: "Vandiyathevan", target: "Nandini", type: "conspiracy", label: "Investigates"},
+
+        // ROMANCE
+        {source: "Vandiyathevan", target: "Kundavai", type: "love", label: "In love with"},
+        {source: "Aditya Karikalan", target: "Nandini", type: "love", label: "Former Lover"},
+
+        // SECRET & MYSTERY LINKS
+        {source: "Oomai Rani", target: "Arunmozhi Varman", type: "secret", label: "Protects"},
+        {source: "Oomai Rani", target: "Mandakini", type: "secret", label: "Is"},
+        {source: "Mandakini", target: "Sundara Chola", type: "secret", label: "Past Connection"},
+        {source: "Nandini", target: "Mandakini", type: "secret", label: "Resembles/Twin"},
+        {source: "Azhwarkadiyan Nambi", target: "Nandini", type: "family", label: "Brother/Sister"},
+        {source: "Veerapandyan", target: "Pandya Conspirators", type: "conspiracy", label: "Late King"},
+
+        // LOCATION LINKS
+        {source: "Arunmozhi Varman", target: "Eezham (Lanka)", type: "loyalty", label: "Fights in"},
+        {source: "Sundara Chola", target: "Thanjavur", type: "chola", label: "Resides at"},
+        {source: "Nandini", target: "Thanjavur", type: "antagonist", label: "Lives at"},
+        {source: "Sambuvarayar", target: "Kadavur", type: "antagonist", label: "Lord of"},
+        {source: "Pandya Conspirators", target: "Kadavur", type: "conspiracy", label: "Meets at"},
+    ];
+
+    let activeFilters = {chola: true, vassal: true, antagonist: true, secret: true};
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("#graph")
+        .attr("width", width)
+        .attr("height", height);
+
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(150).strength(0.7))
+        .force("charge", d3.forceManyBody().strength(-650))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+    const linkGroup = svg.append("g").attr("class", "links");
+    const link = linkGroup.selectAll("line")
+        .data(links).enter().append("line")
+        .attr("class", d => `link ${d.type}`)
+        .attr("stroke-width", d => d.type === "family" ? 3 : 2);
+
+    const linkLabels = linkGroup.selectAll(".link-label")
+        .data(links).enter().append("text")
+        .attr("class", "link-label")
+        .attr("dy", -5)
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+
+    const node = svg.append("g").selectAll("g")
+        .data(nodes).enter().append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    node.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => d.color);
+
+    node.append("text")
+        .text(d => d.id)
+        .attr("y", d => d.size + 12);
+
+    node.on("mouseover", function(event, d) {
+        showTooltip(event, d);
+    }).on("mouseout", function() {
+        hideTooltip();
+    }).on("click", function(event, d) {
+        showInfo(d);
+    });
+
+    simulation.on("tick", () => {
+        link.attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function showTooltip(event, d) {
+        d3.select("#tooltip")
+            .style("display", "block")
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px")
+            .html(`<strong>${d.id}</strong><br/>${d.description}`);
+    }
+
+    function hideTooltip() {
+        d3.select("#tooltip").style("display", "none");
+    }
+
+    function showInfo(d) {
+        document.getElementById("nodeTitle").textContent = d.id + (d.type ? ` (${d.type})` : "");
+
+        let typeInfo = d.type ? `<div class="info-section"><strong>Faction:</strong> ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div>` : '';
+
+        document.getElementById("nodeDescription").innerHTML =
+            typeInfo +
+            `<div class="info-section"><strong>Role/Description:</strong> ${d.description}</div>`;
+        document.getElementById("infoPanel").style.display = "block";
+    }
+
+    function closeInfo() {
+        document.getElementById("infoPanel").style.display = "none";
+    }
+
+    function toggleFilter(type) {
+        activeFilters[type] = !activeFilters[type];
+        document.querySelector(`[onclick="toggleFilter('${type}')"]`).classList.toggle("active");
+        updateVisibility();
+    }
+
+    function updateVisibility() {
+        node.style("display", d => activeFilters[d.type] ? "block" : "none");
+
+        link.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+
+        linkLabels.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+    }
+
+    function resetSimulation() {
+        simulation.alpha(0.3).restart();
+    }
+
+    function showStats() {
+        alert(`📊 PONNIYIN SELVAN STATISTICS\n\nTotal Characters & Factions: ${nodes.length}\nTotal Relationships & Conflict Lines: ${links.length}\n\nThis knowledge graph illustrates the complex political web of the Chola saga, highlighting the conflict between the Royal Family, the Loyalists, and the Pazhuvettarayar-led Conspiracy.`);
+    }
+
+    updateVisibility();
+</script>
+</body>
+</html>

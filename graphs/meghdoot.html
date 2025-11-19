@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra: Meghadoot - The Cloud Messenger Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        /* CSS styles updated for Meghadoot theme: Blues, Greens, and Light Golds for the Sky and Earth */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1f4068 0%, #1e5f74 50%, #4c5a6d 100%);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        svg {
+            display: block;
+            background: transparent;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
+        }
+
+        .node text {
+            font-size: 9px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.2);
+            stroke-width: 1px;
+            fill: none;
+        }
+
+        .link.journey {
+            stroke: #7fb5a3; /* Misty Green for the Path */
+            stroke-width: 2px;
+            opacity: 0.8;
+            stroke-dasharray: 4, 2;
+        }
+
+        .link.relation {
+            stroke: #ff9f4d; /* Sunset Orange for Personal Relations */
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+
+        .link.mythology {
+            stroke: #a78bfa; /* Purple for Divine connections */
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.message {
+            stroke: #f7d794; /* Gold for the Message itself */
+            stroke-width: 3px;
+            opacity: 0.9;
+        }
+
+        .link-label {
+            font-size: 8px;
+            fill: #f7d794;
+            text-anchor: middle;
+            pointer-events: none;
+            font-weight: bold;
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(31, 64, 104, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 400px;
+            border: 2px solid #7fb5a3;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .controls h2 {
+            margin: 0 0 10px 0;
+            color: #f7d794;
+            font-size: 1.3em;
+            text-shadow: 0 0 10px #f7d794;
+        }
+
+        .controls h3 {
+            margin: 12px 0 8px 0;
+            color: #7fb5a3;
+            font-size: 0.9em;
+            border-bottom: 1px solid #4c5a6d;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: rgba(127, 181, 163, 0.2);
+            color: #7fb5a3;
+            border: 1px solid #7fb5a3;
+            padding: 6px 10px;
+            margin: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.8em;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .filter-btn.active {
+            background: #f7d794;
+            color: #1f4068;
+            box-shadow: 0 0 10px #f7d794;
+        }
+
+        .controls button {
+            background: #7fb5a3;
+            color: #1f4068;
+            border: none;
+            padding: 8px 15px;
+            margin: 4px 4px 4px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .controls button:hover {
+            background: #f7d794;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(31, 64, 104, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            border: 2px solid #7fb5a3;
+            max-height: 85vh;
+            overflow-y: auto;
+            max-width: 280px;
+            z-index: 9;
+            font-size: 0.8em;
+        }
+
+        .legend h3 {
+            margin: 0 0 10px 0;
+            color: #f7d794;
+            font-size: 0.95em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 0.75em;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #fff;
+            flex-shrink: 0;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(31, 64, 104, 0.98);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 380px;
+            display: none;
+            border: 2px solid #7fb5a3;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 10;
+            font-size: 0.85em;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 8px 0;
+            color: #f7d794;
+            font-size: 0.95em;
+        }
+
+        .info-section {
+            background: rgba(127, 181, 163, 0.1);
+            padding: 8px;
+            margin: 6px 0;
+            border-left: 2px solid #7fb5a3;
+            border-radius: 2px;
+            font-size: 0.8em;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            pointer-events: none;
+            display: none;
+            border: 1px solid #f7d794;
+            z-index: 20;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h2>☁️ MEGHADOOT NETWORK</h2>
+    <p style="font-size: 0.8em; margin-bottom: 8px;">Kalidasa's Epic Journey</p>
+
+    <h3>Filter by Type</h3>
+    <div>
+        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('place')">📍 Locations</button>
+        <button class="filter-btn active" onclick="toggleFilter('path')">🗺️ Path Stops</button>
+    </div>
+
+    <h3 style="margin-top: 12px;">Actions</h3>
+    <button onclick="resetSimulation()">🔄 Reset</button>
+    <button onclick="showStats()">📊 Stats</button>
+</div>
+
+<div class="legend">
+    <h3>LEGEND</h3>
+    <strong style="color: #f7d794;">Node Types</strong>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ff9f4d;"></div>
+        <span>Main Characters (Yaksha, Wife, Cloud)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #7fb5a3;"></div>
+        <span>Major Locations (Start/End)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #a78bfa;"></div>
+        <span>Divine Figures/Mythology</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #20948b;"></div>
+        <span>Stops on the Cloud's Path</span>
+    </div>
+    <hr style="border-color: rgba(127, 181, 163, 0.3); margin: 8px 0;">
+    <strong style="color: #f7d794;">Relationships</strong>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #ff9f4d; margin-right: 8px;"></div>
+        Personal Relation (Love, Curse)
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #7fb5a3; margin-right: 8px;"></div>
+        Cloud's Journey Path
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #f7d794; margin-right: 8px;"></div>
+        Message/Instruction
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #a78bfa; margin-right: 8px;"></div>
+        Mythological Connection
+    </div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <h3 id="nodeTitle"></h3>
+    <div id="nodeDescription"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<svg id="graph"></svg>
+
+<script>
+    // *** START NODES ***
+    const nodes = [
+        // MAIN CHARACTERS
+        {id: "Yaksha", type: "character", color: "#ff9f4d", size: 30, description: "👤 The exiled lover | Servant of Kubera | Cursed for a year | Initiates the message"},
+        {id: "Wife", type: "character", color: "#ff9f4d", size: 28, description: "👸 The wife of the Yaksha | Waiting faithfully in Alaka | The recipient of the message"},
+        {id: "Cloud", type: "character", color: "#ff9f4d", size: 32, description: "☁️ The messenger | A sentient entity of smoke, light, water, and wind | The protagonist of the poem's journey"},
+
+        // DIVINE & MYTHOLOGICAL FIGURES
+        {id: "Kubera", type: "divine", color: "#a78bfa", size: 26, description: "💰 God of Wealth | Lord of the Yakshas | The one who pronounced the curse"},
+        {id: "Shiva", type: "divine", color: "#a78bfa", size: 24, description: "🔱 Great God | Resides in Mount Kailash | The cloud often pays homage to him"},
+        {id: "Indra", type: "divine", color: "#a78bfa", size: 22, description: "⚡ King of Gods | Clouds are associated with his power and war"},
+        {id: "Ganga River", type: "place", color: "#a78bfa", size: 20, description: "🌊 Sacred river | The Cloud is asked to imbibe its holy waters"},
+        {id: "Chitrakuta", type: "place", color: "#20948b", size: 20, description: "⛰️ Mountain mentioned as having Ramayana connections | Cloud pauses here"},
+        {id: "Vishnu's Footprint", type: "mythology", color: "#a78bfa", size: 18, description: "🦶 Mythical marker | The cloud is asked to respect and circle it"},
+
+
+        // MAJOR LOCATIONS (START/END)
+        {id: "Ramagiri", type: "place", color: "#7fb5a3", size: 28, description: "📍 Starting point | Yaksha's place of exile in Central India | Where the Cloud is first sighted"},
+        {id: "Alaka", type: "place", color: "#7fb5a3", size: 28, description: "📍 Destination | City of Kubera and the Yakshas | High up in the Himalayas | Yaksha's home"},
+        {id: "Kailash", type: "place", color: "#7fb5a3", size: 26, description: "🏔️ Sacred mountain | Residence of Shiva | Final major landmark before Alaka"},
+
+        // PATH STOPS (Purva Megha - East Cloud)
+        {id: "Mal Region", type: "path", color: "#20948b", size: 20, description: "🌾 Cloud's initial path | Over fertile plains and farmers"},
+        {id: "Narmada River", type: "path", color: "#20948b", size: 22, description: "🌊 Major River | Cloud must cross it | Represents a resting point"},
+        {id: "Vidisha", type: "path", color: "#20948b", size: 20, description: "🏛️ City of repute | Home to the Vetravati River"},
+        {id: "Ujjain", type: "path", color: "#20948b", size: 24, description: "🌃 City of Grandeur | Cloud is advised to detour to this cultural heartland | Mahakala Temple"},
+        {id: "Reva River", type: "path", color: "#20948b", size: 19, description: "💧 Another name for Narmada | Described vividly"},
+        {id: "Dasharna Country", type: "path", color: "#20948b", size: 19, description: "🏞️ Region with beautiful landscapes"},
+
+        // PATH STOPS (Uttara Megha - North Cloud)
+        {id: "Devagiri", type: "path", color: "#20948b", size: 20, description: "🌄 Mountain stop | Known for Skanda's abode (Kartikeya)"},
+        {id: "Chamaravati", type: "path", color: "#20948b", size: 19, description: "🐘 Town famed for ivory and elephant herds"},
+        {id: "Kanakhala", type: "path", color: "#20948b", size: 18, description: "🏞️ Location of the Ganga's descent"},
+        {id: "Himadri", type: "path", color: "#20948b", size: 22, description: "🏔️ The great Himalayan range | The gateway to the Yaksha's home"},
+        {id: "Mount Amrakuta", type: "path", color: "#20948b", size: 20, description: "🥭 Mango-laden mountain | Cloud takes a rest here"},
+        {id: "Mount Vindhya", type: "path", color: "#20948b", size: 20, description: "⛰️ Mountain range | Cloud travels over it"},
+    ];
+
+    // *** START LINKS ***
+    const links = [
+        // CORE RELATIONSHIPS & MESSAGE
+        {source: "Yaksha", target: "Wife", type: "relation", label: "Husband/Wife"},
+        {source: "Yaksha", target: "Kubera", type: "relation", label: "Servant/Master"},
+        {source: "Kubera", target: "Yaksha", type: "relation", label: "Cursed"},
+        {source: "Yaksha", target: "Cloud", type: "message", label: "Sends Message"},
+        {source: "Cloud", target: "Wife", type: "message", label: "Delivers Message"},
+
+        // JOURNEY FLOW (Ramagiri to Alaka)
+        {source: "Ramagiri", target: "Mal Region", type: "journey", label: "Start"},
+        {source: "Mal Region", target: "Mount Vindhya", type: "journey", label: "Travels over"},
+        {source: "Mount Vindhya", target: "Mount Amrakuta", type: "journey", label: "Rests at"},
+        {source: "Mount Amrakuta", target: "Narmada River", type: "journey", label: "Crosses"},
+        {source: "Narmada River", target: "Vidisha", type: "journey", label: "Flies towards"},
+        {source: "Vidisha", target: "Ujjain", type: "journey", label: "Detours to"},
+        {source: "Ujjain", target: "Devagiri", type: "journey", label: "Continues North"},
+        {source: "Devagiri", target: "Ganga River", type: "journey", label: "Approaches"},
+        {source: "Ganga River", target: "Kanakhala", type: "journey", label: "Pauses near"},
+        {source: "Kanakhala", target: "Himadri", type: "journey", label: "Enters range"},
+        {source: "Himadri", target: "Kailash", type: "journey", label: "Passes over"},
+        {source: "Kailash", target: "Alaka", type: "journey", label: "Final Destination"},
+
+        // MYTHOLOGICAL & SIDE CONNECTIONS
+        {source: "Chitrakuta", target: "Mal Region", type: "journey", label: "Near by"},
+        {source: "Cloud", target: "Indra", type: "mythology", label: "Associated with"},
+        {source: "Shiva", target: "Kailash", type: "mythology", label: "Resides at"},
+        {source: "Kubera", target: "Alaka", type: "mythology", label: "Capital"},
+        {source: "Cloud", target: "Ganga River", type: "mythology", label: "Absorbs water"},
+        {source: "Cloud", target: "Vishnu's Footprint", type: "mythology", label: "Honors"},
+        {source: "Chamaravati", target: "Devagiri", type: "journey", label: "Near"},
+        {source: "Ujjain", target: "Shiva", type: "mythology", label: "Mahakala Temple"},
+    ];
+
+    let activeFilters = {character: true, divine: true, place: true, path: true, mythology: true};
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("#graph")
+        .attr("width", width)
+        .attr("height", height);
+
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(150).strength(0.7))
+        .force("charge", d3.forceManyBody().strength(-550))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 15));
+
+    const linkGroup = svg.append("g").attr("class", "links");
+    const link = linkGroup.selectAll("line")
+        .data(links).enter().append("line")
+        .attr("class", d => `link ${d.type}`)
+        .attr("stroke-width", d => d.type === "message" ? 3 : 2);
+
+    const linkLabels = linkGroup.selectAll(".link-label")
+        .data(links).enter().append("text")
+        .attr("class", "link-label")
+        .attr("dy", -5)
+        .attr("text-anchor", "middle")
+        .text(d => d.label);
+
+    const node = svg.append("g").selectAll("g")
+        .data(nodes).enter().append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+    node.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => d.color);
+
+    node.append("text")
+        .text(d => d.id)
+        .attr("y", d => d.size + 12);
+
+    node.on("mouseover", function(event, d) {
+        showTooltip(event, d);
+    }).on("mouseout", function() {
+        hideTooltip();
+    }).on("click", function(event, d) {
+        showInfo(d);
+    });
+
+    simulation.on("tick", () => {
+        link.attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function showTooltip(event, d) {
+        d3.select("#tooltip")
+            .style("display", "block")
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px")
+            .html(`<strong>${d.id}</strong><br/>${d.description}`);
+    }
+
+    function hideTooltip() {
+        d3.select("#tooltip").style("display", "none");
+    }
+
+    function showInfo(d) {
+        document.getElementById("nodeTitle").textContent = d.id + (d.type ? ` (${d.type})` : "");
+
+        let typeInfo = d.type ? `<div class="info-section"><strong>Type:</strong> ${d.type.charAt(0).toUpperCase() + d.type.slice(1)}</div>` : '';
+
+        document.getElementById("nodeDescription").innerHTML =
+            typeInfo +
+            `<div class="info-section"><strong>Description:</strong> ${d.description}</div>`;
+        document.getElementById("infoPanel").style.display = "block";
+    }
+
+    function closeInfo() {
+        document.getElementById("infoPanel").style.display = "none";
+    }
+
+    function toggleFilter(type) {
+        activeFilters[type] = !activeFilters[type];
+        document.querySelector(`[onclick="toggleFilter('${type}')"]`).classList.toggle("active");
+        updateVisibility();
+    }
+
+    function updateVisibility() {
+        node.style("display", d => activeFilters[d.type] ? "block" : "none");
+
+        link.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+
+        linkLabels.style("display", d => {
+            const sourceVisible = activeFilters[d.source.type];
+            const targetVisible = activeFilters[d.target.type];
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+    }
+
+    function resetSimulation() {
+        simulation.alpha(0.3).restart();
+    }
+
+    function showStats() {
+        alert(`📊 MEGHADOOT STATISTICS\n\nTotal Characters, Places & Path Stops: ${nodes.length}\nTotal Relationships & Journey Steps: ${links.length}\n\nThis knowledge graph illustrates the narrative structure of Kalidasa's Meghadoot by mapping the Yaksha, his wife, the Cloud Messenger, and all the key geographical landmarks and mythological figures encountered on the cloud's epic journey.`);
+    }
+
+    updateVisibility();
+</script>
+</body>
+</html>

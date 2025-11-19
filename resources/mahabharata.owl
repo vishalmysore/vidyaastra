@@ -1,0 +1,582 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://example.org/mahabharata#"
+     xml:base="http://example.org/mahabharata"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+    <owl:Ontology rdf:about="http://example.org/mahabharata">
+        <rdfs:comment>Ontology generated from VidyaAstra Mahabharata graph (characters, factions, events, relationships).</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- Annotation Properties -->
+    <owl:AnnotationProperty rdf:about="http://example.org/mahabharata#displayColor"/>
+    <owl:AnnotationProperty rdf:about="http://example.org/mahabharata#nodeSize"/>
+    <owl:AnnotationProperty rdf:about="http://example.org/mahabharata#relationLabel"/>
+
+    <!-- Classes -->
+    <owl:Class rdf:about="http://example.org/mahabharata#Person"/>
+    <owl:Class rdf:about="http://example.org/mahabharata#Hero">
+        <rdfs:subClassOf rdf:resource="http://example.org/mahabharata#Person"/>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/mahabharata#Character">
+        <rdfs:subClassOf rdf:resource="http://example.org/mahabharata#Person"/>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/mahabharata#Deity">
+        <rdfs:subClassOf rdf:resource="http://example.org/mahabharata#Person"/>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/mahabharata#Event"/>
+    <owl:Class rdf:about="http://example.org/mahabharata#Faction"/>
+
+    <!-- Object Properties -->
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#hasFaction">
+        <rdfs:domain rdf:resource="http://example.org/mahabharata#Person"/>
+        <rdfs:range rdf:resource="http://example.org/mahabharata#Faction"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#relatedTo"/>
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#killed"/>
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#alliedWith">
+        <owl:SymmetricProperty rdf:about="http://example.org/mahabharata#alliedWith"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#mentored"/>
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#divineRelationWith">
+        <owl:SymmetricProperty rdf:about="http://example.org/mahabharata#divineRelationWith"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#participatesIn">
+        <rdfs:domain rdf:resource="http://example.org/mahabharata#Person"/>
+        <rdfs:range rdf:resource="http://example.org/mahabharata#Event"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="http://example.org/mahabharata#timelinePrecedes">
+        <rdfs:domain rdf:resource="http://example.org/mahabharata#Event"/>
+        <rdfs:range rdf:resource="http://example.org/mahabharata#Event"/>
+    </owl:ObjectProperty>
+
+    <!-- Faction Individuals -->
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#PandavaFaction">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Faction"/>
+        <rdfs:label>Pandava</rdfs:label>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#KauravaFaction">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Faction"/>
+        <rdfs:label>Kaurava</rdfs:label>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#NeutralFaction">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Faction"/>
+        <rdfs:label>Neutral</rdfs:label>
+    </owl:NamedIndividual>
+
+    <!-- Event Individuals -->
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Birth_of_Kuru_Clan">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Event"/>
+        <rdfs:label>Birth of Kuru Clan</rdfs:label>
+        <rdfs:comment>The era beginning with Shantanu and Ganga.</rdfs:comment>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Dice_Game">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Event"/>
+        <rdfs:label>Dice Game</rdfs:label>
+        <rdfs:comment>Fateful gambling match: Pandavas lost kingdom &amp; freedom.</rdfs:comment>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#The_Exile_Vanavasa">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Event"/>
+        <rdfs:label>The Exile (Vanavasa)</rdfs:label>
+        <rdfs:comment>12 years of forest exile + 1 year incognito.</rdfs:comment>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Bhagavad_Gita_Event">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Event"/>
+        <rdfs:label>Bhagavad Gita</rdfs:label>
+        <rdfs:comment>The divine discourse by Krishna to Arjuna.</rdfs:comment>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Kurukshetra_War">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Event"/>
+        <rdfs:label>Kurukshetra War</rdfs:label>
+        <rdfs:comment>18-day apocalyptic war.</rdfs:comment>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Ascension_to_Heaven">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Event"/>
+        <rdfs:label>Ascension to Heaven</rdfs:label>
+        <rdfs:comment>The final journey of the Pandavas (Mahaprasthana).</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Person Individuals (Heroes, Characters, Deities) -->
+    <!-- Pandavas &amp; Immediate Family -->
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Yudhishthira">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Eldest Pandava | Known for dharma and righteousness.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">28</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Bhima">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Strongest warrior | Killed Duryodhana and Dushasana.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">26</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Arjuna">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Greatest archer | Listener of the Bhagavad Gita.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">28</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Nakula">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Expert horseman | Twin brother of Sahadeva.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">22</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Sahadeva">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Astrologer &amp; strategist | Twin brother of Nakula.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">22</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Draupadi">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Wife of 5 Pandavas | Born from fire.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">26</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Abhimanyu">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Son of Arjuna &amp; Subhadra | Killed in Chakravyuh.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Ghatotkacha">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Son of Bhima and Hidimba | Rakshasa warrior.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">21</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Kunti">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Mother of Yudhishthira, Bhima, Arjuna &amp; Karna.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">22</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Subhadra">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Sister of Krishna | Wife of Arjuna | Mother of Abhimanyu.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Dhrishtadyumna">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Commander of Pandava army | Killed Drona.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">23</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Pandu">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Nominal father of the Pandavas | King of Hastinapur.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Madri">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Second wife of Pandu | Mother of Nakula and Sahadeva.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">19</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Upapandavas">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>The five sons of Draupadi (Prativindhya, Sutasoma, Shrutakarma, Satanika, Shrutasena), all killed by Ashwatthama.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Chitrangada">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Naga princess, one of Arjuna's wives.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">16</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Uloopi">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Naga princess, one of Arjuna's wives.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">16</nodeSize>
+    </owl:NamedIndividual>
+
+    <!-- Kauravas &amp; Associated -->
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Duryodhana">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Eldest Kaurava | Antagonist | Killed by Bhima.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">28</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Dushasana">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Brother of Duryodhana, key tormentor of Draupadi.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">22</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Bhishma">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Grandsire | Vow of celibacy | Commanded first 10 days.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">27</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Dronacharya">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Teacher of warfare | Fought for Kauravas.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">26</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Karna">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Secret son of Kunti | Best friend of Duryodhana.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">26</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Ashwatthama">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Son of Drona | Immortal warrior | Killed Pandava heirs.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">23</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Shakuni">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Uncle of Kauravas | Master strategist of the Dice Game.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">24</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Dhritarashtra">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Blind king of Hastinapur | Father of 100 Kauravas and Dussala.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">23</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Gandhari">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Mother of Kauravas | Blindfolded herself for life.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">21</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Shalya">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>King of Madra | Forced Kaurava Ally | Karna's charioteer.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">24</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Jayadratha">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>King of Sindhu | Husband of Dussala | Killed Abhimanyu.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Kripacharya">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Royal Guru of the Kuru dynasty | Immortal Chiranjivi.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Kripi">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Wife of Dronacharya, mother of Ashwatthama.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">17</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Dussala">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Only sister of the Kauravas, wife of Jayadratha.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Subala">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>King of Gandhara, father of Gandhari and Shakuni.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">17</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Jarasandha">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Powerful King of Magadha, early antagonist, killed by Bhima.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">19</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Shishupala">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>King of Chedi, opponent of Krishna, killed at Rajasuya Yajna.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">19</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Bhagadatta">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>King of Pragjyotisha, fought fiercely for the Kauravas.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+
+    <!-- Divine &amp; Neutrals -->
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Krishna">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Deity"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>8th avatar of Vishnu | Supreme deity | Charioteer of Arjuna.</rdfs:comment>
+        <displayColor>#a78bfa</displayColor><nodeSize rdf:datatype="xsd:int">30</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Vyasa">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Deity"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Divine sage | Author and progenitor of the Kuru line.</rdfs:comment>
+        <displayColor>#a78bfa</displayColor><nodeSize rdf:datatype="xsd:int">24</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Balarama">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Deity"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Elder brother of Krishna | Master of Mace warfare (Gada) | Remained Neutral.</rdfs:comment>
+        <displayColor>#a78bfa</displayColor><nodeSize rdf:datatype="xsd:int">25</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Vidura">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Wise counselor | Half-brother to Dhritarashtra and Pandu | Voice of Dharma.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">21</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Ekalavya">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Nishada prince | Self-taught archer.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Shantanu">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Patriarch of the Kuru dynasty, father of Bhishma.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">16</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Ganga">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Deity"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>River Goddess, mother of Bhishma.</rdfs:comment>
+        <displayColor>#a78bfa</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Satyavati">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Fisherwoman queen, wife of Shantanu, arranged the Niyoga.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">17</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Ganesha">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Deity"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Scribe of the Mahabharata, wrote as dictated by Vyasa.</rdfs:comment>
+        <displayColor>#a78bfa</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Hanuman">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Deity"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Vanara hero, met Bhima and protected Arjuna's chariot.</rdfs:comment>
+        <displayColor>#a78bfa</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Drupada">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>King of Panchala, Father of Draupadi, Dhrishtadyumna and Shikhandi.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">21</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Shikhandi">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Daughter of Drupada, re-born as male, instrumental in Bhishma's death.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Virata">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>King who sheltered the Pandavas during their exile.</rdfs:comment>
+        <displayColor>#ffd700</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Uttara">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Prince of Virata, slain in the war.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">18</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Satyaki">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#PandavaFaction"/>
+        <rdfs:comment>Yadava warrior, strong Pandava ally and Arjuna's student.</rdfs:comment>
+        <displayColor>#ff6b6b</displayColor><nodeSize rdf:datatype="xsd:int">20</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Kichaka">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Hero"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#KauravaFaction"/>
+        <rdfs:comment>Commander of Virata's army, killed by Bhima for harassing Draupadi.</rdfs:comment>
+        <displayColor>#4ecdc4</displayColor><nodeSize rdf:datatype="xsd:int">19</nodeSize>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="http://example.org/mahabharata#Sanjaya">
+        <rdf:type rdf:resource="http://example.org/mahabharata#Character"/>
+        <hasFaction rdf:resource="http://example.org/mahabharata#NeutralFaction"/>
+        <rdfs:comment>Charioteer of Dhritarashtra, narrated the war with divine sight.</rdfs:comment>
+        <displayColor>#34d399</displayColor><nodeSize rdf:datatype="xsd:int">17</nodeSize>
+    </owl:NamedIndividual>
+
+    <!-- Relationships (simplified property assertions) -->
+    <!-- Family relations (relatedTo) -->
+    <rdf:Description rdf:about="http://example.org/mahabharata#Shantanu">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Ganga"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Satyavati"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Bhishma">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Ganga"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Shantanu"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Vyasa">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Satyavati"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Dhritarashtra">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Vyasa"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Vidura"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Pandu">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Vyasa"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Vidura"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Duryodhana">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Dhritarashtra"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Gandhari"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Dussala">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Gandhari"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Jayadratha"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Kripi">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Dronacharya"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Karna">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Kunti"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Arjuna">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Chitrangada"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Uloopi"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Draupadi"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Draupadi">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Yudhishthira"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Bhima"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Arjuna"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Abhimanyu">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Arjuna"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Upapandavas">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Draupadi"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Yudhishthira"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Drupada">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Draupadi"/>
+        <relatedTo rdf:resource="http://example.org/mahabharata#Shikhandi"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Shakuni">
+        <relatedTo rdf:resource="http://example.org/mahabharata#Subala"/>
+    </rdf:Description>
+
+    <!-- Battle (killed) simplified -->
+    <rdf:Description rdf:about="http://example.org/mahabharata#Arjuna">
+        <killed rdf:resource="http://example.org/mahabharata#Karna"/>
+        <killed rdf:resource="http://example.org/mahabharata#Jayadratha"/>
+        <killed rdf:resource="http://example.org/mahabharata#Bhagadatta"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Bhima">
+        <killed rdf:resource="http://example.org/mahabharata#Duryodhana"/>
+        <killed rdf:resource="http://example.org/mahabharata#Dushasana"/>
+        <killed rdf:resource="http://example.org/mahabharata#Jarasandha"/>
+        <killed rdf:resource="http://example.org/mahabharata#Kichaka"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Dhrishtadyumna">
+        <killed rdf:resource="http://example.org/mahabharata#Dronacharya"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Krishna">
+        <killed rdf:resource="http://example.org/mahabharata#Shishupala"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Jayadratha">
+        <killed rdf:resource="http://example.org/mahabharata#Abhimanyu"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Ashwatthama">
+        <killed rdf:resource="http://example.org/mahabharata#Upapandavas"/>
+    </rdf:Description>
+
+    <!-- Alliances (alliedWith) -->
+    <rdf:Description rdf:about="http://example.org/mahabharata#Krishna">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Arjuna"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Duryodhana">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Karna"/>
+        <alliedWith rdf:resource="http://example.org/mahabharata#Shakuni"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Dronacharya">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Kripacharya"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Vidura">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Pandu"/>
+        <alliedWith rdf:resource="http://example.org/mahabharata#Yudhishthira"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Pandu">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Dhritarashtra"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Virata">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Yudhishthira"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Satyaki">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Arjuna"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Sanjaya">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Dhritarashtra"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Hanuman">
+        <alliedWith rdf:resource="http://example.org/mahabharata#Arjuna"/>
+    </rdf:Description>
+
+    <!-- Mentorship (mentored) -->
+    <rdf:Description rdf:about="http://example.org/mahabharata#Dronacharya">
+        <mentored rdf:resource="http://example.org/mahabharata#Arjuna"/>
+        <mentored rdf:resource="http://example.org/mahabharata#Ekalavya"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Balarama">
+        <mentored rdf:resource="http://example.org/mahabharata#Bhima"/>
+        <mentored rdf:resource="http://example.org/mahabharata#Duryodhana"/>
+    </rdf:Description>
+
+    <!-- Divine relations -->
+    <rdf:Description rdf:about="http://example.org/mahabharata#Vyasa">
+        <divineRelationWith rdf:resource="http://example.org/mahabharata#Ganesha"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Bhima">
+        <divineRelationWith rdf:resource="http://example.org/mahabharata#Hanuman"/>
+    </rdf:Description>
+
+    <!-- Event Participation -->
+    <rdf:Description rdf:about="http://example.org/mahabharata#Shantanu">
+        <participatesIn rdf:resource="http://example.org/mahabharata#Birth_of_Kuru_Clan"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Shakuni">
+        <participatesIn rdf:resource="http://example.org/mahabharata#Dice_Game"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Dushasana">
+        <participatesIn rdf:resource="http://example.org/mahabharata#Dice_Game"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Kichaka">
+        <participatesIn rdf:resource="http://example.org/mahabharata#The_Exile_Vanavasa"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Krishna">
+        <participatesIn rdf:resource="http://example.org/mahabharata#Bhagavad_Gita_Event"/>
+    </rdf:Description>
+
+    <!-- Timeline ordering -->
+    <rdf:Description rdf:about="http://example.org/mahabharata#Birth_of_Kuru_Clan">
+        <timelinePrecedes rdf:resource="http://example.org/mahabharata#Dice_Game"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Dice_Game">
+        <timelinePrecedes rdf:resource="http://example.org/mahabharata#The_Exile_Vanavasa"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#The_Exile_Vanavasa">
+        <timelinePrecedes rdf:resource="http://example.org/mahabharata#Bhagavad_Gita_Event"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Bhagavad_Gita_Event">
+        <timelinePrecedes rdf:resource="http://example.org/mahabharata#Kurukshetra_War"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://example.org/mahabharata#Kurukshetra_War">
+        <timelinePrecedes rdf:resource="http://example.org/mahabharata#Ascension_to_Heaven"/>
+    </rdf:Description>
+
+</rdf:RDF>
