@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY shakuntala "http://vidyaastra.org/ontology/shakuntala#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/shakuntala#"
+     xml:base="http://vidyaastra.org/ontology/shakuntala"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:shakuntala="http://vidyaastra.org/ontology/shakuntala#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/shakuntala">
+        <rdfs:label>Abhijnanasakuntalam Ontology</rdfs:label>
+        <rdfs:comment>An ontology for Abhijnanasakuntalam (The Recognition of Shakuntala), a Sanskrit play by Kalidasa</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+        <rdfs:seeAlso>One of the greatest works of Sanskrit literature, the story of King Dushyanta and Shakuntala</rdfs:seeAlso>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&shakuntala;Character">
+        <rdfs:label>Character</rdfs:label>
+        <rdfs:comment>A character in the play</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Hero">
+        <rdfs:label>Hero</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Male protagonist</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Heroine">
+        <rdfs:label>Heroine</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Female protagonist</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;King">
+        <rdfs:label>King</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Royal ruler</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Sage">
+        <rdfs:label>Sage</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Wise ascetic or hermit</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Apsara">
+        <rdfs:label>Apsara</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Celestial nymph</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Deity">
+        <rdfs:label>Deity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Divine being</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Companion">
+        <rdfs:label>Companion</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Friend or attendant</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Minister">
+        <rdfs:label>Minister</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Character"/>
+        <rdfs:comment>Royal advisor</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Place">
+        <rdfs:label>Place</rdfs:label>
+        <rdfs:comment>Geographic location</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Hermitage">
+        <rdfs:label>Hermitage</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Place"/>
+        <rdfs:comment>Ashram or retreat of sages</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Palace">
+        <rdfs:label>Palace</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Place"/>
+        <rdfs:comment>Royal residence</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Heaven">
+        <rdfs:label>Heaven</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Place"/>
+        <rdfs:comment>Celestial realm</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Kingdom">
+        <rdfs:label>Kingdom</rdfs:label>
+        <rdfs:comment>Political realm</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Event">
+        <rdfs:label>Event</rdfs:label>
+        <rdfs:comment>Significant occurrence</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Meeting">
+        <rdfs:label>Meeting</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Event"/>
+        <rdfs:comment>First encounter between characters</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Marriage">
+        <rdfs:label>Marriage</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Event"/>
+        <rdfs:comment>Gandharva marriage (love marriage)</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Curse">
+        <rdfs:label>Curse</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Event"/>
+        <rdfs:comment>Divine curse or punishment</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Recognition">
+        <rdfs:label>Recognition</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Event"/>
+        <rdfs:comment>Moment of recognition or realization</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Journey">
+        <rdfs:label>Journey</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Event"/>
+        <rdfs:comment>Travel from one place to another</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Artifact">
+        <rdfs:label>Artifact</rdfs:label>
+        <rdfs:comment>Significant object</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Ring">
+        <rdfs:label>Ring</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&shakuntala;Artifact"/>
+        <rdfs:comment>Recognition ring given by Dushyanta</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Act">
+        <rdfs:label>Act</rdfs:label>
+        <rdfs:comment>Act or section of the play (total 7 acts)</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&shakuntala;Emotion">
+        <rdfs:label>Emotion</rdfs:label>
+        <rdfs:comment>Emotional state or rasa</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;loves">
+        <rdfs:label>loves</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;marriedTo">
+        <rdfs:label>married to</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;fatherOf">
+        <rdfs:label>father of</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;motherOf">
+        <rdfs:label>mother of</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;fosterFatherOf">
+        <rdfs:label>foster father of</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Sage"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;rulesOver">
+        <rdfs:label>rules over</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;King"/>
+        <rdfs:range rdf:resource="&shakuntala;Kingdom"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;residesIn">
+        <rdfs:label>resides in</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;visitsPlace">
+        <rdfs:label>visits place</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;curses">
+        <rdfs:label>curses</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Sage"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;recognizes">
+        <rdfs:label>recognizes</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;befriends">
+        <rdfs:label>befriends</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;gives">
+        <rdfs:label>gives</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Artifact"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;loses">
+        <rdfs:label>loses</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Artifact"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;finds">
+        <rdfs:label>finds</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Artifact"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&shakuntala;participatesIn">
+        <rdfs:label>participates in</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&shakuntala;Event"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&shakuntala;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&shakuntala;title">
+        <rdfs:label>title</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&shakuntala;description">
+        <rdfs:label>description</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&shakuntala;actNumber">
+        <rdfs:label>act number</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Act"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&shakuntala;dialogue">
+        <rdfs:label>dialogue</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&shakuntala;beauty">
+        <rdfs:label>beauty</rdfs:label>
+        <rdfs:domain rdf:resource="&shakuntala;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Main Characters -->
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Shakuntala">
+        <rdf:type rdf:resource="&shakuntala;Heroine"/>
+        <shakuntala:name>Shakuntala</shakuntala:name>
+        <shakuntala:title>Foster daughter of Sage Kanva</shakuntala:title>
+        <shakuntala:description>The beautiful heroine, daughter of Sage Vishwamitra and Apsara Menaka, raised in the forest hermitage</shakuntala:description>
+        <shakuntala:beauty>Compared to a jasmine flower among thorny bushes</shakuntala:beauty>
+        <rdfs:comment>Shakuntala embodies ideal womanhood in Sanskrit literature</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Dushyanta">
+        <rdf:type rdf:resource="&shakuntala;Hero"/>
+        <rdf:type rdf:resource="&shakuntala;King"/>
+        <shakuntala:name>Dushyanta</shakuntala:name>
+        <shakuntala:title>King of Hastinapura</shakuntala:title>
+        <shakuntala:description>The heroic king who falls in love with Shakuntala while hunting, forgets her due to curse, then recognizes her</shakuntala:description>
+        <shakuntala:loves rdf:resource="&shakuntala;Shakuntala"/>
+        <shakuntala:marriedTo rdf:resource="&shakuntala;Shakuntala"/>
+        <rdfs:comment>Ancestor of the Pandavas and Kauravas of the Mahabharata</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Bharata">
+        <rdf:type rdf:resource="&shakuntala;Character"/>
+        <shakuntala:name>Bharata</shakuntala:name>
+        <shakuntala:title>Son of Dushyanta and Shakuntala</shakuntala:title>
+        <shakuntala:description>The child who plays with lion cubs and later becomes a great emperor</shakuntala:description>
+        <rdfs:comment>After whom India (Bharata) is named; ancestor of both Pandavas and Kauravas</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Kanva">
+        <rdf:type rdf:resource="&shakuntala;Sage"/>
+        <shakuntala:name>Kanva</shakuntala:name>
+        <shakuntala:title>Sage and foster father of Shakuntala</shakuntala:title>
+        <shakuntala:description>The wise sage who raises Shakuntala in his hermitage</shakuntala:description>
+        <shakuntala:fosterFatherOf rdf:resource="&shakuntala;Shakuntala"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Durvasa">
+        <rdf:type rdf:resource="&shakuntala;Sage"/>
+        <shakuntala:name>Durvasa</shakuntala:name>
+        <shakuntala:title>Irascible sage known for his curses</shakuntala:title>
+        <shakuntala:description>The sage who curses Shakuntala when she fails to attend to him properly</shakuntala:description>
+        <shakuntala:curses rdf:resource="&shakuntala;Shakuntala"/>
+        <rdfs:comment>Famous in Hindu mythology for his terrible temper and powerful curses</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Menaka">
+        <rdf:type rdf:resource="&shakuntala;Apsara"/>
+        <shakuntala:name>Menaka</shakuntala:name>
+        <shakuntala:title>Celestial nymph</shakuntala:title>
+        <shakuntala:description>Apsara sent by Indra to seduce Vishwamitra, mother of Shakuntala</shakuntala:description>
+        <shakuntala:motherOf rdf:resource="&shakuntala;Shakuntala"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Vishwamitra">
+        <rdf:type rdf:resource="&shakuntala;Sage"/>
+        <shakuntala:name>Vishwamitra</shakuntala:name>
+        <shakuntala:title>Great sage</shakuntala:title>
+        <shakuntala:description>The powerful sage who fathers Shakuntala with Menaka</shakuntala:description>
+        <shakuntala:fatherOf rdf:resource="&shakuntala;Shakuntala"/>
+    </owl:NamedIndividual>
+    
+    <!-- Companions of Shakuntala -->
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Priyamvada">
+        <rdf:type rdf:resource="&shakuntala;Companion"/>
+        <shakuntala:name>Priyamvada</shakuntala:name>
+        <shakuntala:title>Friend of Shakuntala</shakuntala:title>
+        <shakuntala:befriends rdf:resource="&shakuntala;Shakuntala"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Anasuya">
+        <rdf:type rdf:resource="&shakuntala;Companion"/>
+        <shakuntala:name>Anasuya</shakuntala:name>
+        <shakuntala:title>Friend of Shakuntala</shakuntala:title>
+        <shakuntala:befriends rdf:resource="&shakuntala;Shakuntala"/>
+    </owl:NamedIndividual>
+    
+    <!-- Places -->
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;KanvaHermitage">
+        <rdf:type rdf:resource="&shakuntala;Hermitage"/>
+        <shakuntala:name>Kanva's Hermitage</shakuntala:name>
+        <shakuntala:description>The peaceful forest ashram where Shakuntala is raised</shakuntala:description>
+        <rdfs:comment>Located near the Malini river</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Hastinapura">
+        <rdf:type rdf:resource="&shakuntala;Kingdom"/>
+        <shakuntala:name>Hastinapura</shakuntala:name>
+        <shakuntala:description>The capital kingdom ruled by Dushyanta</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <!-- Key Artifacts -->
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;RecognitionRing">
+        <rdf:type rdf:resource="&shakuntala;Ring"/>
+        <shakuntala:name>Ring of Recognition</shakuntala:name>
+        <shakuntala:description>The signet ring given by Dushyanta to Shakuntala, inscribed with his name</shakuntala:description>
+        <rdfs:comment>Lost in the Ganges, found in a fish's belly, leads to recognition</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <!-- Key Events -->
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;FirstMeeting">
+        <rdf:type rdf:resource="&shakuntala;Meeting"/>
+        <shakuntala:description>Dushyanta meets Shakuntala while hunting near the hermitage</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;GandharvaMarriage">
+        <rdf:type rdf:resource="&shakuntala;Marriage"/>
+        <shakuntala:description>Dushyanta and Shakuntala marry in Gandharva style (love marriage without ceremony)</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;DurvasasCurse">
+        <rdf:type rdf:resource="&shakuntala;Curse"/>
+        <shakuntala:description>Durvasa curses that Dushyanta will forget Shakuntala until he sees the ring of recognition</shakuntala:description>
+        <rdfs:comment>The curse is the central plot device that creates the tragedy</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;RecognitionScene">
+        <rdf:type rdf:resource="&shakuntala;Recognition"/>
+        <shakuntala:description>Dushyanta recognizes Shakuntala when the ring is found in a fish</shakuntala:description>
+        <rdfs:comment>One of the most famous recognition scenes in world drama</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Reunion">
+        <rdf:type rdf:resource="&shakuntala;Event"/>
+        <shakuntala:description>Final reunion of Dushyanta, Shakuntala, and their son Bharata in heaven</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <!-- Seven Acts -->
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Act1">
+        <rdf:type rdf:resource="&shakuntala;Act"/>
+        <shakuntala:actNumber>1</shakuntala:actNumber>
+        <shakuntala:title>The Hunt</shakuntala:title>
+        <shakuntala:description>Dushyanta meets Shakuntala while hunting</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Act2">
+        <rdf:type rdf:resource="&shakuntala;Act"/>
+        <shakuntala:actNumber>2</shakuntala:actNumber>
+        <shakuntala:title>The Secret</shakuntala:title>
+        <shakuntala:description>Dushyanta reveals his love</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Act3">
+        <rdf:type rdf:resource="&shakuntala;Act"/>
+        <shakuntala:actNumber>3</shakuntala:actNumber>
+        <shakuntala:title>Lovesickness</shakuntala:title>
+        <shakuntala:description>Shakuntala pines for Dushyanta</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Act4">
+        <rdf:type rdf:resource="&shakuntala;Act"/>
+        <shakuntala:actNumber>4</shakuntala:actNumber>
+        <shakuntala:title>The Departure</shakuntala:title>
+        <shakuntala:description>Shakuntala departs for Hastinapura; Durvasa's curse; ring is lost</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Act5">
+        <rdf:type rdf:resource="&shakuntala;Act"/>
+        <shakuntala:actNumber>5</shakuntala:actNumber>
+        <shakuntala:title>The Rejection</shakuntala:title>
+        <shakuntala:description>Dushyanta fails to recognize Shakuntala; she is taken to heaven</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Act6">
+        <rdf:type rdf:resource="&shakuntala;Act"/>
+        <shakuntala:actNumber>6</shakuntala:actNumber>
+        <shakuntala:title>The Ring</shakuntala:title>
+        <shakuntala:description>Ring is found; Dushyanta remembers and laments</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Act7">
+        <rdf:type rdf:resource="&shakuntala;Act"/>
+        <shakuntala:actNumber>7</shakuntala:actNumber>
+        <shakuntala:title>The Recognition</shakuntala:title>
+        <shakuntala:description>Reunion in heaven; Dushyanta meets his son Bharata</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <!-- Emotions/Rasas -->
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Shringar">
+        <rdf:type rdf:resource="&shakuntala;Emotion"/>
+        <shakuntala:name>Shringar (Love/Romance)</shakuntala:name>
+        <shakuntala:description>The dominant rasa of the play</shakuntala:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&shakuntala;Karuna">
+        <rdf:type rdf:resource="&shakuntala;Emotion"/>
+        <shakuntala:name>Karuna (Pathos/Compassion)</shakuntala:name>
+        <shakuntala:description>Evoked during separation and suffering</shakuntala:description>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY civaka "http://vidyaastra.org/ontology/civakacintamani#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/civakacintamani#"
+     xml:base="http://vidyaastra.org/ontology/civakacintamani"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:civaka="http://vidyaastra.org/ontology/civakacintamani#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/civakacintamani">
+        <rdfs:label>Civaka Cintamani Ontology</rdfs:label>
+        <rdfs:comment>An ontology for the Jain epic Civaka Cintamani (Jivaka Chintamani), a classic Tamil literary work by Tirutakkatevar</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+        <rdfs:seeAlso>One of the five great epics of Tamil literature</rdfs:seeAlso>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&civaka;Character">
+        <rdfs:label>Character</rdfs:label>
+        <rdfs:comment>A character in the Civaka Cintamani epic</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Hero">
+        <rdfs:label>Hero</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>The heroic protagonist</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Heroine">
+        <rdfs:label>Heroine</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>Female protagonist or love interest</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;King">
+        <rdfs:label>King</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>Royal ruler</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Queen">
+        <rdfs:label>Queen</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>Royal consort</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Prince">
+        <rdfs:label>Prince</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>Royal heir</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Princess">
+        <rdfs:label>Princess</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>Royal daughter</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Sage">
+        <rdfs:label>Sage</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>Jain ascetic or religious teacher</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Deity">
+        <rdfs:label>Deity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Character"/>
+        <rdfs:comment>Divine being</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Kingdom">
+        <rdfs:label>Kingdom</rdfs:label>
+        <rdfs:comment>Political realm in the epic</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Place">
+        <rdfs:label>Place</rdfs:label>
+        <rdfs:comment>Geographic location</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;City">
+        <rdfs:label>City</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Place"/>
+        <rdfs:comment>Urban settlement</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Forest">
+        <rdfs:label>Forest</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Place"/>
+        <rdfs:comment>Wilderness area</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Event">
+        <rdfs:label>Event</rdfs:label>
+        <rdfs:comment>Significant occurrence in the narrative</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Battle">
+        <rdfs:label>Battle</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Event"/>
+        <rdfs:comment>Military conflict</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Marriage">
+        <rdfs:label>Marriage</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Event"/>
+        <rdfs:comment>Wedding ceremony</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Renunciation">
+        <rdfs:label>Renunciation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Event"/>
+        <rdfs:comment>Abandonment of worldly life for asceticism</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Journey">
+        <rdfs:label>Journey</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Event"/>
+        <rdfs:comment>Travel or quest</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Virtue">
+        <rdfs:label>Virtue</rdfs:label>
+        <rdfs:comment>Moral quality or principle</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;JainPrinciple">
+        <rdfs:label>Jain Principle</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&civaka;Virtue"/>
+        <rdfs:comment>Jain religious teaching</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Canto">
+        <rdfs:label>Canto</rdfs:label>
+        <rdfs:comment>Chapter or section of the epic</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&civaka;Artifact">
+        <rdfs:label>Artifact</rdfs:label>
+        <rdfs:comment>Significant object in the narrative</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&civaka;fatherOf">
+        <rdfs:label>father of</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;motherOf">
+        <rdfs:label>mother of</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;marriedTo">
+        <rdfs:label>married to</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;loves">
+        <rdfs:label>loves</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;rulesOver">
+        <rdfs:label>rules over</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;King"/>
+        <rdfs:range rdf:resource="&civaka;Kingdom"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;residesIn">
+        <rdfs:label>resides in</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;travelsTo">
+        <rdfs:label>travels to</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;participatesIn">
+        <rdfs:label>participates in</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Event"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;embodies">
+        <rdfs:label>embodies</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Virtue"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;teachesTo">
+        <rdfs:label>teaches to</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Sage"/>
+        <rdfs:range rdf:resource="&civaka;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;defeats">
+        <rdfs:label>defeats</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;contains">
+        <rdfs:label>contains</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Canto"/>
+        <rdfs:range rdf:resource="&civaka;Event"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&civaka;possesses">
+        <rdfs:label>possesses</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&civaka;Artifact"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&civaka;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&civaka;title">
+        <rdfs:label>title</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&civaka;description">
+        <rdfs:label>description</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&civaka;cantoNumber">
+        <rdfs:label>canto number</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Canto"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&civaka;cantoTitle">
+        <rdfs:label>canto title</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Canto"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&civaka;beauty">
+        <rdfs:label>beauty</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+        <rdfs:comment>Description of physical beauty</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&civaka;skill">
+        <rdfs:label>skill</rdfs:label>
+        <rdfs:domain rdf:resource="&civaka;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Main Characters -->
+    
+    <owl:NamedIndividual rdf:about="&civaka;Civakan">
+        <rdf:type rdf:resource="&civaka;Hero"/>
+        <civaka:name>Civakan</civaka:name>
+        <civaka:title>Prince who becomes a Jain monk</civaka:title>
+        <civaka:description>The protagonist, known for his exceptional beauty, wisdom, and adherence to Jain principles</civaka:description>
+        <rdfs:comment>Born to King Ceyattuvan and Queen Vacciraimati, Civakan is the epitome of virtue</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Kantarukatevi">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Kantarukatevi</civaka:name>
+        <civaka:title>Princess and chief consort</civaka:title>
+        <civaka:description>The primary wife of Civakan, renowned for her beauty and devotion</civaka:description>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Ceyattuvan">
+        <rdf:type rdf:resource="&civaka;King"/>
+        <civaka:name>Ceyattuvan</civaka:name>
+        <civaka:title>King and father of Civakan</civaka:title>
+        <civaka:fatherOf rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Vacciraimati">
+        <rdf:type rdf:resource="&civaka;Queen"/>
+        <civaka:name>Vacciraimati</civaka:name>
+        <civaka:title>Queen and mother of Civakan</civaka:title>
+        <civaka:motherOf rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <!-- Eight Wives of Civakan -->
+    
+    <owl:NamedIndividual rdf:about="&civaka;Mailaivaki">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Mailaivaki</civaka:name>
+        <civaka:title>Princess</civaka:title>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Kantarai">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Kantarai</civaka:name>
+        <civaka:title>Princess</civaka:title>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Malakanti">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Malakanti</civaka:name>
+        <civaka:title>Princess</civaka:title>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Cintalevi">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Cintalevi</civaka:name>
+        <civaka:title>Princess</civaka:title>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Anaṅkavalli">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Anaṅkavalli</civaka:name>
+        <civaka:title>Princess</civaka:title>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Vaiciramalai">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Vaiciramalai</civaka:name>
+        <civaka:title>Princess</civaka:title>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Piramavati">
+        <rdf:type rdf:resource="&civaka;Heroine"/>
+        <civaka:name>Piramavati</civaka:name>
+        <civaka:title>Princess</civaka:title>
+        <civaka:marriedTo rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <!-- Jain Principles -->
+    
+    <owl:NamedIndividual rdf:about="&civaka;Ahimsa">
+        <rdf:type rdf:resource="&civaka;JainPrinciple"/>
+        <civaka:name>Ahimsa</civaka:name>
+        <civaka:description>Non-violence towards all living beings</civaka:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Satya">
+        <rdf:type rdf:resource="&civaka;JainPrinciple"/>
+        <civaka:name>Satya</civaka:name>
+        <civaka:description>Truthfulness</civaka:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Asteya">
+        <rdf:type rdf:resource="&civaka;JainPrinciple"/>
+        <civaka:name>Asteya</civaka:name>
+        <civaka:description>Non-stealing</civaka:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Brahmacharya">
+        <rdf:type rdf:resource="&civaka;JainPrinciple"/>
+        <civaka:name>Brahmacharya</civaka:name>
+        <civaka:description>Celibacy and chastity</civaka:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;Aparigraha">
+        <rdf:type rdf:resource="&civaka;JainPrinciple"/>
+        <civaka:name>Aparigraha</civaka:name>
+        <civaka:description>Non-attachment to material possessions</civaka:description>
+    </owl:NamedIndividual>
+    
+    <!-- Key Events -->
+    
+    <owl:NamedIndividual rdf:about="&civaka;BirthOfCivakan">
+        <rdf:type rdf:resource="&civaka;Event"/>
+        <civaka:description>The miraculous birth of Civakan</civaka:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;CivakansRenunciation">
+        <rdf:type rdf:resource="&civaka;Renunciation"/>
+        <civaka:description>Civakan renounces worldly life and becomes a Jain monk</civaka:description>
+        <civaka:participatesIn rdf:resource="&civaka;Civakan"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&civaka;MarriagesToEightPrincesses">
+        <rdf:type rdf:resource="&civaka;Marriage"/>
+        <civaka:description>Civakan marries eight princesses</civaka:description>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

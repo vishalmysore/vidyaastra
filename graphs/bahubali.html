@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaAstra: Bahubali - The Epic Saga</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Trajan Pro', 'Georgia', serif;
+            background: linear-gradient(135deg, #8B4513 0%, #CD853F 25%, #DAA520 50%, #B8860B 75%, #8B4513 100%);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        svg {
+            display: block;
+            background: radial-gradient(ellipse at center, rgba(218,165,32,0.1) 0%, rgba(139,69,19,0.3) 100%);
+        }
+
+        .node circle {
+            stroke: #FFD700;
+            stroke-width: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 15px rgba(255,215,0,0.6));
+        }
+
+        .node:hover circle {
+            stroke-width: 6px;
+            filter: drop-shadow(0 0 30px rgba(255,215,0,1));
+            transform: scale(1.15);
+        }
+
+        .node text {
+            font-size: 11px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,1), 0 0 10px rgba(218,165,32,0.5);
+        }
+
+        .link {
+            stroke: rgba(218, 165, 32, 0.3);
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        .link.family {
+            stroke: #FF6347;
+            stroke-width: 3px;
+            opacity: 0.8;
+        }
+
+        .link.loyalty {
+            stroke: #4169E1;
+            stroke-width: 3px;
+            opacity: 0.7;
+        }
+
+        .link.betrayal {
+            stroke: #DC143C;
+            stroke-width: 4px;
+            opacity: 0.9;
+            stroke-dasharray: 5, 5;
+            animation: betrayalPulse 2s infinite;
+        }
+
+        @keyframes betrayalPulse {
+            0%, 100% { opacity: 0.9; }
+            50% { opacity: 0.5; }
+        }
+
+        .link.love {
+            stroke: #FF1493;
+            stroke-width: 3px;
+            opacity: 0.7;
+            stroke-dasharray: 3, 3;
+        }
+
+        .link.rules {
+            stroke: #DAA520;
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+
+        .link.kills {
+            stroke: #8B0000;
+            stroke-width: 4px;
+            opacity: 0.9;
+        }
+
+        .link.virtue {
+            stroke: #32CD32;
+            stroke-width: 2px;
+            opacity: 0.6;
+            stroke-dasharray: 2, 2;
+        }
+
+        .link-label {
+            font-size: 9px;
+            fill: #FFD700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,1);
+            pointer-events: none;
+            font-weight: bold;
+        }
+
+        #legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(139, 69, 19, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            border: 3px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            max-width: 250px;
+        }
+
+        #legend h3 {
+            margin-bottom: 10px;
+            color: #FFD700;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: underline;
+            text-shadow: 2px 2px 4px rgba(0,0,0,1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #FFD700;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        #title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 4px 4px 8px rgba(0,0,0,1), 0 0 20px rgba(218,165,32,0.8);
+            z-index: 10;
+        }
+
+        #subtitle {
+            position: absolute;
+            top: 65px;
+            left: 20px;
+            font-size: 16px;
+            font-style: italic;
+            color: #F0E68C;
+            text-shadow: 2px 2px 4px rgba(0,0,0,1);
+        }
+
+        .royal {
+            animation: royalGlow 3s infinite;
+        }
+
+        @keyframes royalGlow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(255,215,0,0.6)); }
+            50% { filter: drop-shadow(0 0 30px rgba(255,215,0,1)); }
+        }
+
+        .warrior-badge {
+            stroke-dasharray: 4, 2;
+            animation: warriorRotate 10s linear infinite;
+        }
+
+        @keyframes warriorRotate {
+            from { stroke-dashoffset: 0; }
+            to { stroke-dashoffset: 60; }
+        }
+    </style>
+</head>
+<body>
+    <div id="title">👑 Bahubali: The Beginning & Conclusion 👑</div>
+    <div id="subtitle">Jai Mahishmati! The Epic of Dharma and Valor</div>
+    <div id="legend">
+        <h3>Characters & Roles</h3>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #CD853F;"></div>
+            <span>Bahubali</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #8B4513;"></div>
+            <span>Bhallaladeva</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #DAA520;"></div>
+            <span>Royal Family</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #DC143C;"></div>
+            <span>Warrior</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #4169E1;"></div>
+            <span>Kingdom</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #32CD32;"></div>
+            <span>Virtue</span>
+        </div>
+    </div>
+    <svg id="network"></svg>
+
+    <script>
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#network")
+            .attr("width", width)
+            .attr("height", height);
+
+        const roleColors = {
+            "Amarendra": "#CD853F",
+            "Mahendra": "#CD853F",
+            "Bhallaladeva": "#8B4513",
+            "Sivagami": "#DAA520",
+            "Devasena": "#FF69B4",
+            "Kattappa": "#DC143C",
+            "Kingdom": "#4169E1",
+            "Virtue": "#32CD32",
+            "Battle": "#8B0000",
+            "Event": "#FF8C00"
+        };
+
+        const nodes = [
+            // Main Heroes
+            { id: "Amarendra", label: "Amarendra Baahubali", role: "Amarendra", type: "Hero" },
+            { id: "Mahendra", label: "Mahendra Baahubali (Shivudu)", role: "Mahendra", type: "Hero" },
+            
+            // Villain
+            { id: "Bhallaladeva", label: "Bhallaladeva", role: "Bhallaladeva", type: "Villain" },
+            
+            // Royal Family
+            { id: "Sivagami", label: "Sivagami Devi", role: "Sivagami", type: "Queen Mother" },
+            { id: "Devasena", label: "Devasena", role: "Devasena", type: "Princess" },
+            { id: "Avanthika", label: "Avanthika", role: "Devasena", type: "Warrior" },
+            
+            // Warriors & Servants
+            { id: "Kattappa", label: "Kattappa", role: "Kattappa", type: "Commander" },
+            { id: "Bijjaladeva", label: "Bijjaladeva", role: "Bhallaladeva", type: "King Father" },
+            
+            // Kingdoms
+            { id: "Mahishmati", label: "Kingdom of Mahishmati", role: "Kingdom", type: "Kingdom" },
+            { id: "Kuntala", label: "Kingdom of Kuntala", role: "Kingdom", type: "Kingdom" },
+            
+            // Key Events
+            { id: "CoronationContest", label: "Coronation Contest", role: "Event", type: "Contest" },
+            { id: "BattleKuntala", label: "Battle of Kuntala", role: "Battle", type: "Battle" },
+            { id: "Betrayal", label: "The Great Betrayal", role: "Event", type: "Betrayal" },
+            { id: "FinalBattle", label: "Final Battle", role: "Battle", type: "Battle" },
+            
+            // Virtues
+            { id: "Dharma", label: "Dharma (Righteousness)", role: "Virtue", type: "Virtue" },
+            { id: "Valor", label: "Valor", role: "Virtue", type: "Virtue" },
+            { id: "Loyalty", label: "Loyalty", role: "Virtue", type: "Virtue" },
+            { id: "Justice", label: "Justice", role: "Virtue", type: "Virtue" }
+        ];
+
+        const links = [
+            // Family relationships
+            { source: "Amarendra", target: "Mahendra", type: "family", label: "father-son" },
+            { source: "Amarendra", target: "Devasena", type: "love", label: "married" },
+            { source: "Devasena", target: "Mahendra", type: "family", label: "mother-son" },
+            { source: "Mahendra", target: "Avanthika", type: "love", label: "in love" },
+            
+            // Royal family
+            { source: "Sivagami", target: "Amarendra", type: "family", label: "adopted son" },
+            { source: "Sivagami", target: "Bhallaladeva", type: "family", label: "biological son" },
+            { source: "Bijjaladeva", target: "Bhallaladeva", type: "family", label: "father" },
+            { source: "Sivagami", target: "Mahishmati", type: "rules", label: "Queen Mother" },
+            
+            // Loyalty & Service
+            { source: "Kattappa", target: "Mahishmati", type: "loyalty", label: "serves" },
+            { source: "Kattappa", target: "Sivagami", type: "loyalty", label: "loyal to" },
+            { source: "Kattappa", target: "Amarendra", type: "loyalty", label: "serves" },
+            { source: "Kattappa", target: "Mahendra", type: "loyalty", label: "mentor" },
+            
+            // Betrayal
+            { source: "Kattappa", target: "Amarendra", type: "betrayal", label: "forced to kill" },
+            { source: "Bhallaladeva", target: "Amarendra", type: "betrayal", label: "conspires against" },
+            { source: "Bijjaladeva", target: "Amarendra", type: "betrayal", label: "plots death" },
+            
+            // Kingdom connections
+            { source: "Amarendra", target: "Mahishmati", type: "rules", label: "rightful king" },
+            { source: "Bhallaladeva", target: "Mahishmati", type: "rules", label: "usurper king" },
+            { source: "Devasena", target: "Kuntala", type: "family", label: "princess of" },
+            
+            // Events
+            { source: "Amarendra", target: "CoronationContest", type: "loyalty", label: "participates" },
+            { source: "Bhallaladeva", target: "CoronationContest", type: "loyalty", label: "participates" },
+            { source: "Amarendra", target: "BattleKuntala", type: "loyalty", label: "saves kingdom" },
+            { source: "Devasena", target: "BattleKuntala", type: "loyalty", label: "defends" },
+            { source: "Kattappa", target: "Betrayal", type: "betrayal", label: "executes" },
+            { source: "Mahendra", target: "FinalBattle", type: "loyalty", label: "avenges father" },
+            { source: "Bhallaladeva", target: "FinalBattle", type: "kills", label: "defeated" },
+            
+            // Virtues embodied
+            { source: "Amarendra", target: "Dharma", type: "virtue", label: "embodies" },
+            { source: "Amarendra", target: "Justice", type: "virtue", label: "embodies" },
+            { source: "Mahendra", target: "Valor", type: "virtue", label: "embodies" },
+            { source: "Kattappa", target: "Loyalty", type: "virtue", label: "embodies" },
+            { source: "Devasena", target: "Justice", type: "virtue", label: "fights for" },
+            { source: "Sivagami", target: "Justice", type: "virtue", label: "upholds" },
+            
+            // Kills
+            { source: "Mahendra", target: "Bhallaladeva", type: "kills", label: "defeats" },
+            
+            // Enemies
+            { source: "Amarendra", target: "Bhallaladeva", type: "betrayal", label: "rivals" },
+            { source: "Mahendra", target: "Bhallaladeva", type: "betrayal", label: "sworn enemies" }
+        ];
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(150))
+            .force("charge", d3.forceManyBody().strength(-500))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(45));
+
+        const link = svg.append("g")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("class", d => `link ${d.type}`);
+
+        const linkLabel = svg.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = svg.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("r", d => {
+                if (d.type === "Hero") return 30;
+                if (d.type === "Villain") return 28;
+                if (d.type === "Queen Mother") return 25;
+                if (d.type === "Kingdom") return 32;
+                if (d.type === "Battle") return 20;
+                if (d.type === "Virtue") return 18;
+                return 20;
+            })
+            .attr("fill", d => roleColors[d.role] || "#666")
+            .attr("class", d => {
+                if (d.type === "Hero" || d.type === "Queen Mother") return "royal";
+                if (d.type === "Villain" || d.type === "Commander") return "warrior-badge";
+                return "";
+            });
+
+        node.append("text")
+            .attr("dy", d => d.type === "Kingdom" ? 40 : 35)
+            .text(d => d.label);
+
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY cilappati "http://vidyaastra.org/ontology/cilappati#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/cilappati#"
+     xml:base="http://vidyaastra.org/ontology/cilappati"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:cilappati="http://vidyaastra.org/ontology/cilappati#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/cilappati">
+        <rdfs:label>Cilappatikaram Ontology</rdfs:label>
+        <rdfs:comment>An ontology for Cilappatikaram (The Tale of an Anklet), one of the five great epics of Tamil literature by Ilango Adigal</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+        <rdfs:seeAlso>The epic that tells the story of Kannagi, a woman who avenges her husband's wrongful death</rdfs:seeAlso>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&cilappati;Character">
+        <rdfs:label>Character</rdfs:label>
+        <rdfs:comment>A character in the Cilappatikaram epic</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Hero">
+        <rdfs:label>Hero</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Male protagonist</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Heroine">
+        <rdfs:label>Heroine</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Female protagonist</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Merchant">
+        <rdfs:label>Merchant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Trader or businessperson</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Dancer">
+        <rdfs:label>Dancer</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Courtesan or performing artist</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;King">
+        <rdfs:label>King</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Royal ruler</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Queen">
+        <rdfs:label>Queen</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Royal consort</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Deity">
+        <rdfs:label>Deity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Divine being</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Sage">
+        <rdfs:label>Sage</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Character"/>
+        <rdfs:comment>Wise person or ascetic</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Kingdom">
+        <rdfs:label>Kingdom</rdfs:label>
+        <rdfs:comment>Political realm</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;City">
+        <rdfs:label>City</rdfs:label>
+        <rdfs:comment>Urban center</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Place">
+        <rdfs:label>Place</rdfs:label>
+        <rdfs:comment>Geographic location</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Temple">
+        <rdfs:label>Temple</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Place"/>
+        <rdfs:comment>Place of worship</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Event">
+        <rdfs:label>Event</rdfs:label>
+        <rdfs:comment>Significant occurrence in the narrative</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Tragedy">
+        <rdfs:label>Tragedy</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Event"/>
+        <rdfs:comment>Tragic event</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Marriage">
+        <rdfs:label>Marriage</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Event"/>
+        <rdfs:comment>Wedding ceremony</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Curse">
+        <rdfs:label>Curse</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Event"/>
+        <rdfs:comment>Divine curse or punishment</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Journey">
+        <rdfs:label>Journey</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Event"/>
+        <rdfs:comment>Travel from one place to another</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Artifact">
+        <rdfs:label>Artifact</rdfs:label>
+        <rdfs:comment>Significant object</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Anklet">
+        <rdfs:label>Anklet</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&cilappati;Artifact"/>
+        <rdfs:comment>The cilampu (anklet) central to the story</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Virtue">
+        <rdfs:label>Virtue</rdfs:label>
+        <rdfs:comment>Moral quality</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Canto">
+        <rdfs:label>Canto</rdfs:label>
+        <rdfs:comment>Chapter of the epic (one of three books: Pukarkkandam, Maturaikkkandam, Vanchikkkandam)</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&cilappati;Festival">
+        <rdfs:label>Festival</rdfs:label>
+        <rdfs:comment>Religious or cultural celebration</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&cilappati;marriedTo">
+        <rdfs:label>married to</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;loves">
+        <rdfs:label>loves</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;betrays">
+        <rdfs:label>betrays</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;avenges">
+        <rdfs:label>avenges</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;rulesOver">
+        <rdfs:label>rules over</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;King"/>
+        <rdfs:range rdf:resource="&cilappati;Kingdom"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;livesIn">
+        <rdfs:label>lives in</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;City"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;travelsTo">
+        <rdfs:label>travels to</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;participatesIn">
+        <rdfs:label>participates in</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Event"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;embodies">
+        <rdfs:label>embodies</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Virtue"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;curses">
+        <rdfs:label>curses</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;City"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;owns">
+        <rdfs:label>owns</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Artifact"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&cilappati;worshipsAt">
+        <rdfs:label>worships at</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&cilappati;Temple"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&cilappati;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&cilappati;title">
+        <rdfs:label>title</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&cilappati;description">
+        <rdfs:label>description</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&cilappati;cantoNumber">
+        <rdfs:label>canto number</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Canto"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&cilappati;virtue">
+        <rdfs:label>virtue</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&cilappati;chastity">
+        <rdfs:label>chastity</rdfs:label>
+        <rdfs:domain rdf:resource="&cilappati;Heroine"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+        <rdfs:comment>The virtue of chastity, central to Kannagi's power</rdfs:comment>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Main Characters -->
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Kannagi">
+        <rdf:type rdf:resource="&cilappati;Heroine"/>
+        <cilappati:name>Kannagi</cilappati:name>
+        <cilappati:title>The Chaste Woman</cilappati:title>
+        <cilappati:description>The protagonist, a virtuous wife who seeks justice for her husband's wrongful execution</cilappati:description>
+        <cilappati:chastity>Supreme chastity that gives her divine power</cilappati:chastity>
+        <rdfs:comment>Kannagi is the epitome of Tamil womanhood and virtue, her chastity gives her the power to curse the city of Madurai</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Kovalan">
+        <rdf:type rdf:resource="&cilappati;Hero"/>
+        <rdf:type rdf:resource="&cilappati;Merchant"/>
+        <cilappati:name>Kovalan</cilappati:name>
+        <cilappati:title>Merchant of Puhar</cilappati:title>
+        <cilappati:description>Kannagi's husband, a wealthy merchant who is wrongly accused of theft and executed</cilappati:description>
+        <cilappati:marriedTo rdf:resource="&cilappati;Kannagi"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Madhavi">
+        <rdf:type rdf:resource="&cilappati;Dancer"/>
+        <cilappati:name>Madhavi</cilappati:name>
+        <cilappati:title>Courtesan and dancer of Puhar</cilappati:title>
+        <cilappati:description>A beautiful courtesan who becomes Kovalan's lover, causing him to neglect Kannagi</cilappati:description>
+        <rdfs:comment>Madhavi represents worldly temptation and the cause of Kovalan's downfall</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Manimekalai">
+        <rdf:type rdf:resource="&cilappati;Character"/>
+        <cilappati:name>Manimekalai</cilappati:name>
+        <cilappati:title>Daughter of Madhavi and Kovalan</cilappati:title>
+        <cilappati:description>The daughter who later becomes the protagonist of the sequel epic Manimekalai</cilappati:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;PandyanKing">
+        <rdf:type rdf:resource="&cilappati;King"/>
+        <cilappati:name>Nedunchezhiyan</cilappati:name>
+        <cilappati:title>Pandyan King of Madurai</cilappati:title>
+        <cilappati:description>The king who wrongly orders Kovalan's execution based on false accusation of theft</cilappati:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;PandyanQueen">
+        <rdf:type rdf:resource="&cilappati;Queen"/>
+        <cilappati:name>Kopperundevi</cilappati:name>
+        <cilappati:title>Queen of Madurai</cilappati:title>
+        <cilappati:description>The queen who dies of shock upon learning of the king's grave injustice</cilappati:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Kavunti">
+        <rdf:type rdf:resource="&cilappati;Sage"/>
+        <cilappati:name>Kavunti</cilappati:name>
+        <cilappati:title>Buddhist ascetic</cilappati:title>
+        <cilappati:description>A Buddhist nun who consoles Kannagi and explains the karmic reasons for events</cilappati:description>
+    </owl:NamedIndividual>
+    
+    <!-- Places -->
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Puhar">
+        <rdf:type rdf:resource="&cilappati;City"/>
+        <cilappati:name>Puhar</cilappati:name>
+        <cilappati:description>The ancient port city (Kaveripattinam) where the story begins</cilappati:description>
+        <rdfs:comment>Capital of the Chola kingdom, a prosperous trading center</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Madurai">
+        <rdf:type rdf:resource="&cilappati;City"/>
+        <cilappati:name>Madurai</cilappati:name>
+        <cilappati:description>The Pandyan capital where Kovalan is wrongly executed and Kannagi curses the city</cilappati:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Vanji">
+        <rdf:type rdf:resource="&cilappati;City"/>
+        <cilappati:name>Vanji</cilappati:name>
+        <cilappati:description>The Chera capital where Kannagi is deified</cilappati:description>
+        <rdfs:comment>Modern-day Karur in Tamil Nadu</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <!-- Key Artifacts -->
+    
+    <owl:NamedIndividual rdf:about="&cilappati;KannagiAnklet">
+        <rdf:type rdf:resource="&cilappati;Anklet"/>
+        <cilappati:name>Kannagi's Anklet</cilappati:name>
+        <cilappati:description>The sacred anklet (cilampu) that proves Kovalan's innocence when broken open to reveal rubies instead of pearls</cilappati:description>
+        <rdfs:comment>The central symbol of the epic - represents truth and justice</rdfs:comment>
+        <cilappati:owns rdf:resource="&cilappati;Kannagi"/>
+    </owl:NamedIndividual>
+    
+    <!-- Virtues -->
+    
+    <owl:NamedIndividual rdf:about="&cilappati;PatiVratya">
+        <rdf:type rdf:resource="&cilappati;Virtue"/>
+        <cilappati:name>Pativratya</cilappati:name>
+        <cilappati:description>Wifely devotion and chastity</cilappati:description>
+        <rdfs:comment>The supreme virtue embodied by Kannagi</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Justice">
+        <rdf:type rdf:resource="&cilappati;Virtue"/>
+        <cilappati:name>Justice</cilappati:name>
+        <cilappati:description>Righteousness and fair judgment</cilappati:description>
+    </owl:NamedIndividual>
+    
+    <!-- Key Events -->
+    
+    <owl:NamedIndividual rdf:about="&cilappati;KovalanExecution">
+        <rdf:type rdf:resource="&cilappati;Tragedy"/>
+        <cilappati:description>The wrongful execution of Kovalan, accused of stealing the queen's anklet</cilappati:description>
+        <rdfs:comment>The central tragic event that sets the story in motion</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;BurningOfMadurai">
+        <rdf:type rdf:resource="&cilappati;Curse"/>
+        <cilappati:description>Kannagi tears off her breast and curses Madurai, causing the city to burn</cilappati:description>
+        <rdfs:comment>Divine retribution for the king's injustice, powered by Kannagi's chastity</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;DeificationOfKannagi">
+        <rdf:type rdf:resource="&cilappati;Event"/>
+        <cilappati:description>Kannagi is deified as a goddess in Vanji</cilappati:description>
+        <rdfs:comment>Kannagi becomes worshipped as Pattini, goddess of chastity</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <!-- Festivals -->
+    
+    <owl:NamedIndividual rdf:about="&cilappati;IndraVizha">
+        <rdf:type rdf:resource="&cilappati;Festival"/>
+        <cilappati:name>Indra Vizha</cilappati:name>
+        <cilappati:description>Festival of Indra celebrated in Puhar</cilappati:description>
+    </owl:NamedIndividual>
+
+    <!-- Three Books -->
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Pukarkkandam">
+        <rdf:type rdf:resource="&cilappati;Canto"/>
+        <cilappati:title>Book of Puhar</cilappati:title>
+        <cilappati:description>The first book describing life in the port city of Puhar</cilappati:description>
+        <cilappati:cantoNumber>1</cilappati:cantoNumber>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Maturaikkkandam">
+        <rdf:type rdf:resource="&cilappati;Canto"/>
+        <cilappati:title>Book of Madurai</cilappati:title>
+        <cilappati:description>The second book where the tragedy unfolds in Madurai</cilappati:description>
+        <cilappati:cantoNumber>2</cilappati:cantoNumber>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&cilappati;Vanchikkkandam">
+        <rdf:type rdf:resource="&cilappati;Canto"/>
+        <cilappati:title>Book of Vanji</cilappati:title>
+        <cilappati:description>The third book where Kannagi is deified</cilappati:description>
+        <cilappati:cantoNumber>3</cilappati:cantoNumber>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

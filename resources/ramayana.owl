@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY ramayana "http://vidyaastra.org/ontology/ramayana#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/ramayana#"
+     xml:base="http://vidyaastra.org/ontology/ramayana"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:ramayana="http://vidyaastra.org/ontology/ramayana#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/ramayana">
+        <rdfs:label>Ramayana Ontology</rdfs:label>
+        <rdfs:comment>An ontology representing the epic Ramayana - characters, relationships, events, and places</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&ramayana;Character">
+        <rdfs:label>Character</rdfs:label>
+        <rdfs:comment>A character in the Ramayana epic</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Deity">
+        <rdfs:label>Deity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ramayana;Character"/>
+        <rdfs:comment>Divine beings and avatars</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Human">
+        <rdfs:label>Human</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ramayana;Character"/>
+        <rdfs:comment>Human characters</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Rakshasa">
+        <rdfs:label>Rakshasa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ramayana;Character"/>
+        <rdfs:comment>Demon characters</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Vanara">
+        <rdfs:label>Vanara</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ramayana;Character"/>
+        <rdfs:comment>Monkey warriors</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Place">
+        <rdfs:label>Place</rdfs:label>
+        <rdfs:comment>Locations in the Ramayana</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Kingdom">
+        <rdfs:label>Kingdom</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ramayana;Place"/>
+        <rdfs:comment>Kingdoms and cities</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Forest">
+        <rdfs:label>Forest</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ramayana;Place"/>
+        <rdfs:comment>Forests and wilderness areas</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Event">
+        <rdfs:label>Event</rdfs:label>
+        <rdfs:comment>Significant events in the Ramayana</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Battle">
+        <rdfs:label>Battle</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&ramayana;Event"/>
+        <rdfs:comment>Military conflicts</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&ramayana;Weapon">
+        <rdfs:label>Weapon</rdfs:label>
+        <rdfs:comment>Divine and celestial weapons</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&ramayana;isSpouseOf">
+        <rdfs:label>is spouse of</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;isParentOf">
+        <rdfs:label>is parent of</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;isChildOf">
+        <rdfs:label>is child of</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Character"/>
+        <owl:inverseOf rdf:resource="&ramayana;isParentOf"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;isSiblingOf">
+        <rdfs:label>is sibling of</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;isAllyOf">
+        <rdfs:label>is ally of</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;isEnemyOf">
+        <rdfs:label>is enemy of</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;rulesKingdom">
+        <rdfs:label>rules kingdom</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Kingdom"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;livesIn">
+        <rdfs:label>lives in</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;participatesIn">
+        <rdfs:label>participates in</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Event"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&ramayana;wields">
+        <rdfs:label>wields</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&ramayana;Weapon"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&ramayana;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&ramayana;title">
+        <rdfs:label>title</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&ramayana;description">
+        <rdfs:label>description</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&ramayana;locationName">
+        <rdfs:label>location name</rdfs:label>
+        <rdfs:domain rdf:resource="&ramayana;Place"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Individuals (Example Characters) -->
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Rama">
+        <rdf:type rdf:resource="&ramayana;Deity"/>
+        <ramayana:name>Rama</ramayana:name>
+        <ramayana:title>Prince of Ayodhya, Avatar of Vishnu</ramayana:title>
+        <ramayana:description>The protagonist, seventh avatar of Lord Vishnu</ramayana:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Sita">
+        <rdf:type rdf:resource="&ramayana;Deity"/>
+        <ramayana:name>Sita</ramayana:name>
+        <ramayana:title>Princess of Mithila</ramayana:title>
+        <ramayana:description>Rama's wife, avatar of Lakshmi</ramayana:description>
+        <ramayana:isSpouseOf rdf:resource="&ramayana;Rama"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Lakshmana">
+        <rdf:type rdf:resource="&ramayana;Human"/>
+        <ramayana:name>Lakshmana</ramayana:name>
+        <ramayana:title>Prince of Ayodhya</ramayana:title>
+        <ramayana:description>Rama's devoted brother</ramayana:description>
+        <ramayana:isSiblingOf rdf:resource="&ramayana;Rama"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Hanuman">
+        <rdf:type rdf:resource="&ramayana;Vanara"/>
+        <ramayana:name>Hanuman</ramayana:name>
+        <ramayana:title>Son of Vayu, Mighty Vanara Warrior</ramayana:title>
+        <ramayana:description>Devoted follower of Rama with supernatural powers</ramayana:description>
+        <ramayana:isAllyOf rdf:resource="&ramayana;Rama"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Ravana">
+        <rdf:type rdf:resource="&ramayana;Rakshasa"/>
+        <ramayana:name>Ravana</ramayana:name>
+        <ramayana:title>King of Lanka</ramayana:title>
+        <ramayana:description>Ten-headed demon king, primary antagonist</ramayana:description>
+        <ramayana:isEnemyOf rdf:resource="&ramayana;Rama"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Dasharatha">
+        <rdf:type rdf:resource="&ramayana;Human"/>
+        <ramayana:name>Dasharatha</ramayana:name>
+        <ramayana:title>King of Ayodhya</ramayana:title>
+        <ramayana:description>Father of Rama</ramayana:description>
+        <ramayana:isParentOf rdf:resource="&ramayana;Rama"/>
+        <ramayana:isParentOf rdf:resource="&ramayana;Lakshmana"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Sugriva">
+        <rdf:type rdf:resource="&ramayana;Vanara"/>
+        <ramayana:name>Sugriva</ramayana:name>
+        <ramayana:title>King of Vanaras</ramayana:title>
+        <ramayana:description>Monkey king allied with Rama</ramayana:description>
+        <ramayana:isAllyOf rdf:resource="&ramayana;Rama"/>
+    </owl:NamedIndividual>
+
+    <!-- Places -->
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Ayodhya">
+        <rdf:type rdf:resource="&ramayana;Kingdom"/>
+        <ramayana:locationName>Ayodhya</ramayana:locationName>
+        <ramayana:description>Capital of Kosala kingdom, birthplace of Rama</ramayana:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Lanka">
+        <rdf:type rdf:resource="&ramayana;Kingdom"/>
+        <ramayana:locationName>Lanka</ramayana:locationName>
+        <ramayana:description>Island kingdom ruled by Ravana</ramayana:description>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Dandaka">
+        <rdf:type rdf:resource="&ramayana;Forest"/>
+        <ramayana:locationName>Dandaka Forest</ramayana:locationName>
+        <ramayana:description>Forest where Rama spent his exile</ramayana:description>
+    </owl:NamedIndividual>
+
+    <!-- Weapons -->
+    
+    <owl:NamedIndividual rdf:about="&ramayana;Brahmastra">
+        <rdf:type rdf:resource="&ramayana;Weapon"/>
+        <ramayana:name>Brahmastra</ramayana:name>
+        <ramayana:description>Most powerful celestial weapon created by Brahma</ramayana:description>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

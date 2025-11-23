@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY got "http://vidyaastra.org/ontology/gameofthrones#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/gameofthrones#"
+     xml:base="http://vidyaastra.org/ontology/gameofthrones"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:got="http://vidyaastra.org/ontology/gameofthrones#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/gameofthrones">
+        <rdfs:label>Game of Thrones Ontology</rdfs:label>
+        <rdfs:comment>An ontology for A Song of Ice and Fire / Game of Thrones universe</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&got;Character">
+        <rdfs:label>Character</rdfs:label>
+        <rdfs:comment>A character in the Game of Thrones universe</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Noble">
+        <rdfs:label>Noble</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Character"/>
+        <rdfs:comment>Member of nobility</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;King">
+        <rdfs:label>King</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Noble"/>
+        <rdfs:comment>Monarch or ruler</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Queen">
+        <rdfs:label>Queen</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Noble"/>
+        <rdfs:comment>Female monarch or royal consort</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Lord">
+        <rdfs:label>Lord</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Noble"/>
+        <rdfs:comment>Noble lord or head of house</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Knight">
+        <rdfs:label>Knight</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Character"/>
+        <rdfs:comment>Anointed knight</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Warrior">
+        <rdfs:label>Warrior</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Character"/>
+        <rdfs:comment>Fighter or soldier</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Maester">
+        <rdfs:label>Maester</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Character"/>
+        <rdfs:comment>Scholar and healer of the Citadel</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Assassin">
+        <rdfs:label>Assassin</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Character"/>
+        <rdfs:comment>Professional killer</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;WhiteWalker">
+        <rdfs:label>White Walker</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Character"/>
+        <rdfs:comment>Supernatural ice creature</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Dragon">
+        <rdfs:label>Dragon</rdfs:label>
+        <rdfs:comment>Fire-breathing creature</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Direwolf">
+        <rdfs:label>Direwolf</rdfs:label>
+        <rdfs:comment>Giant wolf companion</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;House">
+        <rdfs:label>House</rdfs:label>
+        <rdfs:comment>Noble family house</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;GreatHouse">
+        <rdfs:label>Great House</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;House"/>
+        <rdfs:comment>Major ruling house</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Region">
+        <rdfs:label>Region</rdfs:label>
+        <rdfs:comment>Geographic region of Westeros</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Castle">
+        <rdfs:label>Castle</rdfs:label>
+        <rdfs:comment>Fortified residence</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;City">
+        <rdfs:label>City</rdfs:label>
+        <rdfs:comment>Urban settlement</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Event">
+        <rdfs:label>Event</rdfs:label>
+        <rdfs:comment>Significant event</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Battle">
+        <rdfs:label>Battle</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Event"/>
+        <rdfs:comment>Military conflict</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Wedding">
+        <rdfs:label>Wedding</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Event"/>
+        <rdfs:comment>Marriage ceremony</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;Artifact">
+        <rdfs:label>Artifact</rdfs:label>
+        <rdfs:comment>Significant object</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&got;ValyrianSteelWeapon">
+        <rdfs:label>Valyrian Steel Weapon</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&got;Artifact"/>
+        <rdfs:comment>Legendary forged weapon</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&got;memberOf">
+        <rdfs:label>member of</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;House"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;rulesHouse">
+        <rdfs:label>rules house</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Lord"/>
+        <rdfs:range rdf:resource="&got;House"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;fatherOf">
+        <rdfs:label>father of</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;motherOf">
+        <rdfs:label>mother of</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;marriedTo">
+        <rdfs:label>married to</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;kills">
+        <rdfs:label>kills</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;serves">
+        <rdfs:label>serves</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;alliedWith">
+        <rdfs:label>allied with</rdfs:label>
+        <rdfs:domain rdf:resource="&got;House"/>
+        <rdfs:range rdf:resource="&got;House"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;enemyOf">
+        <rdfs:label>enemy of</rdfs:label>
+        <rdfs:domain rdf:resource="&got;House"/>
+        <rdfs:range rdf:resource="&got;House"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;controls">
+        <rdfs:label>controls</rdfs:label>
+        <rdfs:domain rdf:resource="&got;House"/>
+        <rdfs:range rdf:resource="&got;Region"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;seatAt">
+        <rdfs:label>seat at</rdfs:label>
+        <rdfs:domain rdf:resource="&got;House"/>
+        <rdfs:range rdf:resource="&got;Castle"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;owns">
+        <rdfs:label>owns</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Artifact"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;rides">
+        <rdfs:label>rides</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Dragon"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&got;bondedWith">
+        <rdfs:label>bonded with</rdfs:label>
+        <rdfs:domain rdf:resource="&got;Character"/>
+        <rdfs:range rdf:resource="&got;Direwolf"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&got;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&got;title">
+        <rdfs:label>title</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&got;words">
+        <rdfs:label>words</rdfs:label>
+        <rdfs:domain rdf:resource="&got;House"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+        <rdfs:comment>House motto</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&got;sigil">
+        <rdfs:label>sigil</rdfs:label>
+        <rdfs:domain rdf:resource="&got;House"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Great Houses -->
+    
+    <owl:NamedIndividual rdf:about="&got;HouseStark">
+        <rdf:type rdf:resource="&got;GreatHouse"/>
+        <got:name>House Stark</got:name>
+        <got:words>Winter is Coming</got:words>
+        <got:sigil>Gray direwolf on white field</got:sigil>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;HouseLannister">
+        <rdf:type rdf:resource="&got;GreatHouse"/>
+        <got:name>House Lannister</got:name>
+        <got:words>Hear Me Roar</got:words>
+        <got:sigil>Golden lion on crimson field</got:sigil>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;HouseTargaryen">
+        <rdf:type rdf:resource="&got;GreatHouse"/>
+        <got:name>House Targaryen</got:name>
+        <got:words>Fire and Blood</got:words>
+        <got:sigil>Three-headed red dragon on black field</got:sigil>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;HouseBaratheon">
+        <rdf:type rdf:resource="&got;GreatHouse"/>
+        <got:name>House Baratheon</got:name>
+        <got:words>Ours is the Fury</got:words>
+        <got:sigil>Black crowned stag on gold field</got:sigil>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;HouseGreyjoy">
+        <rdf:type rdf:resource="&got;GreatHouse"/>
+        <got:name>House Greyjoy</got:name>
+        <got:words>We Do Not Sow</got:words>
+        <got:sigil>Golden kraken on black field</got:sigil>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;HouseTyrell">
+        <rdf:type rdf:resource="&got;GreatHouse"/>
+        <got:name>House Tyrell</got:name>
+        <got:words>Growing Strong</got:words>
+        <got:sigil>Golden rose on green field</got:sigil>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;HouseMartell">
+        <rdf:type rdf:resource="&got;GreatHouse"/>
+        <got:name>House Martell</got:name>
+        <got:words>Unbowed, Unbent, Unbroken</got:words>
+        <got:sigil>Red sun pierced by golden spear</got:sigil>
+    </owl:NamedIndividual>
+
+    <!-- Main Characters - Stark -->
+    
+    <owl:NamedIndividual rdf:about="&got;NedStark">
+        <rdf:type rdf:resource="&got;Lord"/>
+        <got:name>Eddard Stark</got:name>
+        <got:title>Lord of Winterfell, Warden of the North</got:title>
+        <got:memberOf rdf:resource="&got;HouseStark"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;JonSnow">
+        <rdf:type rdf:resource="&got;Warrior"/>
+        <got:name>Jon Snow (Aegon Targaryen)</got:name>
+        <got:title>King in the North</got:title>
+        <got:memberOf rdf:resource="&got;HouseStark"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;AryaStark">
+        <rdf:type rdf:resource="&got;Assassin"/>
+        <got:name>Arya Stark</got:name>
+        <got:memberOf rdf:resource="&got;HouseStark"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;SansaStark">
+        <rdf:type rdf:resource="&got;Queen"/>
+        <got:name>Sansa Stark</got:name>
+        <got:title>Queen in the North</got:title>
+        <got:memberOf rdf:resource="&got;HouseStark"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;BranStark">
+        <rdf:type rdf:resource="&got;King"/>
+        <got:name>Bran Stark</got:name>
+        <got:title>The Three-Eyed Raven, King of the Six Kingdoms</got:title>
+        <got:memberOf rdf:resource="&got;HouseStark"/>
+    </owl:NamedIndividual>
+
+    <!-- Main Characters - Lannister -->
+    
+    <owl:NamedIndividual rdf:about="&got;TywinLannister">
+        <rdf:type rdf:resource="&got;Lord"/>
+        <got:name>Tywin Lannister</got:name>
+        <got:title>Lord of Casterly Rock</got:title>
+        <got:memberOf rdf:resource="&got;HouseLannister"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;CerseiLannister">
+        <rdf:type rdf:resource="&got;Queen"/>
+        <got:name>Cersei Lannister</got:name>
+        <got:title>Queen of the Seven Kingdoms</got:title>
+        <got:memberOf rdf:resource="&got;HouseLannister"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;JaimeLannister">
+        <rdf:type rdf:resource="&got;Knight"/>
+        <got:name>Jaime Lannister</got:name>
+        <got:title>Kingslayer</got:title>
+        <got:memberOf rdf:resource="&got;HouseLannister"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;TyrionLannister">
+        <rdf:type rdf:resource="&got;Noble"/>
+        <got:name>Tyrion Lannister</got:name>
+        <got:title>Hand of the King</got:title>
+        <got:memberOf rdf:resource="&got;HouseLannister"/>
+    </owl:NamedIndividual>
+
+    <!-- Main Characters - Targaryen -->
+    
+    <owl:NamedIndividual rdf:about="&got;DaenerysTargaryen">
+        <rdf:type rdf:resource="&got;Queen"/>
+        <got:name>Daenerys Targaryen</got:name>
+        <got:title>Mother of Dragons, Breaker of Chains</got:title>
+        <got:memberOf rdf:resource="&got;HouseTargaryen"/>
+    </owl:NamedIndividual>
+
+    <!-- Dragons -->
+    
+    <owl:NamedIndividual rdf:about="&got;Drogon">
+        <rdf:type rdf:resource="&got;Dragon"/>
+        <got:name>Drogon</got:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;Rhaegal">
+        <rdf:type rdf:resource="&got;Dragon"/>
+        <got:name>Rhaegal</got:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;Viserion">
+        <rdf:type rdf:resource="&got;Dragon"/>
+        <got:name>Viserion</got:name>
+    </owl:NamedIndividual>
+
+    <!-- Direwolves -->
+    
+    <owl:NamedIndividual rdf:about="&got;Ghost">
+        <rdf:type rdf:resource="&got;Direwolf"/>
+        <got:name>Ghost</got:name>
+        <got:bondedWith rdf:resource="&got;JonSnow"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;Nymeria">
+        <rdf:type rdf:resource="&got;Direwolf"/>
+        <got:name>Nymeria</got:name>
+        <got:bondedWith rdf:resource="&got;AryaStark"/>
+    </owl:NamedIndividual>
+
+    <!-- Castles -->
+    
+    <owl:NamedIndividual rdf:about="&got;Winterfell">
+        <rdf:type rdf:resource="&got;Castle"/>
+        <got:name>Winterfell</got:name>
+        <got:seatAt rdf:resource="&got;HouseStark"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;CasterlyRock">
+        <rdf:type rdf:resource="&got;Castle"/>
+        <got:name>Casterly Rock</got:name>
+        <got:seatAt rdf:resource="&got;HouseLannister"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&got;TheRedKeep">
+        <rdf:type rdf:resource="&got;Castle"/>
+        <got:name>The Red Keep</got:name>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

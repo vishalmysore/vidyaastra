@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY bahubali "http://vidyaastra.org/ontology/bahubali#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/bahubali#"
+     xml:base="http://vidyaastra.org/ontology/bahubali"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:bahubali="http://vidyaastra.org/ontology/bahubali#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/bahubali">
+        <rdfs:label>Bahubali Ontology</rdfs:label>
+        <rdfs:comment>An ontology for the Bahubali epic film series</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&bahubali;Character">
+        <rdfs:label>Character</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Warrior">
+        <rdfs:label>Warrior</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;King">
+        <rdfs:label>King</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Queen">
+        <rdfs:label>Queen</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;QueenMother">
+        <rdfs:label>Queen Mother</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Queen"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Prince">
+        <rdfs:label>Prince</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Princess">
+        <rdfs:label>Princess</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Commander">
+        <rdfs:label>Commander</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Warrior"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Slave">
+        <rdfs:label>Slave</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Kingdom">
+        <rdfs:label>Kingdom</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Place">
+        <rdfs:label>Place</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Fort">
+        <rdfs:label>Fort</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Place"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Waterfall">
+        <rdfs:label>Waterfall</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Place"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Event">
+        <rdfs:label>Event</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Battle">
+        <rdfs:label>Battle</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Event"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Coronation">
+        <rdfs:label>Coronation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Event"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Betrayal">
+        <rdfs:label>Betrayal</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bahubali;Event"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Weapon">
+        <rdfs:label>Weapon</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bahubali;Virtue">
+        <rdfs:label>Virtue</rdfs:label>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&bahubali;rulesOver">
+        <rdfs:label>rules over</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;King"/>
+        <rdfs:range rdf:resource="&bahubali;Kingdom"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;fatherOf">
+        <rdfs:label>father of</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;motherOf">
+        <rdfs:label>mother of</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;marriedTo">
+        <rdfs:label>married to</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;loves">
+        <rdfs:label>loves</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;kills">
+        <rdfs:label>kills</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;betrays">
+        <rdfs:label>betrays</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;serves">
+        <rdfs:label>serves</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;embodies">
+        <rdfs:label>embodies</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Virtue"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;wields">
+        <rdfs:label>wields</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Warrior"/>
+        <rdfs:range rdf:resource="&bahubali;Weapon"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bahubali;participatesIn">
+        <rdfs:label>participates in</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Character"/>
+        <rdfs:range rdf:resource="&bahubali;Event"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&bahubali;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bahubali;title">
+        <rdfs:label>title</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bahubali;strength">
+        <rdfs:label>strength</rdfs:label>
+        <rdfs:domain rdf:resource="&bahubali;Warrior"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Main Characters -->
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Amarendra">
+        <rdf:type rdf:resource="&bahubali;King"/>
+        <rdf:type rdf:resource="&bahubali;Warrior"/>
+        <bahubali:name>Amarendra Baahubali</bahubali:name>
+        <bahubali:title>The Great Warrior, King of Mahishmati</bahubali:title>
+        <rdfs:comment>The father, legendary warrior and rightful king</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Mahendra">
+        <rdf:type rdf:resource="&bahubali;King"/>
+        <rdf:type rdf:resource="&bahubali;Warrior"/>
+        <bahubali:name>Mahendra Baahubali (Shivudu)</bahubali:name>
+        <bahubali:title>King of Mahishmati</bahubali:title>
+        <rdfs:comment>The son, who avenges his father</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Bhallaladeva">
+        <rdf:type rdf:resource="&bahubali;King"/>
+        <rdf:type rdf:resource="&bahubali;Warrior"/>
+        <bahubali:name>Bhallaladeva</bahubali:name>
+        <bahubali:title>Usurper King of Mahishmati</bahubali:title>
+        <rdfs:comment>The cruel antagonist who usurps the throne</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Sivagami">
+        <rdf:type rdf:resource="&bahubali;QueenMother"/>
+        <bahubali:name>Sivagami Devi</bahubali:name>
+        <bahubali:title>Queen Mother of Mahishmati</bahubali:title>
+        <rdfs:comment>The powerful queen mother who raises both princes</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Devasena">
+        <rdf:type rdf:resource="&bahubali;Princess"/>
+        <rdf:type rdf:resource="&bahubali;Warrior"/>
+        <bahubali:name>Devasena</bahubali:name>
+        <bahubali:title>Princess of Kuntala</bahubali:title>
+        <bahubali:marriedTo rdf:resource="&bahubali;Amarendra"/>
+        <bahubali:motherOf rdf:resource="&bahubali;Mahendra"/>
+        <rdfs:comment>Fierce warrior princess, wife of Amarendra</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Avantika">
+        <rdf:type rdf:resource="&bahubali;Warrior"/>
+        <bahubali:name>Avantika</bahubali:name>
+        <bahubali:title>Rebel Warrior</bahubali:title>
+        <bahubali:loves rdf:resource="&bahubali;Mahendra"/>
+        <rdfs:comment>Warrior woman who inspires Mahendra</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Kattappa">
+        <rdf:type rdf:resource="&bahubali;Commander"/>
+        <rdf:type rdf:resource="&bahubali;Slave"/>
+        <bahubali:name>Kattappa</bahubali:name>
+        <bahubali:title>Commander and Slave Warrior</bahubali:title>
+        <bahubali:serves rdf:resource="&bahubali;Sivagami"/>
+        <bahubali:kills rdf:resource="&bahubali;Amarendra"/>
+        <rdfs:comment>Loyal slave warrior bound by duty</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Bijjaladeva">
+        <rdf:type rdf:resource="&bahubali;Character"/>
+        <bahubali:name>Bijjaladeva</bahubali:name>
+        <bahubali:title>Former King</bahubali:title>
+        <bahubali:fatherOf rdf:resource="&bahubali;Bhallaladeva"/>
+        <rdfs:comment>Cunning father of Bhallaladeva</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Kingdoms -->
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Mahishmati">
+        <rdf:type rdf:resource="&bahubali;Kingdom"/>
+        <bahubali:name>Mahishmati</bahubali:name>
+        <rdfs:comment>The great kingdom at the center of the story</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Kuntala">
+        <rdf:type rdf:resource="&bahubali;Kingdom"/>
+        <bahubali:name>Kuntala</bahubali:name>
+        <rdfs:comment>Kingdom ruled by Devasena's family</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Places -->
+    
+    <owl:NamedIndividual rdf:about="&bahubali;MahishmatiPalace">
+        <rdf:type rdf:resource="&bahubali;Fort"/>
+        <bahubali:name>Mahishmati Palace</bahubali:name>
+        <rdfs:comment>The grand palace fortress</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;TheWaterfall">
+        <rdf:type rdf:resource="&bahubali;Waterfall"/>
+        <bahubali:name>The Great Waterfall</bahubali:name>
+        <rdfs:comment>The mighty waterfall Mahendra climbs</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Key Events -->
+    
+    <owl:NamedIndividual rdf:about="&bahubali;CoronationContest">
+        <rdf:type rdf:resource="&bahubali;Event"/>
+        <bahubali:name>Coronation Contest</bahubali:name>
+        <rdfs:comment>Contest between Amarendra and Bhallaladeva for the throne</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;KuntalaBattle">
+        <rdf:type rdf:resource="&bahubali;Battle"/>
+        <bahubali:name>Battle of Kuntala</bahubali:name>
+        <rdfs:comment>Where Amarendra saves Kuntala and meets Devasena</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;AmarendraBetrayal">
+        <rdf:type rdf:resource="&bahubali;Betrayal"/>
+        <bahubali:name>Betrayal of Amarendra</bahubali:name>
+        <rdfs:comment>Kattappa kills Amarendra on Sivagami's orders</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;FinalBattle">
+        <rdf:type rdf:resource="&bahubali;Battle"/>
+        <bahubali:name>Final Battle</bahubali:name>
+        <rdfs:comment>Mahendra defeats Bhallaladeva to reclaim the throne</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Virtues -->
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Dharma">
+        <rdf:type rdf:resource="&bahubali;Virtue"/>
+        <bahubali:name>Dharma (Righteousness)</bahubali:name>
+        <rdfs:comment>Moral duty and righteousness</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Valor">
+        <rdf:type rdf:resource="&bahubali;Virtue"/>
+        <bahubali:name>Valor</bahubali:name>
+        <rdfs:comment>Courage and bravery in battle</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Loyalty">
+        <rdf:type rdf:resource="&bahubali;Virtue"/>
+        <bahubali:name>Loyalty</bahubali:name>
+        <rdfs:comment>Unwavering devotion</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;Justice">
+        <rdf:type rdf:resource="&bahubali;Virtue"/>
+        <bahubali:name>Justice</bahubali:name>
+        <rdfs:comment>Fair and righteous judgment</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Weapons -->
+    
+    <owl:NamedIndividual rdf:about="&bahubali;BahubaliSword">
+        <rdf:type rdf:resource="&bahubali;Weapon"/>
+        <bahubali:name>Baahubali's Sword</bahubali:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bahubali;ChainMace">
+        <rdf:type rdf:resource="&bahubali;Weapon"/>
+        <bahubali:name>Chain Mace</bahubali:name>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

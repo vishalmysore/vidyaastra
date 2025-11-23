@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY fraud "http://vidyaastra.org/ontology/fraud#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/fraud#"
+     xml:base="http://vidyaastra.org/ontology/fraud"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:fraud="http://vidyaastra.org/ontology/fraud#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/fraud">
+        <rdfs:label>Fraud Detection Ontology</rdfs:label>
+        <rdfs:comment>An ontology for modeling fraud detection scenarios, entities, transactions, and patterns</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&fraud;Entity">
+        <rdfs:label>Entity</rdfs:label>
+        <rdfs:comment>Base class for all entities in fraud detection system</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Person">
+        <rdfs:label>Person</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&fraud;Entity"/>
+        <rdfs:comment>Individual person</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Organization">
+        <rdfs:label>Organization</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&fraud;Entity"/>
+        <rdfs:comment>Business entity or organization</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Account">
+        <rdfs:label>Account</rdfs:label>
+        <rdfs:comment>Financial account</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;BankAccount">
+        <rdfs:label>Bank Account</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&fraud;Account"/>
+        <rdfs:comment>Banking account</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;CreditCard">
+        <rdfs:label>Credit Card</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&fraud;Account"/>
+        <rdfs:comment>Credit card account</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Transaction">
+        <rdfs:label>Transaction</rdfs:label>
+        <rdfs:comment>Financial transaction</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Payment">
+        <rdfs:label>Payment</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&fraud;Transaction"/>
+        <rdfs:comment>Payment transaction</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Transfer">
+        <rdfs:label>Transfer</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&fraud;Transaction"/>
+        <rdfs:comment>Money transfer</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Withdrawal">
+        <rdfs:label>Withdrawal</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&fraud;Transaction"/>
+        <rdfs:comment>Cash withdrawal</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Device">
+        <rdfs:label>Device</rdfs:label>
+        <rdfs:comment>Electronic device used for transactions</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Location">
+        <rdfs:label>Location</rdfs:label>
+        <rdfs:comment>Geographic location</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;IPAddress">
+        <rdfs:label>IP Address</rdfs:label>
+        <rdfs:comment>Network IP address</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;FraudPattern">
+        <rdfs:label>Fraud Pattern</rdfs:label>
+        <rdfs:comment>Known fraud pattern or behavior</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Alert">
+        <rdfs:label>Alert</rdfs:label>
+        <rdfs:comment>Fraud detection alert</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&fraud;Investigation">
+        <rdfs:label>Investigation</rdfs:label>
+        <rdfs:comment>Fraud investigation case</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&fraud;ownsAccount">
+        <rdfs:label>owns account</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Entity"/>
+        <rdfs:range rdf:resource="&fraud;Account"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;initiatesTransaction">
+        <rdfs:label>initiates transaction</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Entity"/>
+        <rdfs:range rdf:resource="&fraud;Transaction"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;receivesTransaction">
+        <rdfs:label>receives transaction</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Entity"/>
+        <rdfs:range rdf:resource="&fraud;Transaction"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;fromAccount">
+        <rdfs:label>from account</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&fraud;Account"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;toAccount">
+        <rdfs:label>to account</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&fraud;Account"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;usesDevice">
+        <rdfs:label>uses device</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&fraud;Device"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;atLocation">
+        <rdfs:label>at location</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&fraud;Location"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;fromIP">
+        <rdfs:label>from IP</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&fraud;IPAddress"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;matchesPattern">
+        <rdfs:label>matches pattern</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&fraud;FraudPattern"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;triggersAlert">
+        <rdfs:label>triggers alert</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&fraud;Alert"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;relatedToInvestigation">
+        <rdfs:label>related to investigation</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Alert"/>
+        <rdfs:range rdf:resource="&fraud;Investigation"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&fraud;hasRelationship">
+        <rdfs:label>has relationship</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Entity"/>
+        <rdfs:range rdf:resource="&fraud;Entity"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&fraud;entityId">
+        <rdfs:label>entity ID</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Entity"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Entity"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;accountNumber">
+        <rdfs:label>account number</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Account"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;transactionId">
+        <rdfs:label>transaction ID</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;amount">
+        <rdfs:label>amount</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;currency">
+        <rdfs:label>currency</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;timestamp">
+        <rdfs:label>timestamp</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&xsd;dateTime"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;riskScore">
+        <rdfs:label>risk score</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+        <rdfs:comment>Risk score from 0.0 to 1.0</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;isFraudulent">
+        <rdfs:label>is fraudulent</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Transaction"/>
+        <rdfs:range rdf:resource="&xsd;boolean"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;deviceId">
+        <rdfs:label>device ID</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Device"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;ipAddress">
+        <rdfs:label>IP address</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;IPAddress"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;latitude">
+        <rdfs:label>latitude</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Location"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;longitude">
+        <rdfs:label>longitude</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Location"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;alertSeverity">
+        <rdfs:label>alert severity</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Alert"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&fraud;status">
+        <rdfs:label>status</rdfs:label>
+        <rdfs:domain rdf:resource="&fraud;Investigation"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Fraud Pattern Types -->
+    
+    <owl:NamedIndividual rdf:about="&fraud;RapidSuccessionTransactions">
+        <rdf:type rdf:resource="&fraud;FraudPattern"/>
+        <fraud:name>Rapid Succession Transactions</fraud:name>
+        <rdfs:comment>Multiple transactions in quick succession</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&fraud;UnusualLocationPattern">
+        <rdf:type rdf:resource="&fraud;FraudPattern"/>
+        <fraud:name>Unusual Location Pattern</fraud:name>
+        <rdfs:comment>Transaction from unusual or distant location</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&fraud;LargeAmountPattern">
+        <rdf:type rdf:resource="&fraud;FraudPattern"/>
+        <fraud:name>Large Amount Pattern</fraud:name>
+        <rdfs:comment>Transaction amount significantly above normal</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&fraud;StructuringPattern">
+        <rdf:type rdf:resource="&fraud;FraudPattern"/>
+        <fraud:name>Structuring Pattern</fraud:name>
+        <rdfs:comment>Multiple smaller transactions to avoid reporting thresholds</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&fraud;AccountTakeoverPattern">
+        <rdf:type rdf:resource="&fraud;FraudPattern"/>
+        <fraud:name>Account Takeover Pattern</fraud:name>
+        <rdfs:comment>Sudden change in transaction patterns indicating account compromise</rdfs:comment>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

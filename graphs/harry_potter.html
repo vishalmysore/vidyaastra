@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaAstra: Harry Potter - Wizarding World Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Garamond', 'Georgia', serif;
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #2d132c 100%);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        svg {
+            display: block;
+            background: transparent;
+        }
+
+        .node circle {
+            stroke: #FFD700;
+            stroke-width: 2.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 10px rgba(255,215,0,0.4));
+        }
+
+        .node:hover circle {
+            stroke-width: 5px;
+            filter: drop-shadow(0 0 25px rgba(255,215,0,1));
+            transform: scale(1.1);
+        }
+
+        .node text {
+            font-size: 10px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,1);
+        }
+
+        .link {
+            stroke: rgba(200, 200, 200, 0.3);
+            stroke-width: 1.5px;
+            fill: none;
+        }
+
+        .link.friendship {
+            stroke: #FFD700;
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+
+        .link.family {
+            stroke: #9370DB;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.enemy {
+            stroke: #DC143C;
+            stroke-width: 3px;
+            opacity: 0.8;
+        }
+
+        .link.house {
+            stroke: #4A90E2;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.mentor {
+            stroke: #32CD32;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.artifact {
+            stroke: #FF8C00;
+            stroke-width: 2.5px;
+            opacity: 0.7;
+            stroke-dasharray: 3, 3;
+        }
+
+        .link-label {
+            font-size: 8px;
+            fill: #FFD700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+            pointer-events: none;
+        }
+
+        #legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(13, 27, 42, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #FFD700;
+            max-width: 250px;
+        }
+
+        #legend h3 {
+            margin-bottom: 10px;
+            color: #FFD700;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 11px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 2px solid #FFD700;
+        }
+
+        #title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 3px 3px 6px rgba(0,0,0,1);
+            z-index: 10;
+        }
+
+        #subtitle {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            font-size: 14px;
+            font-style: italic;
+            color: #C0C0C0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,1);
+        }
+
+        .sparkle {
+            animation: sparkle 2s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div id="title">⚡ Harry Potter Universe ⚡</div>
+    <div id="subtitle">The Boy Who Lived</div>
+    <div id="legend">
+        <h3>Hogwarts Houses</h3>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #740001;"></div>
+            <span>Gryffindor</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #1a472a;"></div>
+            <span>Slytherin</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #0e1a40;"></div>
+            <span>Ravenclaw</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ffdb00;"></div>
+            <span>Hufflepuff</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #000000;"></div>
+            <span>Dark Forces</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #9370DB;"></div>
+            <span>Professors</span>
+        </div>
+    </div>
+    <svg id="network"></svg>
+
+    <script>
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#network")
+            .attr("width", width)
+            .attr("height", height);
+
+        const houseColors = {
+            "Gryffindor": "#740001",
+            "Slytherin": "#1a472a",
+            "Ravenclaw": "#0e1a40",
+            "Hufflepuff": "#ffdb00",
+            "Dark": "#000000",
+            "Professor": "#9370DB",
+            "Artifact": "#FF8C00",
+            "Place": "#4A90E2"
+        };
+
+        const nodes = [
+            // Main Trio
+            { id: "Harry", label: "Harry Potter", house: "Gryffindor", type: "Student" },
+            { id: "Hermione", label: "Hermione Granger", house: "Gryffindor", type: "Student" },
+            { id: "Ron", label: "Ron Weasley", house: "Gryffindor", type: "Student" },
+            
+            // Professors & Adults
+            { id: "Dumbledore", label: "Albus Dumbledore", house: "Professor", type: "Headmaster" },
+            { id: "Snape", label: "Severus Snape", house: "Professor", type: "Professor" },
+            { id: "McGonagall", label: "Minerva McGonagall", house: "Professor", type: "Professor" },
+            { id: "Hagrid", label: "Rubeus Hagrid", house: "Professor", type: "Keeper" },
+            
+            // Dark Forces
+            { id: "Voldemort", label: "Lord Voldemort", house: "Dark", type: "Dark Lord" },
+            { id: "Bellatrix", label: "Bellatrix Lestrange", house: "Dark", type: "Death Eater" },
+            { id: "Lucius", label: "Lucius Malfoy", house: "Dark", type: "Death Eater" },
+            
+            // Slytherin Students
+            { id: "Draco", label: "Draco Malfoy", house: "Slytherin", type: "Student" },
+            
+            // Other Gryffindors
+            { id: "Neville", label: "Neville Longbottom", house: "Gryffindor", type: "Student" },
+            { id: "Ginny", label: "Ginny Weasley", house: "Gryffindor", type: "Student" },
+            
+            // Ravenclaw
+            { id: "Luna", label: "Luna Lovegood", house: "Ravenclaw", type: "Student" },
+            
+            // Hufflepuff
+            { id: "Cedric", label: "Cedric Diggory", house: "Hufflepuff", type: "Student" },
+            
+            // Places
+            { id: "Hogwarts", label: "Hogwarts", house: "Place", type: "School" },
+            
+            // Magical Artifacts
+            { id: "ElderWand", label: "Elder Wand", house: "Artifact", type: "Deathly Hallow" },
+            { id: "InvisibilityCloak", label: "Invisibility Cloak", house: "Artifact", type: "Deathly Hallow" },
+            { id: "PhilosophersStone", label: "Philosopher's Stone", house: "Artifact", type: "Artifact" },
+            
+            // Horcruxes
+            { id: "Diary", label: "Tom Riddle's Diary", house: "Dark", type: "Horcrux" },
+            { id: "Ring", label: "Marvolo's Ring", house: "Dark", type: "Horcrux" },
+            { id: "Locket", label: "Slytherin's Locket", house: "Dark", type: "Horcrux" }
+        ];
+
+        const links = [
+            // Golden Trio friendships
+            { source: "Harry", target: "Hermione", type: "friendship", label: "best friends" },
+            { source: "Harry", target: "Ron", type: "friendship", label: "best friends" },
+            { source: "Hermione", target: "Ron", type: "friendship", label: "married" },
+            
+            // House affiliations
+            { source: "Harry", target: "Hogwarts", type: "house", label: "student" },
+            { source: "Hermione", target: "Hogwarts", type: "house", label: "student" },
+            { source: "Ron", target: "Hogwarts", type: "house", label: "student" },
+            { source: "Draco", target: "Hogwarts", type: "house", label: "student" },
+            
+            // Mentorship
+            { source: "Dumbledore", target: "Harry", type: "mentor", label: "mentor" },
+            { source: "Hagrid", target: "Harry", type: "friendship", label: "friend" },
+            { source: "Snape", target: "Harry", type: "mentor", label: "protects secretly" },
+            { source: "McGonagall", target: "Hermione", type: "mentor", label: "favors" },
+            
+            // Family
+            { source: "Ron", target: "Ginny", type: "family", label: "siblings" },
+            { source: "Ginny", target: "Harry", type: "friendship", label: "married" },
+            { source: "Draco", target: "Lucius", type: "family", label: "father" },
+            
+            // Enemies
+            { source: "Harry", target: "Voldemort", type: "enemy", label: "prophesied enemy" },
+            { source: "Harry", target: "Draco", type: "enemy", label: "rivals" },
+            { source: "Voldemort", target: "Dumbledore", type: "enemy", label: "arch enemies" },
+            { source: "Bellatrix", target: "Hermione", type: "enemy", label: "tortured" },
+            { source: "Bellatrix", target: "Neville", type: "enemy", label: "killed parents" },
+            
+            // Dark connections
+            { source: "Voldemort", target: "Bellatrix", type: "family", label: "loyal servant" },
+            { source: "Voldemort", target: "Lucius", type: "family", label: "Death Eater" },
+            { source: "Lucius", target: "Draco", type: "family", label: "influences" },
+            
+            // Artifacts
+            { source: "Harry", target: "InvisibilityCloak", type: "artifact", label: "owns" },
+            { source: "Dumbledore", target: "ElderWand", type: "artifact", label: "mastered" },
+            { source: "Harry", target: "ElderWand", type: "artifact", label: "true master" },
+            { source: "Voldemort", target: "ElderWand", type: "artifact", label: "seeks" },
+            
+            // Horcruxes
+            { source: "Voldemort", target: "Diary", type: "artifact", label: "created" },
+            { source: "Voldemort", target: "Ring", type: "artifact", label: "created" },
+            { source: "Voldemort", target: "Locket", type: "artifact", label: "created" },
+            { source: "Harry", target: "Diary", type: "enemy", label: "destroyed" },
+            { source: "Dumbledore", target: "Ring", type: "enemy", label: "destroyed" },
+            { source: "Ron", target: "Locket", type: "enemy", label: "destroyed" },
+            
+            // Other friendships
+            { source: "Harry", target: "Neville", type: "friendship", label: "friends" },
+            { source: "Harry", target: "Luna", type: "friendship", label: "friends" },
+            { source: "Hermione", target: "Luna", type: "friendship", label: "friends" }
+        ];
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(130))
+            .force("charge", d3.forceManyBody().strength(-450))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(40));
+
+        const link = svg.append("g")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("class", d => `link ${d.type}`);
+
+        const linkLabel = svg.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("class", "link-label")
+            .text(d => d.label);
+
+        const node = svg.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("r", d => {
+                if (d.type === "Dark Lord") return 28;
+                if (d.type === "Headmaster") return 25;
+                if (d.type === "Horcrux" || d.type === "Deathly Hallow") return 15;
+                if (d.type === "School") return 30;
+                return 18;
+            })
+            .attr("fill", d => houseColors[d.house] || "#666")
+            .attr("class", d => d.type === "Deathly Hallow" ? "sparkle" : "");
+
+        node.append("text")
+            .attr("dy", 30)
+            .text(d => d.label);
+
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            linkLabel
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
+
+            node
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY oz "http://vidyaastra.org/ontology/wizardofoz#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/wizardofoz#"
+     xml:base="http://vidyaastra.org/ontology/wizardofoz"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:oz="http://vidyaastra.org/ontology/wizardofoz#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/wizardofoz">
+        <rdfs:label>The Wizard of Oz Ontology</rdfs:label>
+        <rdfs:comment>An ontology for The Wonderful Wizard of Oz by L. Frank Baum</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&oz;Character">
+        <rdfs:label>Character</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Human">
+        <rdfs:label>Human</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Wizard">
+        <rdfs:label>Wizard</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Witch">
+        <rdfs:label>Witch</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;GoodWitch">
+        <rdfs:label>Good Witch</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Witch"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;WickedWitch">
+        <rdfs:label>Wicked Witch</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Witch"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Scarecrow">
+        <rdfs:label>Scarecrow</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;TinMan">
+        <rdfs:label>Tin Man</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Lion">
+        <rdfs:label>Lion</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Munchkin">
+        <rdfs:label>Munchkin</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;FlyingMonkey">
+        <rdfs:label>Flying Monkey</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Place">
+        <rdfs:label>Place</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Land">
+        <rdfs:label>Land</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Place"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;City">
+        <rdfs:label>City</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&oz;Place"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;MagicalArtifact">
+        <rdfs:label>Magical Artifact</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Quest">
+        <rdfs:label>Quest</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&oz;Virtue">
+        <rdfs:label>Virtue</rdfs:label>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&oz;seeks">
+        <rdfs:label>seeks</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Character"/>
+        <rdfs:range rdf:resource="&oz;Virtue"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&oz;travelsTo">
+        <rdfs:label>travels to</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Character"/>
+        <rdfs:range rdf:resource="&oz;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&oz;livesIn">
+        <rdfs:label>lives in</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Character"/>
+        <rdfs:range rdf:resource="&oz;Place"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&oz;rules">
+        <rdfs:label>rules</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Character"/>
+        <rdfs:range rdf:resource="&oz;Land"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&oz;possesses">
+        <rdfs:label>possesses</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Character"/>
+        <rdfs:range rdf:resource="&oz;MagicalArtifact"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&oz;accompanies">
+        <rdfs:label>accompanies</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Character"/>
+        <rdfs:range rdf:resource="&oz;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&oz;defeats">
+        <rdfs:label>defeats</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Character"/>
+        <rdfs:range rdf:resource="&oz;Character"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&oz;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&oz;color">
+        <rdfs:label>color</rdfs:label>
+        <rdfs:domain rdf:resource="&oz;Land"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Main Characters -->
+    
+    <owl:NamedIndividual rdf:about="&oz;Dorothy">
+        <rdf:type rdf:resource="&oz;Human"/>
+        <oz:name>Dorothy Gale</oz:name>
+        <rdfs:comment>Young girl from Kansas who travels to Oz</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;TheScarecrow">
+        <rdf:type rdf:resource="&oz;Scarecrow"/>
+        <oz:name>The Scarecrow</oz:name>
+        <oz:seeks rdf:resource="&oz;BrainVirtue"/>
+        <rdfs:comment>Seeks a brain from the Wizard</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;TheTinWoodman">
+        <rdf:type rdf:resource="&oz;TinMan"/>
+        <oz:name>The Tin Woodman</oz:name>
+        <oz:seeks rdf:resource="&oz;HeartVirtue"/>
+        <rdfs:comment>Seeks a heart from the Wizard</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;TheCowardlyLion">
+        <rdf:type rdf:resource="&oz;Lion"/>
+        <oz:name>The Cowardly Lion</oz:name>
+        <oz:seeks rdf:resource="&oz;CourageVirtue"/>
+        <rdfs:comment>Seeks courage from the Wizard</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;TheWizard">
+        <rdf:type rdf:resource="&oz;Wizard"/>
+        <oz:name>Oscar Diggs</oz:name>
+        <oz:rules rdf:resource="&oz;EmeraldCity"/>
+        <rdfs:comment>The great and powerful Wizard of Oz</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;GlindaTheGood">
+        <rdf:type rdf:resource="&oz;GoodWitch"/>
+        <oz:name>Glinda</oz:name>
+        <oz:rules rdf:resource="&oz;LandOfTheSouth"/>
+        <rdfs:comment>Good Witch of the South</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;WickedWitchOfTheWest">
+        <rdf:type rdf:resource="&oz;WickedWitch"/>
+        <oz:name>Wicked Witch of the West</oz:name>
+        <oz:rules rdf:resource="&oz;LandOfTheWest"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;WickedWitchOfTheEast">
+        <rdf:type rdf:resource="&oz;WickedWitch"/>
+        <oz:name>Wicked Witch of the East</oz:name>
+        <rdfs:comment>Killed by Dorothy's house</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Places -->
+    
+    <owl:NamedIndividual rdf:about="&oz;LandOfOz">
+        <rdf:type rdf:resource="&oz;Land"/>
+        <oz:name>Land of Oz</oz:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;EmeraldCity">
+        <rdf:type rdf:resource="&oz;City"/>
+        <oz:name>Emerald City</oz:name>
+        <oz:color>Green</oz:color>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;Munchkinland">
+        <rdf:type rdf:resource="&oz;Land"/>
+        <oz:name>Munchkinland</oz:name>
+        <oz:color>Blue</oz:color>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;LandOfTheWest">
+        <rdf:type rdf:resource="&oz;Land"/>
+        <oz:name>Land of the West</oz:name>
+        <oz:color>Yellow</oz:color>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;LandOfTheSouth">
+        <rdf:type rdf:resource="&oz;Land"/>
+        <oz:name>Land of the South</oz:name>
+        <oz:color>Red</oz:color>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;Kansas">
+        <rdf:type rdf:resource="&oz;Place"/>
+        <oz:name>Kansas</oz:name>
+        <rdfs:comment>Dorothy's home</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Magical Artifacts -->
+    
+    <owl:NamedIndividual rdf:about="&oz;SilverShoes">
+        <rdf:type rdf:resource="&oz;MagicalArtifact"/>
+        <oz:name>Silver Shoes</oz:name>
+        <rdfs:comment>Magical shoes that can transport the wearer</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;GoldenCap">
+        <rdf:type rdf:resource="&oz;MagicalArtifact"/>
+        <oz:name>Golden Cap</oz:name>
+        <rdfs:comment>Controls the Flying Monkeys</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;YellowBrickRoad">
+        <rdf:type rdf:resource="&oz;Place"/>
+        <oz:name>Yellow Brick Road</oz:name>
+        <oz:color>Yellow</oz:color>
+        <rdfs:comment>The path to the Emerald City</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Virtues -->
+    
+    <owl:NamedIndividual rdf:about="&oz;BrainVirtue">
+        <rdf:type rdf:resource="&oz;Virtue"/>
+        <oz:name>Intelligence/Brain</oz:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;HeartVirtue">
+        <rdf:type rdf:resource="&oz;Virtue"/>
+        <oz:name>Heart/Love</oz:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;CourageVirtue">
+        <rdf:type rdf:resource="&oz;Virtue"/>
+        <oz:name>Courage/Bravery</oz:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&oz;HomeVirtue">
+        <rdf:type rdf:resource="&oz;Virtue"/>
+        <oz:name>Home</oz:name>
+        <rdfs:comment>There's no place like home</rdfs:comment>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

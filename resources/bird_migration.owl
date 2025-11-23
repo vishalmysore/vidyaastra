@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY bird "http://vidyaastra.org/ontology/birdmigration#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/birdmigration#"
+     xml:base="http://vidyaastra.org/ontology/birdmigration"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:bird="http://vidyaastra.org/ontology/birdmigration#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/birdmigration">
+        <rdfs:label>Bird Migration Ontology</rdfs:label>
+        <rdfs:comment>An ontology for bird migration patterns, routes, species, and habitats</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&bird;BirdSpecies">
+        <rdfs:label>Bird Species</rdfs:label>
+        <rdfs:comment>A species of migratory bird</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Waterfowl">
+        <rdfs:label>Waterfowl</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:comment>Aquatic birds including ducks, geese, swans</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Raptor">
+        <rdfs:label>Raptor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:comment>Birds of prey including eagles, hawks, falcons</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Songbird">
+        <rdfs:label>Songbird</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:comment>Passerine birds known for singing</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Shorebird">
+        <rdfs:label>Shorebird</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:comment>Birds found along shores and wetlands</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;MigrationRoute">
+        <rdfs:label>Migration Route</rdfs:label>
+        <rdfs:comment>Path taken during migration</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Flyway">
+        <rdfs:label>Flyway</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;MigrationRoute"/>
+        <rdfs:comment>Major migration corridor</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Location">
+        <rdfs:label>Location</rdfs:label>
+        <rdfs:comment>Geographic location</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;BreedingGround">
+        <rdfs:label>Breeding Ground</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;Location"/>
+        <rdfs:comment>Location where birds breed</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;WinteringGround">
+        <rdfs:label>Wintering Ground</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;Location"/>
+        <rdfs:comment>Location where birds spend winter</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;StopoverSite">
+        <rdfs:label>Stopover Site</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;Location"/>
+        <rdfs:comment>Rest and feeding location during migration</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Habitat">
+        <rdfs:label>Habitat</rdfs:label>
+        <rdfs:comment>Type of habitat or ecosystem</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Wetland">
+        <rdfs:label>Wetland</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;Habitat"/>
+        <rdfs:comment>Marsh, swamp, or wetland habitat</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Forest">
+        <rdfs:label>Forest</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;Habitat"/>
+        <rdfs:comment>Forest habitat</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Grassland">
+        <rdfs:label>Grassland</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bird;Habitat"/>
+        <rdfs:comment>Grassland or prairie habitat</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;MigrationPattern">
+        <rdfs:label>Migration Pattern</rdfs:label>
+        <rdfs:comment>Temporal migration pattern</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Season">
+        <rdfs:label>Season</rdfs:label>
+        <rdfs:comment>Seasonal period</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;Threat">
+        <rdfs:label>Threat</rdfs:label>
+        <rdfs:comment>Threat to bird populations</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&bird;ConservationStatus">
+        <rdfs:label>Conservation Status</rdfs:label>
+        <rdfs:comment>IUCN conservation status</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&bird;followsRoute">
+        <rdfs:label>follows route</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;MigrationRoute"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;breedsAt">
+        <rdfs:label>breeds at</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;BreedingGround"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;wintersAt">
+        <rdfs:label>winters at</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;WinteringGround"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;stopsAt">
+        <rdfs:label>stops at</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;StopoverSite"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;prefersHabitat">
+        <rdfs:label>prefers habitat</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;Habitat"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;hasPattern">
+        <rdfs:label>has pattern</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;MigrationPattern"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;facesToThreat">
+        <rdfs:label>faces threat</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;Threat"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;hasConservationStatus">
+        <rdfs:label>has conservation status</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&bird;ConservationStatus"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&bird;passesThrough">
+        <rdfs:label>passes through</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;MigrationRoute"/>
+        <rdfs:range rdf:resource="&bird;Location"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&bird;scientificName">
+        <rdfs:label>scientific name</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;commonName">
+        <rdfs:label>common name</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;wingspan">
+        <rdfs:label>wingspan</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+        <rdfs:comment>Wingspan in centimeters</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;weight">
+        <rdfs:label>weight</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+        <rdfs:comment>Weight in grams</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;migrationDistance">
+        <rdfs:label>migration distance</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+        <rdfs:comment>Distance in kilometers</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;altitude">
+        <rdfs:label>altitude</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+        <rdfs:comment>Flight altitude in meters</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;speed">
+        <rdfs:label>speed</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+        <rdfs:comment>Flight speed in km/h</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;latitude">
+        <rdfs:label>latitude</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;Location"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;longitude">
+        <rdfs:label>longitude</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;Location"/>
+        <rdfs:range rdf:resource="&xsd;decimal"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;country">
+        <rdfs:label>country</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;Location"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;departureMonth">
+        <rdfs:label>departure month</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;MigrationPattern"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;arrivalMonth">
+        <rdfs:label>arrival month</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;MigrationPattern"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&bird;populationSize">
+        <rdfs:label>population size</rdfs:label>
+        <rdfs:domain rdf:resource="&bird;BirdSpecies"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Example Species -->
+    
+    <owl:NamedIndividual rdf:about="&bird;ArcticTern">
+        <rdf:type rdf:resource="&bird;BirdSpecies"/>
+        <bird:scientificName>Sterna paradisaea</bird:scientificName>
+        <bird:commonName>Arctic Tern</bird:commonName>
+        <bird:migrationDistance>70900</bird:migrationDistance>
+        <rdfs:comment>Longest migration of any bird - pole to pole</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bird;BarHeadedGoose">
+        <rdf:type rdf:resource="&bird;Waterfowl"/>
+        <bird:scientificName>Anser indicus</bird:scientificName>
+        <bird:commonName>Bar-headed Goose</bird:commonName>
+        <bird:altitude>8800</bird:altitude>
+        <rdfs:comment>Migrates over the Himalayas</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bird;RubyThroatedHummingbird">
+        <rdf:type rdf:resource="&bird;BirdSpecies"/>
+        <bird:scientificName>Archilochus colubris</bird:scientificName>
+        <bird:commonName>Ruby-throated Hummingbird</bird:commonName>
+        <bird:weight>3.5</bird:weight>
+        <rdfs:comment>Crosses Gulf of Mexico in single flight</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bird;PeregrineFalcon">
+        <rdf:type rdf:resource="&bird;Raptor"/>
+        <bird:scientificName>Falco peregrinus</bird:scientificName>
+        <bird:commonName>Peregrine Falcon</bird:commonName>
+        <bird:speed>390</bird:speed>
+        <rdfs:comment>Fastest bird in the world</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <!-- Flyways -->
+    
+    <owl:NamedIndividual rdf:about="&bird;PacificFlyway">
+        <rdf:type rdf:resource="&bird;Flyway"/>
+        <bird:commonName>Pacific Flyway</bird:commonName>
+        <rdfs:comment>Western North American migration route</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bird;AtlanticFlyway">
+        <rdf:type rdf:resource="&bird;Flyway"/>
+        <bird:commonName>Atlantic Flyway</bird:commonName>
+        <rdfs:comment>Eastern North American migration route</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bird;CentralAsianFlyway">
+        <rdf:type rdf:resource="&bird;Flyway"/>
+        <bird:commonName>Central Asian Flyway</bird:commonName>
+        <rdfs:comment>Covers Northern Eurasia to South Asia</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <!-- Conservation Status -->
+    
+    <owl:NamedIndividual rdf:about="&bird;LeastConcern">
+        <rdf:type rdf:resource="&bird;ConservationStatus"/>
+        <bird:commonName>Least Concern</bird:commonName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bird;Vulnerable">
+        <rdf:type rdf:resource="&bird;ConservationStatus"/>
+        <bird:commonName>Vulnerable</bird:commonName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&bird;Endangered">
+        <rdf:type rdf:resource="&bird;ConservationStatus"/>
+        <bird:commonName>Endangered</bird:commonName>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY hp "http://vidyaastra.org/ontology/harrypotter#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/harrypotter#"
+     xml:base="http://vidyaastra.org/ontology/harrypotter"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:hp="http://vidyaastra.org/ontology/harrypotter#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/harrypotter">
+        <rdfs:label>Harry Potter Ontology</rdfs:label>
+        <rdfs:comment>An ontology for the Harry Potter universe by J.K. Rowling</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&hp;Character">
+        <rdfs:label>Character</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Wizard">
+        <rdfs:label>Wizard</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Witch">
+        <rdfs:label>Witch</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Muggle">
+        <rdfs:label>Muggle</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+        <rdfs:comment>Non-magical person</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;HalfBlood">
+        <rdfs:label>Half-Blood</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+        <rdfs:comment>Part magical, part muggle heritage</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Muggleborn">
+        <rdfs:label>Muggle-born</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+        <rdfs:comment>Magical person with non-magical parents</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Professor">
+        <rdfs:label>Professor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Student">
+        <rdfs:label>Student</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;DarkWizard">
+        <rdfs:label>Dark Wizard</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Wizard"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;DeathEater">
+        <rdfs:label>Death Eater</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;DarkWizard"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Ghost">
+        <rdfs:label>Ghost</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Character"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;HogwartsHouse">
+        <rdfs:label>Hogwarts House</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Place">
+        <rdfs:label>Place</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;School">
+        <rdfs:label>School</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Place"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;MagicalCreature">
+        <rdfs:label>Magical Creature</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Spell">
+        <rdfs:label>Spell</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Charm">
+        <rdfs:label>Charm</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Spell"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Curse">
+        <rdfs:label>Curse</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Spell"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;UnforgivableCurse">
+        <rdfs:label>Unforgivable Curse</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;Curse"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;MagicalArtifact">
+        <rdfs:label>Magical Artifact</rdfs:label>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Horcrux">
+        <rdfs:label>Horcrux</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;MagicalArtifact"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;Wand">
+        <rdfs:label>Wand</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;MagicalArtifact"/>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&hp;DeathlyHallow">
+        <rdfs:label>Deathly Hallow</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&hp;MagicalArtifact"/>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&hp;memberOf">
+        <rdfs:label>member of</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Student"/>
+        <rdfs:range rdf:resource="&hp;HogwartsHouse"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&hp;teaches">
+        <rdfs:label>teaches</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Professor"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&hp;friendOf">
+        <rdfs:label>friend of</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Character"/>
+        <rdfs:range rdf:resource="&hp;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&hp;enemyOf">
+        <rdfs:label>enemy of</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Character"/>
+        <rdfs:range rdf:resource="&hp;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&hp;owns">
+        <rdfs:label>owns</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Character"/>
+        <rdfs:range rdf:resource="&hp;MagicalArtifact"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&hp;casts">
+        <rdfs:label>casts</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Character"/>
+        <rdfs:range rdf:resource="&hp;Spell"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&hp;patronusOf">
+        <rdfs:label>patronus of</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;MagicalCreature"/>
+        <rdfs:range rdf:resource="&hp;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&hp;parentOf">
+        <rdfs:label>parent of</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Character"/>
+        <rdfs:range rdf:resource="&hp;Character"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&hp;name">
+        <rdfs:label>name</rdfs:label>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&hp;incantation">
+        <rdfs:label>incantation</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;Spell"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&hp;trait">
+        <rdfs:label>trait</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;HogwartsHouse"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&hp;founder">
+        <rdfs:label>founder</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;HogwartsHouse"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&hp;colors">
+        <rdfs:label>colors</rdfs:label>
+        <rdfs:domain rdf:resource="&hp;HogwartsHouse"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Named Individuals - Main Characters -->
+    
+    <owl:NamedIndividual rdf:about="&hp;HarryPotter">
+        <rdf:type rdf:resource="&hp;Wizard"/>
+        <rdf:type rdf:resource="&hp;Student"/>
+        <hp:name>Harry James Potter</hp:name>
+        <hp:memberOf rdf:resource="&hp;Gryffindor"/>
+        <rdfs:comment>The Boy Who Lived, The Chosen One</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;HermioneGranger">
+        <rdf:type rdf:resource="&hp;Witch"/>
+        <rdf:type rdf:resource="&hp;Student"/>
+        <rdf:type rdf:resource="&hp;Muggleborn"/>
+        <hp:name>Hermione Jean Granger</hp:name>
+        <hp:memberOf rdf:resource="&hp;Gryffindor"/>
+        <hp:friendOf rdf:resource="&hp;HarryPotter"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;RonWeasley">
+        <rdf:type rdf:resource="&hp;Wizard"/>
+        <rdf:type rdf:resource="&hp;Student"/>
+        <hp:name>Ronald Bilius Weasley</hp:name>
+        <hp:memberOf rdf:resource="&hp;Gryffindor"/>
+        <hp:friendOf rdf:resource="&hp;HarryPotter"/>
+        <hp:friendOf rdf:resource="&hp;HermioneGranger"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;AlbusDumbledore">
+        <rdf:type rdf:resource="&hp;Wizard"/>
+        <rdf:type rdf:resource="&hp;Professor"/>
+        <hp:name>Albus Percival Wulfric Brian Dumbledore</hp:name>
+        <rdfs:comment>Headmaster of Hogwarts</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;LordVoldemort">
+        <rdf:type rdf:resource="&hp;DarkWizard"/>
+        <hp:name>Tom Marvolo Riddle</hp:name>
+        <rdfs:comment>The Dark Lord, He-Who-Must-Not-Be-Named</rdfs:comment>
+        <hp:enemyOf rdf:resource="&hp;HarryPotter"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;SeverusSnape">
+        <rdf:type rdf:resource="&hp;Wizard"/>
+        <rdf:type rdf:resource="&hp;Professor"/>
+        <hp:name>Severus Snape</hp:name>
+        <hp:memberOf rdf:resource="&hp;Slytherin"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;DracoMalfoy">
+        <rdf:type rdf:resource="&hp;Wizard"/>
+        <rdf:type rdf:resource="&hp;Student"/>
+        <hp:name>Draco Lucius Malfoy</hp:name>
+        <hp:memberOf rdf:resource="&hp;Slytherin"/>
+    </owl:NamedIndividual>
+
+    <!-- Hogwarts Houses -->
+    
+    <owl:NamedIndividual rdf:about="&hp;Gryffindor">
+        <rdf:type rdf:resource="&hp;HogwartsHouse"/>
+        <hp:name>Gryffindor</hp:name>
+        <hp:founder>Godric Gryffindor</hp:founder>
+        <hp:trait>Bravery, Courage, Daring</hp:trait>
+        <hp:colors>Scarlet and Gold</hp:colors>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Slytherin">
+        <rdf:type rdf:resource="&hp;HogwartsHouse"/>
+        <hp:name>Slytherin</hp:name>
+        <hp:founder>Salazar Slytherin</hp:founder>
+        <hp:trait>Ambition, Cunning, Resourcefulness</hp:trait>
+        <hp:colors>Green and Silver</hp:colors>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Ravenclaw">
+        <rdf:type rdf:resource="&hp;HogwartsHouse"/>
+        <hp:name>Ravenclaw</hp:name>
+        <hp:founder>Rowena Ravenclaw</hp:founder>
+        <hp:trait>Intelligence, Wisdom, Wit</hp:trait>
+        <hp:colors>Blue and Bronze</hp:colors>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Hufflepuff">
+        <rdf:type rdf:resource="&hp;HogwartsHouse"/>
+        <hp:name>Hufflepuff</hp:name>
+        <hp:founder>Helga Hufflepuff</hp:founder>
+        <hp:trait>Loyalty, Hard Work, Dedication</hp:trait>
+        <hp:colors>Yellow and Black</hp:colors>
+    </owl:NamedIndividual>
+
+    <!-- Places -->
+    
+    <owl:NamedIndividual rdf:about="&hp;Hogwarts">
+        <rdf:type rdf:resource="&hp;School"/>
+        <hp:name>Hogwarts School of Witchcraft and Wizardry</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;DiagonAlley">
+        <rdf:type rdf:resource="&hp;Place"/>
+        <hp:name>Diagon Alley</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Hogsmeade">
+        <rdf:type rdf:resource="&hp;Place"/>
+        <hp:name>Hogsmeade</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;MinistryOfMagic">
+        <rdf:type rdf:resource="&hp;Place"/>
+        <hp:name>Ministry of Magic</hp:name>
+    </owl:NamedIndividual>
+
+    <!-- Spells -->
+    
+    <owl:NamedIndividual rdf:about="&hp;Expelliarmus">
+        <rdf:type rdf:resource="&hp;Charm"/>
+        <hp:name>Disarming Charm</hp:name>
+        <hp:incantation>Expelliarmus</hp:incantation>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;ExpectoPatronum">
+        <rdf:type rdf:resource="&hp;Charm"/>
+        <hp:name>Patronus Charm</hp:name>
+        <hp:incantation>Expecto Patronum</hp:incantation>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;AvadaKedavra">
+        <rdf:type rdf:resource="&hp;UnforgivableCurse"/>
+        <hp:name>Killing Curse</hp:name>
+        <hp:incantation>Avada Kedavra</hp:incantation>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Crucio">
+        <rdf:type rdf:resource="&hp;UnforgivableCurse"/>
+        <hp:name>Cruciatus Curse</hp:name>
+        <hp:incantation>Crucio</hp:incantation>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Imperio">
+        <rdf:type rdf:resource="&hp;UnforgivableCurse"/>
+        <hp:name>Imperius Curse</hp:name>
+        <hp:incantation>Imperio</hp:incantation>
+    </owl:NamedIndividual>
+
+    <!-- Magical Artifacts -->
+    
+    <owl:NamedIndividual rdf:about="&hp;ElderWand">
+        <rdf:type rdf:resource="&hp;DeathlyHallow"/>
+        <rdf:type rdf:resource="&hp;Wand"/>
+        <hp:name>Elder Wand</hp:name>
+        <rdfs:comment>The most powerful wand in existence</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;InvisibilityCloak">
+        <rdf:type rdf:resource="&hp;DeathlyHallow"/>
+        <hp:name>Cloak of Invisibility</hp:name>
+        <hp:owns rdf:resource="&hp;HarryPotter"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;ResurrectionStone">
+        <rdf:type rdf:resource="&hp;DeathlyHallow"/>
+        <hp:name>Resurrection Stone</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;PhilosophersStone">
+        <rdf:type rdf:resource="&hp;MagicalArtifact"/>
+        <hp:name>Philosopher's Stone</hp:name>
+    </owl:NamedIndividual>
+
+    <!-- Horcruxes -->
+    
+    <owl:NamedIndividual rdf:about="&hp;TomRiddleDiary">
+        <rdf:type rdf:resource="&hp;Horcrux"/>
+        <hp:name>Tom Riddle's Diary</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;MarvoloRing">
+        <rdf:type rdf:resource="&hp;Horcrux"/>
+        <hp:name>Marvolo Gaunt's Ring</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;SlytherinLocket">
+        <rdf:type rdf:resource="&hp;Horcrux"/>
+        <hp:name>Salazar Slytherin's Locket</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;HufflepuffCup">
+        <rdf:type rdf:resource="&hp;Horcrux"/>
+        <hp:name>Helga Hufflepuff's Cup</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;RavenclawDiadem">
+        <rdf:type rdf:resource="&hp;Horcrux"/>
+        <hp:name>Rowena Ravenclaw's Diadem</hp:name>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Nagini">
+        <rdf:type rdf:resource="&hp;Horcrux"/>
+        <rdf:type rdf:resource="&hp;MagicalCreature"/>
+        <hp:name>Nagini</hp:name>
+        <rdfs:comment>Voldemort's snake</rdfs:comment>
+    </owl:NamedIndividual>
+
+    <!-- Magical Creatures -->
+    
+    <owl:NamedIndividual rdf:about="&hp;Hedwig">
+        <rdf:type rdf:resource="&hp;MagicalCreature"/>
+        <hp:name>Hedwig</hp:name>
+        <rdfs:comment>Harry's snowy owl</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&hp;Fawkes">
+        <rdf:type rdf:resource="&hp;MagicalCreature"/>
+        <hp:name>Fawkes</hp:name>
+        <rdfs:comment>Dumbledore's phoenix</rdfs:comment>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

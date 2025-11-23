@@ -30,6 +30,10 @@ Explore Vidya Astra's knowledge graphs in action:
 | 🍽️ **Recipe Graph**    | Culinary knowledge and food pairings                      | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/recipe_graph)        |
 | 🎵 **Music Network**    | Artist collaborations and recommendations                 | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/music_network)       |
 | 🏠 **Who is Vishal Mysore** | Interactive introduction to Yours Truly !                 | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/)                    |
+| ⚔️ **Game of Thrones**  | Houses, characters, and intricate relationships           | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/game_of_thrones)     |
+| 🌈 **Wizard of Oz**     | Dorothy's journey through the Land of Oz                  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/wizard_of_oz)        |
+| ⚡ **Harry Potter**      | Wizarding World with Houses, spells, and characters       | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/harry_potter)        |
+| 👑 **Bahubali**         | Epic saga of Mahishmati kingdom                           | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/bahubali)            |
 | 🚨 **Fraud Detection**  | Real-time fraud pattern visualization                     | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/fraud_detection)     |
 | 🔍 **Cycle Detection**  | Detect fraud rings and circular patterns                  | [View Demo](https://vishalmysore.github.io/vidyaastra/graphs/cycle_detection)     |
 
