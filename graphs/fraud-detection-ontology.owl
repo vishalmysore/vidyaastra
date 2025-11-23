@@ -1,0 +1,417 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.vidyaastra.org/fraud-detection#"
+     xml:base="http://www.vidyaastra.org/fraud-detection"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    
+    <owl:Ontology rdf:about="http://www.vidyaastra.org/fraud-detection">
+        <rdfs:label>Fraud Detection and Cycle Analysis Ontology</rdfs:label>
+        <rdfs:comment>Ontology for detecting fraud patterns, money laundering, and circular transaction flows in financial networks</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- ============================================ -->
+    <!-- CLASSES                                      -->
+    <!-- ============================================ -->
+
+    <!-- Account Classes -->
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#Account">
+        <rdfs:label>Account</rdfs:label>
+        <rdfs:comment>Financial account that can send or receive transactions</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#SuspiciousAccount">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <rdfs:label>Suspicious Account</rdfs:label>
+        <rdfs:comment>Account flagged for suspicious activity</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#CycleAccount">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#SuspiciousAccount"/>
+        <rdfs:label>Cycle Account</rdfs:label>
+        <rdfs:comment>Account involved in circular money flow</rdfs:comment>
+    </owl:Class>
+
+    <!-- Transaction Classes -->
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#Transaction">
+        <rdfs:label>Transaction</rdfs:label>
+        <rdfs:comment>Money transfer between accounts</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#CycleTransaction">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Transaction"/>
+        <rdfs:label>Cycle Transaction</rdfs:label>
+        <rdfs:comment>Transaction that is part of a circular flow</rdfs:comment>
+    </owl:Class>
+
+    <!-- Fraud Pattern Classes -->
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#FraudPattern">
+        <rdfs:label>Fraud Pattern</rdfs:label>
+        <rdfs:comment>Recognized pattern of fraudulent activity</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#MoneyLaundering">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:label>Money Laundering</rdfs:label>
+        <rdfs:comment>Illegal movement of funds to hide origin</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#CircularMoneyFlow">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:label>Circular Money Flow</rdfs:label>
+        <rdfs:comment>Money returned to originating account through intermediaries</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#CreditCardLoop">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:label>Credit Card Loop</rdfs:label>
+        <rdfs:comment>Card usage in impossible travel scenarios</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#IdentityTheftLoop">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:label>Identity Theft Loop</rdfs:label>
+        <rdfs:comment>Same identity across multiple fraudulent accounts</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#AccountTakeover">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:label>Account Takeover</rdfs:label>
+        <rdfs:comment>Unauthorized account access and manipulation</rdfs:comment>
+    </owl:Class>
+
+    <!-- Detection Classes -->
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#DetectionMethod">
+        <rdfs:label>Detection Method</rdfs:label>
+        <rdfs:comment>Method used to detect fraud patterns</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#CycleDetection">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#DetectionMethod"/>
+        <rdfs:label>Cycle Detection</rdfs:label>
+        <rdfs:comment>Detection of circular money flows in transaction networks</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#PatternRecognition">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#DetectionMethod"/>
+        <rdfs:label>Pattern Recognition</rdfs:label>
+        <rdfs:comment>Identifying recurring patterns in transactions</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#NetworkAnalysis">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#DetectionMethod"/>
+        <rdfs:label>Network Analysis</rdfs:label>
+        <rdfs:comment>Analyzing relationships between accounts</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#RealTimeAnalysis">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#DetectionMethod"/>
+        <rdfs:label>Real-time Analysis</rdfs:label>
+        <rdfs:comment>Continuous monitoring of transaction flows</rdfs:comment>
+    </owl:Class>
+
+    <!-- Algorithm Classes -->
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#Algorithm">
+        <rdfs:label>Algorithm</rdfs:label>
+        <rdfs:comment>Computational algorithm for cycle detection</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#DFSAlgorithm">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Algorithm"/>
+        <rdfs:label>DFS Algorithm</rdfs:label>
+        <rdfs:comment>Depth-First Search for general cycle detection</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#FloydWarshall">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Algorithm"/>
+        <rdfs:label>Floyd-Warshall</rdfs:label>
+        <rdfs:comment>All-pairs analysis and shortest cycles</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#TarjanSCC">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Algorithm"/>
+        <rdfs:label>Tarjan's SCC</rdfs:label>
+        <rdfs:comment>Strongly Connected Components detection</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#BellmanFord">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Algorithm"/>
+        <rdfs:label>Bellman-Ford</rdfs:label>
+        <rdfs:comment>Negative cycle detection in weighted graphs</rdfs:comment>
+    </owl:Class>
+
+    <!-- Risk Classes -->
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#RiskLevel">
+        <rdfs:label>Risk Level</rdfs:label>
+        <rdfs:comment>Risk assessment classification</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#HighRisk">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#RiskLevel"/>
+        <rdfs:label>High Risk</rdfs:label>
+        <rdfs:comment>Risk Score ≥ 0.80 - Immediate investigation required</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#MediumRisk">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#RiskLevel"/>
+        <rdfs:label>Medium Risk</rdfs:label>
+        <rdfs:comment>Risk Score 0.50-0.79 - Schedule for review</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#LowRisk">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#RiskLevel"/>
+        <rdfs:label>Low Risk</rdfs:label>
+        <rdfs:comment>Risk Score &lt; 0.50 - Monitor and log</rdfs:comment>
+    </owl:Class>
+
+    <!-- Action Classes -->
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#Action">
+        <rdfs:label>Action</rdfs:label>
+        <rdfs:comment>Response action to fraud detection</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#Investigation">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Action"/>
+        <rdfs:label>Investigation</rdfs:label>
+        <rdfs:comment>Manual review of suspicious cycles</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#Blocking">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Action"/>
+        <rdfs:label>Blocking</rdfs:label>
+        <rdfs:comment>Immediate suspension of fraudulent transactions</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.vidyaastra.org/fraud-detection#Compliance">
+        <rdfs:subClassOf rdf:resource="http://www.vidyaastra.org/fraud-detection#Action"/>
+        <rdfs:label>Compliance</rdfs:label>
+        <rdfs:comment>Regulatory compliance and reporting</rdfs:comment>
+    </owl:Class>
+
+    <!-- ============================================ -->
+    <!-- OBJECT PROPERTIES                            -->
+    <!-- ============================================ -->
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#sendsMoneyTo">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <rdfs:label>sends money to</rdfs:label>
+        <rdfs:comment>Account sends money to another account</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#receivesMoneyFrom">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <owl:inverseOf rdf:resource="http://www.vidyaastra.org/fraud-detection#sendsMoneyTo"/>
+        <rdfs:label>receives money from</rdfs:label>
+        <rdfs:comment>Account receives money from another account</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#involvedIn">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:label>involved in</rdfs:label>
+        <rdfs:comment>Account is involved in a fraud pattern</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#detects">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#DetectionMethod"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:label>detects</rdfs:label>
+        <rdfs:comment>Detection method detects fraud pattern</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#uses">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#DetectionMethod"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#Algorithm"/>
+        <rdfs:label>uses</rdfs:label>
+        <rdfs:comment>Detection method uses algorithm</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#hasRiskLevel">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#RiskLevel"/>
+        <rdfs:label>has risk level</rdfs:label>
+        <rdfs:comment>Fraud pattern has assigned risk level</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#triggers">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#RiskLevel"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#Action"/>
+        <rdfs:label>triggers</rdfs:label>
+        <rdfs:comment>Risk level triggers specific action</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.vidyaastra.org/fraud-detection#partOfCycle">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Transaction"/>
+        <rdfs:range rdf:resource="http://www.vidyaastra.org/fraud-detection#CircularMoneyFlow"/>
+        <rdfs:label>part of cycle</rdfs:label>
+        <rdfs:comment>Transaction is part of circular money flow</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <!-- ============================================ -->
+    <!-- DATA PROPERTIES                              -->
+    <!-- ============================================ -->
+
+    <owl:DatatypeProperty rdf:about="http://www.vidyaastra.org/fraud-detection#accountId">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>account ID</rdfs:label>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.vidyaastra.org/fraud-detection#transactionAmount">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Transaction"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <rdfs:label>transaction amount</rdfs:label>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.vidyaastra.org/fraud-detection#riskScore">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#FraudPattern"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <rdfs:label>risk score</rdfs:label>
+        <rdfs:comment>Risk score between 0 and 1</rdfs:comment>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.vidyaastra.org/fraud-detection#cycleLength">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#CircularMoneyFlow"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <rdfs:label>cycle length</rdfs:label>
+        <rdfs:comment>Number of accounts in the cycle</rdfs:comment>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.vidyaastra.org/fraud-detection#totalAmount">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#CircularMoneyFlow"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+        <rdfs:label>total amount</rdfs:label>
+        <rdfs:comment>Total money in the circular flow</rdfs:comment>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.vidyaastra.org/fraud-detection#complexity">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Algorithm"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>complexity</rdfs:label>
+        <rdfs:comment>Time complexity (Big-O notation)</rdfs:comment>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.vidyaastra.org/fraud-detection#status">
+        <rdfs:domain rdf:resource="http://www.vidyaastra.org/fraud-detection#Investigation"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>status</rdfs:label>
+        <rdfs:comment>Current status of investigation</rdfs:comment>
+    </owl:DatatypeProperty>
+
+    <!-- ============================================ -->
+    <!-- INDIVIDUALS (EXAMPLE DATA)                   -->
+    <!-- ============================================ -->
+
+    <!-- Accounts in the cycle -->
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#AccountA">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#CycleAccount"/>
+        <accountId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACC-001</accountId>
+        <rdfs:label>Account A</rdfs:label>
+        <sendsMoneyTo rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountB"/>
+        <receivesMoneyFrom rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountD"/>
+        <involvedIn rdf:resource="http://www.vidyaastra.org/fraud-detection#Cycle1"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#AccountB">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#CycleAccount"/>
+        <accountId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACC-002</accountId>
+        <rdfs:label>Account B</rdfs:label>
+        <sendsMoneyTo rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountC"/>
+        <receivesMoneyFrom rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountA"/>
+        <involvedIn rdf:resource="http://www.vidyaastra.org/fraud-detection#Cycle1"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#AccountC">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#CycleAccount"/>
+        <accountId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACC-003</accountId>
+        <rdfs:label>Account C</rdfs:label>
+        <sendsMoneyTo rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountD"/>
+        <receivesMoneyFrom rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountB"/>
+        <involvedIn rdf:resource="http://www.vidyaastra.org/fraud-detection#Cycle1"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#AccountD">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#CycleAccount"/>
+        <accountId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACC-004</accountId>
+        <rdfs:label>Account D</rdfs:label>
+        <sendsMoneyTo rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountA"/>
+        <receivesMoneyFrom rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountC"/>
+        <involvedIn rdf:resource="http://www.vidyaastra.org/fraud-detection#Cycle1"/>
+    </owl:NamedIndividual>
+
+    <!-- Regular accounts -->
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#AccountE">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <accountId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACC-005</accountId>
+        <rdfs:label>Account E</rdfs:label>
+        <sendsMoneyTo rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountF"/>
+        <receivesMoneyFrom rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountA"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#AccountF">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#Account"/>
+        <accountId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ACC-006</accountId>
+        <rdfs:label>Account F</rdfs:label>
+        <sendsMoneyTo rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountA"/>
+        <receivesMoneyFrom rdf:resource="http://www.vidyaastra.org/fraud-detection#AccountE"/>
+    </owl:NamedIndividual>
+
+    <!-- Circular Money Flow Pattern -->
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#Cycle1">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#CircularMoneyFlow"/>
+        <rdfs:label>Circular Money Flow Cycle 1</rdfs:label>
+        <rdfs:comment>Account A → Account B → Account C → Account D → Account A</rdfs:comment>
+        <cycleLength rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</cycleLength>
+        <totalAmount rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">200000</totalAmount>
+        <riskScore rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.92</riskScore>
+        <hasRiskLevel rdf:resource="http://www.vidyaastra.org/fraud-detection#HighRiskInstance"/>
+    </owl:NamedIndividual>
+
+    <!-- Detection Method Instances -->
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#CycleDetectionSystem">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#CycleDetection"/>
+        <rdfs:label>Cycle Detection System</rdfs:label>
+        <detects rdf:resource="http://www.vidyaastra.org/fraud-detection#Cycle1"/>
+        <uses rdf:resource="http://www.vidyaastra.org/fraud-detection#DFS"/>
+        <uses rdf:resource="http://www.vidyaastra.org/fraud-detection#Tarjan"/>
+    </owl:NamedIndividual>
+
+    <!-- Algorithm Instances -->
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#DFS">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#DFSAlgorithm"/>
+        <rdfs:label>DFS Algorithm</rdfs:label>
+        <complexity rdf:datatype="http://www.w3.org/2001/XMLSchema#string">O(V+E)</complexity>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#Tarjan">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#TarjanSCC"/>
+        <rdfs:label>Tarjan's SCC Algorithm</rdfs:label>
+        <complexity rdf:datatype="http://www.w3.org/2001/XMLSchema#string">O(V+E)</complexity>
+    </owl:NamedIndividual>
+
+    <!-- Risk Level Instance -->
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#HighRiskInstance">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#HighRisk"/>
+        <rdfs:label>High Risk</rdfs:label>
+        <triggers rdf:resource="http://www.vidyaastra.org/fraud-detection#Investigation1"/>
+        <triggers rdf:resource="http://www.vidyaastra.org/fraud-detection#ComplianceReport1"/>
+    </owl:NamedIndividual>
+
+    <!-- Action Instances -->
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#Investigation1">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#Investigation"/>
+        <rdfs:label>Investigation Case #12345</rdfs:label>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">INVESTIGATING</status>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.vidyaastra.org/fraud-detection#ComplianceReport1">
+        <rdf:type rdf:resource="http://www.vidyaastra.org/fraud-detection#Compliance"/>
+        <rdfs:label>AML Compliance Report</rdfs:label>
+        <status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FILED</status>
+    </owl:NamedIndividual>
+
+</rdf:RDF>
