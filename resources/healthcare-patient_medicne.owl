@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/vidyaastra/healthcare#"
+     xml:base="http://www.semanticweb.org/vidyaastra/healthcare"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/vidyaastra/healthcare"/>
+
+    <!-- Properties -->
+    <owl:ObjectProperty rdf:about="#prescribedTo">
+        <rdfs:domain rdf:resource="#Drug"/>
+        <rdfs:range rdf:resource="#Patient"/>
+        <owl:inverseOf rdf:resource="#takesDrug"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#takesDrug">
+        <rdfs:domain rdf:resource="#Patient"/>
+        <rdfs:range rdf:resource="#Drug"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#containsIngredient">
+        <rdfs:domain rdf:resource="#Drug"/>
+        <rdfs:range rdf:resource="#Ingredient"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#interactsWith">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+        <rdfs:domain rdf:resource="#Ingredient"/>
+        <rdfs:range rdf:resource="#Ingredient"/>
+    </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:about="#severityLevel">
+        <rdfs:domain rdf:resource="#Interaction"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Classes -->
+    <owl:Class rdf:about="#Patient"/>
+    <owl:Class rdf:about="#Drug"/>
+    <owl:Class rdf:about="#Ingredient"/>
+    <owl:Class rdf:about="#Interaction"/>
+    <owl:Class rdf:about="#Condition"/>
+    
+    <owl:Class rdf:about="#HighRiskPatient">
+        <rdfs:subClassOf rdf:resource="#Patient"/>
+        <rdfs:comment>Patients identified as having dangerous drug interactions</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ================================================================
+    INTERACTIONS
+    ================================================================
+    -->
+    <!-- Warfarin + Aspirin = Bleeding Risk -->
+    <owl:NamedIndividual rdf:about="#Warfarin_Sodium">
+        <rdf:type rdf:resource="#Ingredient"/>
+        <interactsWith rdf:resource="#Acetylsalicylic_Acid"/>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="#Acetylsalicylic_Acid">
+        <rdf:type rdf:resource="#Ingredient"/>
+        <interactsWith rdf:resource="#Warfarin_Sodium"/>
+    </owl:NamedIndividual>
+
+    <!-- Simvastatin + Amlodipine = Muscle Pain/Damage Risk -->
+    <owl:NamedIndividual rdf:about="#Simvastatin_Ingredient">
+        <rdf:type rdf:resource="#Ingredient"/>
+        <interactsWith rdf:resource="#Amlodipine_Ingredient"/>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="#Amlodipine_Ingredient">
+        <rdf:type rdf:resource="#Ingredient"/>
+        <interactsWith rdf:resource="#Simvastatin_Ingredient"/>
+    </owl:NamedIndividual>
+
+    <!-- Ibuprofen + Aspirin = Reduced Heart Protection -->
+    <owl:NamedIndividual rdf:about="#Ibuprofen_Ingredient">
+        <rdf:type rdf:resource="#Ingredient"/>
+        <interactsWith rdf:resource="#Acetylsalicylic_Acid"/>
+    </owl:NamedIndividual>
+
+    <!-- Common Safe Ingredients -->
+    <owl:NamedIndividual rdf:about="#Metformin_Ingredient">
+        <rdf:type rdf:resource="#Ingredient"/>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="#Amoxicillin_Ingredient">
+        <rdf:type rdf:resource="#Ingredient"/>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="#Lisinopril_Ingredient">
+        <rdf:type rdf:resource="#Ingredient"/>
+    </owl:NamedIndividual>
+
+    <!-- 
+    ================================================================
+    DRUGS
+    ================================================================
+    -->
+    <owl:NamedIndividual rdf:about="#Coumadin">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Warfarin_Sodium"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Bayer_Aspirin">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Acetylsalicylic_Acid"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Zocor">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Simvastatin_Ingredient"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Norvasc">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Amlodipine_Ingredient"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Advil">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Ibuprofen_Ingredient"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Glucophage">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Metformin_Ingredient"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Amoxil">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Amoxicillin_Ingredient"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Prinivil">
+        <rdf:type rdf:resource="#Drug"/>
+        <containsIngredient rdf:resource="#Lisinopril_Ingredient"/>
+    </owl:NamedIndividual>
+
+    <!-- 
+    ================================================================
+    PATIENTS
+    ================================================================
+    -->
+    
+    <!-- PATIENT 1: John Doe (The original High Risk Case) -->
+    <owl:NamedIndividual rdf:about="#John_Doe">
+        <rdf:type rdf:resource="#HighRiskPatient"/>
+        <takesDrug rdf:resource="#Coumadin"/>
+        <takesDrug rdf:resource="#Bayer_Aspirin"/>
+        <takesDrug rdf:resource="#Prinivil"/>
+    </owl:NamedIndividual>
+
+    <!-- PATIENT 2: Jane Smith (High Risk: Simvastatin + Amlodipine) -->
+    <owl:NamedIndividual rdf:about="#Jane_Smith">
+        <rdf:type rdf:resource="#HighRiskPatient"/>
+        <takesDrug rdf:resource="#Zocor"/>
+        <takesDrug rdf:resource="#Norvasc"/>
+        <takesDrug rdf:resource="#Glucophage"/>
+    </owl:NamedIndividual>
+
+    <!-- PATIENT 3: Robert Brown (Moderate Risk: Ibuprofen + Aspirin) -->
+    <owl:NamedIndividual rdf:about="#Robert_Brown">
+        <rdf:type rdf:resource="#Patient"/>
+        <takesDrug rdf:resource="#Advil"/>
+        <takesDrug rdf:resource="#Bayer_Aspirin"/>
+    </owl:NamedIndividual>
+
+    <!-- PATIENT 4: Emily Davis (Safe: Diabetes + Hypertension, no interactions) -->
+    <owl:NamedIndividual rdf:about="#Emily_Davis">
+        <rdf:type rdf:resource="#Patient"/>
+        <takesDrug rdf:resource="#Glucophage"/>
+        <takesDrug rdf:resource="#Prinivil"/>
+    </owl:NamedIndividual>
+
+    <!-- PATIENT 5: Michael Wilson (Safe: Just Antibiotics) -->
+    <owl:NamedIndividual rdf:about="#Michael_Wilson">
+        <rdf:type rdf:resource="#Patient"/>
+        <takesDrug rdf:resource="#Amoxil"/>
+    </owl:NamedIndividual>
+
+</rdf:RDF>
