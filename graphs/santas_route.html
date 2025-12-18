@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidya Astra: Santa's Christmas Route</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a3a52 0%, #2d1e3f 50%, #4a1a1a 100%);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        svg {
+            display: block;
+            background: transparent;
+        }
+
+        .node circle {
+            stroke: #fff;
+            stroke-width: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+        }
+
+        .node:hover circle {
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.9));
+        }
+
+        .node text {
+            font-size: 10px;
+            font-weight: bold;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .link {
+            stroke: rgba(100, 200, 255, 0.2);
+            stroke-width: 1px;
+            fill: none;
+        }
+
+        .link.family {
+            stroke: #ff69b4;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.alliance {
+            stroke: #44ff44;
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link.mentor {
+            stroke: #ffaa44;
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link.divine {
+            stroke: #ffd700;
+            stroke-width: 2px;
+            opacity: 0.6;
+        }
+
+        .link.timeline {
+            stroke: #ff4444;
+            stroke-width: 3px;
+            stroke-dasharray: 5, 5;
+            opacity: 0.8;
+        }
+
+        .link.event {
+            stroke: #87ceeb;
+            stroke-width: 1.5px;
+            opacity: 0.5;
+        }
+
+        .link-label {
+            font-size: 8px;
+            fill: #fff;
+            text-anchor: middle;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(26, 58, 82, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            min-width: 200px;
+            max-width: 220px;
+            border: 2px solid #ff4444;
+        }
+
+        .controls h2 {
+            margin-bottom: 10px;
+            color: #ff4444;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .controls h3 {
+            margin: 10px 0 5px 0;
+            font-size: 0.9em;
+            color: #ffaa44;
+        }
+
+        .filter-btn {
+            background: #2d4a5e;
+            color: #fff;
+            border: 1px solid #4ecdc4;
+            padding: 6px 10px;
+            margin: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #4ecdc4;
+            color: #1a3a52;
+        }
+
+        .filter-btn:hover {
+            transform: scale(1.05);
+        }
+
+        button {
+            background: #ff4444;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            margin: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #ff6666;
+            transform: scale(1.05);
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 58, 82, 0.95);
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 250px;
+            border: 2px solid #44ff44;
+            font-size: 0.85em;
+        }
+
+        .legend h3 {
+            margin: 0 0 8px 0;
+            font-size: 0.95em;
+            color: #44ff44;
+            text-align: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 0.75em;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid #fff;
+            flex-shrink: 0;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 58, 82, 0.98);
+            padding: 15px;
+            border-radius: 10px;
+            color: #fff;
+            max-width: 380px;
+            display: none;
+            border: 2px solid #ff4444;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 10;
+            font-size: 0.85em;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 8px 0;
+            color: #ffaa44;
+            font-size: 0.95em;
+        }
+
+        .info-section {
+            background: rgba(255, 68, 68, 0.1);
+            padding: 8px;
+            margin: 6px 0;
+            border-left: 2px solid #ff4444;
+            border-radius: 2px;
+            font-size: 0.8em;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            pointer-events: none;
+            display: none;
+            border: 1px solid #ff4444;
+            z-index: 20;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #ff4444;
+            color: #fff;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="controls">
+    <h2>🎅 SANTA'S ROUTE</h2>
+    <p style="font-size: 0.8em; margin-bottom: 8px;">Project VidyaAstra</p>
+
+    <h3>Filter by Type</h3>
+    <div>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">🎅 Santa</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Helpers</button>
+        <button class="filter-btn active" onclick="toggleFilter('location')">🌍 Places</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">🎁 Events</button>
+    </div>
+
+    <h3 style="margin-top: 12px;">Actions</h3>
+    <button onclick="resetSimulation()">🔄 Reset</button>
+    <button onclick="showStats()">📊 Stats</button>
+</div>
+
+<div class="legend">
+    <h3>LEGEND</h3>
+    <strong style="color: #ffaa44;">Node Types</strong>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ff4444;"></div>
+        <span>Santa Claus</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ff69b4;"></div>
+        <span>Mrs. Claus</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #ffaa44;"></div>
+        <span>Rudolph (Leader)</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #44ff44;"></div>
+        <span>Elves & Helpers</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-color" style="background: #87ceeb;"></div>
+        <span>Continents/Regions</span>
+    </div>
+    <hr style="border-color: rgba(255, 68, 68, 0.3); margin: 8px 0;">
+    <strong style="color: #ffaa44;">Relationships</strong>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #ff69b4; margin-right: 8px;"></div>
+        Family
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #44ff44; margin-right: 8px;"></div>
+        Alliance/Team
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; background: #ffd700; margin-right: 8px;"></div>
+        Home/Work
+    </div>
+    <div class="legend-item">
+        <div style="width: 20px; height: 2px; border-bottom: 3px dashed #ff4444; margin-right: 8px;"></div>
+        Journey Route
+    </div>
+</div>
+
+<div class="info-panel" id="infoPanel">
+    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <h3 id="nodeTitle"></h3>
+    <div id="nodeDescription"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<svg id="graph"></svg>
+
+<script>
+    // *** START NODES ***
+    const nodes = [
+        // SANTA & FAMILY
+        {id: "Santa", type: "hero", faction: "santa", color: "#ff4444", size: 35, description: "🎅 Santa Claus | Father Christmas | Delivers gifts worldwide on Christmas Eve | Lives at North Pole"},
+        {id: "Mrs_Claus", type: "character", faction: "helper", color: "#ff69b4", size: 28, description: "👵 Mrs. Claus | Santa's wife | Manages North Pole operations | Bakes cookies for Santa"},
+        
+        // ALL NINE REINDEER
+        {id: "Rudolph", type: "hero", faction: "reindeer", color: "#ffaa44", size: 30, description: "🦌 Rudolph | Red-nosed reindeer | Leads Santa's sleigh | Guides through fog and darkness"},
+        {id: "Dasher", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Dasher | Fastest reindeer | Known for incredible speed"},
+        {id: "Dancer", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Dancer | Graceful flyer | Performs aerial maneuvers"},
+        {id: "Prancer", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Prancer | Proud and powerful | Strong flyer"},
+        {id: "Vixen", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Vixen | Swift and clever | Navigates tricky routes"},
+        {id: "Comet", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Comet | Brings wonder | Shines brightly in flight"},
+        {id: "Cupid", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Cupid | Spreads love and joy | Kind-hearted"},
+        {id: "Donner", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Donner (Thunder) | Powerful and strong | Thunderous presence"},
+        {id: "Blitzen", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Blitzen (Lightning) | Lightning fast | Quick and agile"},
+        
+        // NORTH POLE HELPERS
+        {id: "Head_Elf", type: "character", faction: "helper", color: "#44ff44", size: 26, description: "🧝 Head Elf | Chief toy maker | Supervises all workshop operations"},
+        {id: "Toy_Makers", type: "character", faction: "helper", color: "#44ff44", size: 24, description: "🧝 Toy Maker Elves | Build toys | Skilled craftsmen"},
+        {id: "Gift_Wrappers", type: "character", faction: "helper", color: "#44ff44", size: 22, description: "🧝 Gift Wrapper Elves | Wrap presents | Masters of ribbons and bows"},
+        {id: "Sleigh_Engineer", type: "character", faction: "helper", color: "#44ff44", size: 22, description: "🧝 Sleigh Engineer | Maintains sleigh | Ensures safe flight | Checks reindeer harnesses"},
+        {id: "Cookie_Baker", type: "character", faction: "helper", color: "#44ff44", size: 20, description: "🧝 Cookie Baker Elf | Bakes treats | Works with Mrs. Claus"},
+        
+        // NORTH POLE LOCATIONS
+        {id: "North_Pole", type: "location", color: "#ffffff", size: 32, description: "🏔️ North Pole | Santa's home base | Workshop headquarters | Starting point of journey"},
+        {id: "Toy_Workshop", type: "event", color: "#4ecdc4", size: 28, description: "🏭 Toy Workshop | Where all toys are manufactured | Busy all year round"},
+        {id: "Stable", type: "location", color: "#cd853f", size: 22, description: "🏠 Reindeer Stable | Where reindeer rest | Warm and cozy"},
+        {id: "Santas_House", type: "location", color: "#ff6b6b", size: 24, description: "🏠 Santa's House | Where Santa and Mrs. Claus live | Cozy home"},
+        
+        // MAJOR CONTINENTS
+        {id: "North_America", type: "location", color: "#87ceeb", size: 28, description: "🌎 North America | USA, Canada, Mexico | First major stop"},
+        {id: "South_America", type: "location", color: "#87ceeb", size: 26, description: "🌎 South America | Brazil, Argentina, Chile | Southern deliveries"},
+        {id: "Europe", type: "location", color: "#87ceeb", size: 28, description: "🌍 Europe | UK, France, Germany, Italy | Traditional Christmas"},
+        {id: "Africa", type: "location", color: "#87ceeb", size: 26, description: "🌍 Africa | Egypt, Kenya, South Africa | Diverse celebrations"},
+        {id: "Asia", type: "location", color: "#87ceeb", size: 28, description: "🌏 Asia | China, Japan, India | Large population centers"},
+        {id: "Australia", type: "location", color: "#87ceeb", size: 26, description: "🌏 Australia & Oceania | Summer Christmas | Beach celebrations"},
+        
+        // MAJOR CITIES
+        {id: "New_York", type: "location", color: "#ffd700", size: 24, description: "🗽 New York City | Times Square | Empire State Building | Rockefeller Center tree"},
+        {id: "London", type: "location", color: "#ffd700", size: 24, description: "🏰 London | Big Ben | Buckingham Palace | Historic Christmas traditions"},
+        {id: "Tokyo", type: "location", color: "#ffd700", size: 24, description: "🗼 Tokyo | Tokyo Tower | Modern celebrations | KFC Christmas tradition"},
+        {id: "Sydney", type: "location", color: "#ffd700", size: 24, description: "🏖️ Sydney | Opera House | Beach Christmas | Bondi Beach Santa"},
+        {id: "Paris", type: "location", color: "#ffd700", size: 22, description: "🗼 Paris | Eiffel Tower | Champs-Élysées lights | Christmas markets"},
+        {id: "Rio", type: "location", color: "#ffd700", size: 22, description: "🏖️ Rio de Janeiro | Christ the Redeemer | Tropical Christmas"},
+        {id: "Moscow", type: "location", color: "#ffd700", size: 22, description: "❄️ Moscow | Red Square | Kremlin | Traditional Russian celebrations"},
+        {id: "Dubai", type: "location", color: "#ffd700", size: 22, description: "🏙️ Dubai | Burj Khalifa | Desert Christmas | Modern celebration"},
+        
+        // KEY EVENTS & TRADITIONS
+        {id: "Naughty_Nice_List", type: "event", color: "#ffaa00", size: 24, description: "📜 Naughty & Nice List | Santa checks it twice | Determines who gets gifts"},
+        {id: "Preparation", type: "event", color: "#ff69b4", size: 26, description: "🎁 Preparation Phase | Weeks before Christmas | Making and wrapping toys"},
+        {id: "Christmas_Eve", type: "event", color: "#ff4444", size: 28, description: "🌙 Christmas Eve Night | December 24th | The magical journey begins"},
+        {id: "Sleigh_Launch", type: "event", color: "#ff8c00", size: 26, description: "🚀 Sleigh Launch | Takeoff from North Pole | Reindeer power activated"},
+        {id: "Gift_Delivery", type: "event", color: "#ff69b4", size: 26, description: "🎁 Gift Delivery Process | Down chimneys | Under trees | In stockings"},
+        {id: "Chimney_Entry", type: "event", color: "#8b4513", size: 22, description: "🏠 Chimney Entry | Magic squeeze | Silent entrance | Santa's stealth"},
+        {id: "Milk_Cookies", type: "event", color: "#ffd700", size: 22, description: "🥛🍪 Milk & Cookies | Left by children | Santa's fuel | Carrots for reindeer"},
+        {id: "Journey_Complete", type: "event", color: "#44ff44", size: 26, description: "✅ Journey Complete | All gifts delivered | Return to North Pole | Success!"},
+        
+        // SPECIAL ITEMS
+        {id: "Magic_Sleigh", type: "event", color: "#c0c0c0", size: 24, description: "🛷 Magic Sleigh | Flies through air | Carries all presents | Never-ending bag"},
+        {id: "Santa_Bag", type: "event", color: "#8b4513", size: 20, description: "🎒 Santa's Bag | Holds all gifts | Magically bottomless | Never runs out"},
+    ];
+
+    // *** START EDGES ***
+    const edges = [
+        // SANTA'S FAMILY
+        {source: "Santa", target: "Mrs_Claus", type: "family", label: "married to"},
+        {source: "Santa", target: "North_Pole", type: "divine", label: "lives at"},
+        {source: "Santa", target: "Santas_House", type: "divine", label: "home"},
+        {source: "Mrs_Claus", target: "Santas_House", type: "divine", label: "lives in"},
+        
+        // REINDEER TEAM - Rudolph leads all
+        {source: "Santa", target: "Rudolph", type: "alliance", label: "leads sleigh"},
+        {source: "Rudolph", target: "Dasher", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Dancer", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Prancer", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Vixen", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Comet", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Cupid", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Donner", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Blitzen", type: "alliance", label: "team"},
+        {source: "Rudolph", target: "Stable", type: "event", label: "lives in"},
+        {source: "Stable", target: "North_Pole", type: "event", label: "located at"},
+        
+        // WORKSHOP HIERARCHY
+        {source: "Santa", target: "Head_Elf", type: "mentor", label: "supervises"},
+        {source: "Head_Elf", target: "Toy_Makers", type: "mentor", label: "manages"},
+        {source: "Head_Elf", target: "Gift_Wrappers", type: "mentor", label: "oversees"},
+        {source: "Head_Elf", target: "Sleigh_Engineer", type: "mentor", label: "coordinates"},
+        {source: "Mrs_Claus", target: "Cookie_Baker", type: "mentor", label: "works with"},
+        {source: "Toy_Makers", target: "Toy_Workshop", type: "event", label: "work in"},
+        {source: "Gift_Wrappers", target: "Toy_Workshop", type: "event", label: "work in"},
+        {source: "Sleigh_Engineer", target: "Magic_Sleigh", type: "event", label: "maintains"},
+        {source: "Sleigh_Engineer", target: "Rudolph", type: "alliance", label: "checks harness"},
+        {source: "Toy_Workshop", target: "North_Pole", type: "event", label: "located at"},
+        
+        // PREPARATION PHASE
+        {source: "Santa", target: "Naughty_Nice_List", type: "event", label: "maintains"},
+        {source: "Naughty_Nice_List", target: "Preparation", type: "timeline", label: "guides"},
+        {source: "Toy_Workshop", target: "Preparation", type: "timeline", label: "supplies"},
+        {source: "Preparation", target: "Christmas_Eve", type: "timeline", label: "leads to"},
+        
+        // SLEIGH & EQUIPMENT
+        {source: "Santa", target: "Magic_Sleigh", type: "divine", label: "rides"},
+        {source: "Santa", target: "Santa_Bag", type: "divine", label: "carries"},
+        {source: "Rudolph", target: "Magic_Sleigh", type: "alliance", label: "pulls"},
+        {source: "Santa_Bag", target: "Magic_Sleigh", type: "event", label: "loaded on"},
+        
+        // LAUNCH SEQUENCE
+        {source: "Christmas_Eve", target: "Sleigh_Launch", type: "timeline", label: "begins with"},
+        {source: "North_Pole", target: "Sleigh_Launch", type: "timeline", label: "departure"},
+        
+        // JOURNEY ROUTE - Following time zones westward
+        {source: "Sleigh_Launch", target: "Asia", type: "timeline", label: "first region"},
+        {source: "Asia", target: "Europe", type: "timeline", label: "flies to"},
+        {source: "Europe", target: "Africa", type: "timeline", label: "continues to"},
+        {source: "Africa", target: "South_America", type: "timeline", label: "crosses to"},
+        {source: "South_America", target: "North_America", type: "timeline", label: "moves to"},
+        {source: "North_America", target: "Australia", type: "timeline", label: "ends at"},
+        {source: "Australia", target: "Journey_Complete", type: "timeline", label: "finishes"},
+        {source: "Journey_Complete", target: "North_Pole", type: "timeline", label: "returns"},
+        
+        // MAJOR CITIES IN CONTINENTS
+        {source: "North_America", target: "New_York", type: "event", label: "includes"},
+        {source: "Europe", target: "London", type: "event", label: "includes"},
+        {source: "Europe", target: "Paris", type: "event", label: "includes"},
+        {source: "Europe", target: "Moscow", type: "event", label: "includes"},
+        {source: "Asia", target: "Tokyo", type: "event", label: "includes"},
+        {source: "Asia", target: "Dubai", type: "event", label: "includes"},
+        {source: "Australia", target: "Sydney", type: "event", label: "includes"},
+        {source: "South_America", target: "Rio", type: "event", label: "includes"},
+        
+        // SANTA VISITS MAJOR CITIES
+        {source: "Santa", target: "New_York", type: "divine", label: "visits"},
+        {source: "Santa", target: "London", type: "divine", label: "visits"},
+        {source: "Santa", target: "Tokyo", type: "divine", label: "visits"},
+        {source: "Santa", target: "Sydney", type: "divine", label: "visits"},
+        {source: "Santa", target: "Paris", type: "divine", label: "visits"},
+        {source: "Santa", target: "Rio", type: "divine", label: "visits"},
+        
+        // DELIVERY PROCESS
+        {source: "Santa", target: "Gift_Delivery", type: "divine", label: "performs"},
+        {source: "Santa", target: "Chimney_Entry", type: "event", label: "uses"},
+        {source: "Chimney_Entry", target: "Gift_Delivery", type: "event", label: "enables"},
+        {source: "Santa", target: "Milk_Cookies", type: "event", label: "enjoys"},
+        {source: "Gift_Delivery", target: "Journey_Complete", type: "timeline", label: "completes"},
+    ];
+
+    // *** SIMULATION SETUP ***
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const svg = d3.select("#graph")
+        .attr("width", width)
+        .attr("height", height);
+
+    let activeFilters = new Set(['hero', 'character', 'location', 'event']);
+
+    const simulation = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(edges).id(d => d.id).distance(120))
+        .force("charge", d3.forceManyBody().strength(-400))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(d => d.size + 10));
+
+    const link = svg.append("g")
+        .selectAll("line")
+        .data(edges)
+        .enter().append("line")
+        .attr("class", d => `link ${d.type}`)
+        .attr("stroke-width", 2);
+
+    const linkLabels = svg.append("g")
+        .selectAll("text")
+        .data(edges)
+        .enter().append("text")
+        .attr("class", "link-label")
+        .text(d => d.label);
+
+    const node = svg.append("g")
+        .selectAll("g")
+        .data(nodes)
+        .enter().append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended))
+        .on("click", showInfo)
+        .on("mouseover", showTooltip)
+        .on("mouseout", hideTooltip);
+
+    node.append("circle")
+        .attr("r", d => d.size)
+        .attr("fill", d => d.color);
+
+    node.append("text")
+        .attr("dy", d => d.size + 12)
+        .text(d => d.id.replace(/_/g, " "));
+
+    simulation.on("tick", () => {
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        linkLabels
+            .attr("x", d => (d.source.x + d.target.x) / 2)
+            .attr("y", d => (d.source.y + d.target.y) / 2);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+    });
+
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    function toggleFilter(type) {
+        const btn = event.target;
+        if (activeFilters.has(type)) {
+            activeFilters.delete(type);
+            btn.classList.remove('active');
+        } else {
+            activeFilters.add(type);
+            btn.classList.add('active');
+        }
+        
+        node.style("display", d => activeFilters.has(d.type) ? "block" : "none");
+        link.style("display", d => {
+            const sourceVisible = activeFilters.has(d.source.type);
+            const targetVisible = activeFilters.has(d.target.type);
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+        linkLabels.style("display", d => {
+            const sourceVisible = activeFilters.has(d.source.type);
+            const targetVisible = activeFilters.has(d.target.type);
+            return sourceVisible && targetVisible ? "block" : "none";
+        });
+    }
+
+    function resetSimulation() {
+        nodes.forEach(d => {
+            d.fx = null;
+            d.fy = null;
+        });
+        simulation.alpha(1).restart();
+    }
+
+    function showStats() {
+        const stats = `
+            <div class="info-section">
+                <strong>Total Nodes:</strong> ${nodes.length}<br>
+                <strong>Total Edges:</strong> ${edges.length}<br>
+                <strong>Heroes:</strong> ${nodes.filter(n => n.type === 'hero').length}<br>
+                <strong>Characters:</strong> ${nodes.filter(n => n.type === 'character').length}<br>
+                <strong>Locations:</strong> ${nodes.filter(n => n.type === 'location').length}<br>
+                <strong>Events:</strong> ${nodes.filter(n => n.type === 'event').length}
+            </div>
+        `;
+        document.getElementById("nodeTitle").textContent = "📊 Graph Statistics";
+        document.getElementById("nodeDescription").innerHTML = stats;
+        document.getElementById("infoPanel").style.display = "block";
+    }
+
+    function showInfo(event, d) {
+        document.getElementById("nodeTitle").textContent = d.id.replace(/_/g, " ");
+        document.getElementById("nodeDescription").innerHTML = `
+            <div class="info-section">
+                ${d.description}
+            </div>
+        `;
+        document.getElementById("infoPanel").style.display = "block";
+    }
+
+    function closeInfo() {
+        document.getElementById("infoPanel").style.display = "none";
+    }
+
+    function showTooltip(event, d) {
+        const tooltip = document.getElementById("tooltip");
+        tooltip.textContent = d.id.replace(/_/g, " ");
+        tooltip.style.display = "block";
+        tooltip.style.left = (event.pageX + 10) + "px";
+        tooltip.style.top = (event.pageY - 20) + "px";
+    }
+
+    function hideTooltip() {
+        document.getElementById("tooltip").style.display = "none";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY santa "http://vidyaastra.org/ontology/santa#" >
+]>
+
+<rdf:RDF xmlns="http://vidyaastra.org/ontology/santa#"
+     xml:base="http://vidyaastra.org/ontology/santa"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:santa="http://vidyaastra.org/ontology/santa#">
+    
+    <owl:Ontology rdf:about="http://vidyaastra.org/ontology/santa">
+        <rdfs:label>Santa's Christmas Route Ontology</rdfs:label>
+        <rdfs:comment>An ontology representing Santa Claus's Christmas Eve journey - characters, helpers, locations, and delivery route</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+    </owl:Ontology>
+
+    <!-- Classes -->
+    
+    <owl:Class rdf:about="&santa;Character">
+        <rdfs:label>Character</rdfs:label>
+        <rdfs:comment>A character in the Santa's Christmas story</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;MagicalBeing">
+        <rdfs:label>Magical Being</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&santa;Character"/>
+        <rdfs:comment>Santa and other magical entities</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Helper">
+        <rdfs:label>Helper</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&santa;Character"/>
+        <rdfs:comment>Elves and assistants at North Pole</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Reindeer">
+        <rdfs:label>Reindeer</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&santa;Character"/>
+        <rdfs:comment>Flying reindeer that pull Santa's sleigh</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Location">
+        <rdfs:label>Location</rdfs:label>
+        <rdfs:comment>Places visited during Christmas journey</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Continent">
+        <rdfs:label>Continent</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&santa;Location"/>
+        <rdfs:comment>Major continents visited</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;NorthPole">
+        <rdfs:label>North Pole</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&santa;Location"/>
+        <rdfs:comment>Santa's home and workshop headquarters</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Event">
+        <rdfs:label>Event</rdfs:label>
+        <rdfs:comment>Significant events during Christmas</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Preparation">
+        <rdfs:label>Preparation</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&santa;Event"/>
+        <rdfs:comment>Activities before Christmas Eve</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Delivery">
+        <rdfs:label>Delivery</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&santa;Event"/>
+        <rdfs:comment>Gift delivery activities</rdfs:comment>
+    </owl:Class>
+    
+    <owl:Class rdf:about="&santa;Vehicle">
+        <rdfs:label>Vehicle</rdfs:label>
+        <rdfs:comment>Transportation methods</rdfs:comment>
+    </owl:Class>
+
+    <!-- Object Properties -->
+    
+    <owl:ObjectProperty rdf:about="&santa;isMarriedTo">
+        <rdfs:label>is married to</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&santa;Character"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;worksWith">
+        <rdfs:label>works with</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&santa;Character"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;leadsTeam">
+        <rdfs:label>leads team</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Reindeer"/>
+        <rdfs:range rdf:resource="&santa;Reindeer"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;livesAt">
+        <rdfs:label>lives at</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&santa;Location"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;worksAt">
+        <rdfs:label>works at</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&santa;Location"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;visits">
+        <rdfs:label>visits</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&santa;Location"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;travelsWith">
+        <rdfs:label>travels with</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&santa;Vehicle"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;participatesIn">
+        <rdfs:label>participates in</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&santa;Event"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;occursAt">
+        <rdfs:label>occurs at</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Event"/>
+        <rdfs:range rdf:resource="&santa;Location"/>
+    </owl:ObjectProperty>
+    
+    <owl:ObjectProperty rdf:about="&santa;precedesEvent">
+        <rdfs:label>precedes event</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Event"/>
+        <rdfs:range rdf:resource="&santa;Event"/>
+        <rdf:type rdf:resource="&owl;TransitiveProperty"/>
+    </owl:ObjectProperty>
+
+    <!-- Data Properties -->
+    
+    <owl:DatatypeProperty rdf:about="&santa;hasName">
+        <rdfs:label>has name</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&santa;hasRole">
+        <rdfs:label>has role</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Character"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&santa;hasLocationName">
+        <rdfs:label>has location name</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Location"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&santa;hasEventDate">
+        <rdfs:label>has event date</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;Event"/>
+        <rdfs:range rdf:resource="&xsd;date"/>
+    </owl:DatatypeProperty>
+    
+    <owl:DatatypeProperty rdf:about="&santa;hasSpecialAbility">
+        <rdfs:label>has special ability</rdfs:label>
+        <rdfs:domain rdf:resource="&santa;MagicalBeing"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Individuals -->
+    
+    <!-- Santa and Family -->
+    <owl:NamedIndividual rdf:about="&santa;Santa">
+        <rdf:type rdf:resource="&santa;MagicalBeing"/>
+        <santa:hasName>Santa Claus</santa:hasName>
+        <santa:hasRole>Gift Deliverer</santa:hasRole>
+        <santa:hasSpecialAbility>Delivers gifts worldwide in one night</santa:hasSpecialAbility>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+        <santa:isMarriedTo rdf:resource="&santa;MrsClaus"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;MrsClaus">
+        <rdf:type rdf:resource="&santa;MagicalBeing"/>
+        <santa:hasName>Mrs. Claus</santa:hasName>
+        <santa:hasRole>North Pole Manager</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <!-- All Nine Reindeer -->
+    <owl:NamedIndividual rdf:about="&santa;Rudolph">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Rudolph</santa:hasName>
+        <santa:hasRole>Lead Reindeer</santa:hasRole>
+        <santa:hasSpecialAbility>Glowing red nose guides sleigh</santa:hasSpecialAbility>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Dasher">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Dasher</santa:hasName>
+        <santa:hasRole>Fastest Reindeer</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Dancer">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Dancer</santa:hasName>
+        <santa:hasRole>Graceful Reindeer</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Prancer">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Prancer</santa:hasName>
+        <santa:hasRole>Proud Reindeer</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Vixen">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Vixen</santa:hasName>
+        <santa:hasRole>Swift Reindeer</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Comet">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Comet</santa:hasName>
+        <santa:hasRole>Wonder Bringer</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Cupid">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Cupid</santa:hasName>
+        <santa:hasRole>Love Spreader</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Donner">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Donner</santa:hasName>
+        <santa:hasRole>Thunder Reindeer</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Blitzen">
+        <rdf:type rdf:resource="&santa;Reindeer"/>
+        <santa:hasName>Blitzen</santa:hasName>
+        <santa:hasRole>Lightning Reindeer</santa:hasRole>
+        <santa:livesAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <!-- North Pole Helpers -->
+    <owl:NamedIndividual rdf:about="&santa;HeadElf">
+        <rdf:type rdf:resource="&santa;Helper"/>
+        <santa:hasName>Head Elf</santa:hasName>
+        <santa:hasRole>Chief Toy Maker</santa:hasRole>
+        <santa:worksAt rdf:resource="&santa;ToyWorkshopLocation"/>
+        <santa:worksWith rdf:resource="&santa;Santa"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;ToyMakers">
+        <rdf:type rdf:resource="&santa;Helper"/>
+        <santa:hasName>Toy Maker Elves</santa:hasName>
+        <santa:hasRole>Toy Builders</santa:hasRole>
+        <santa:worksAt rdf:resource="&santa;ToyWorkshopLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;GiftWrappers">
+        <rdf:type rdf:resource="&santa;Helper"/>
+        <santa:hasName>Gift Wrapper Elves</santa:hasName>
+        <santa:hasRole>Gift Wrappers</santa:hasRole>
+        <santa:worksAt rdf:resource="&santa;ToyWorkshopLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;SleighEngineer">
+        <rdf:type rdf:resource="&santa;Helper"/>
+        <santa:hasName>Sleigh Engineer</santa:hasName>
+        <santa:hasRole>Sleigh Maintainer</santa:hasRole>
+        <santa:worksAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <!-- North Pole Locations -->
+    <owl:NamedIndividual rdf:about="&santa;NorthPoleLocation">
+        <rdf:type rdf:resource="&santa;NorthPole"/>
+        <santa:hasLocationName>North Pole</santa:hasLocationName>
+        <rdfs:comment>Santa's home and workshop headquarters</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;ToyWorkshopLocation">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Toy Workshop</santa:hasLocationName>
+        <rdfs:comment>Where toys are manufactured</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;SantasHouse">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Santa's House</santa:hasLocationName>
+        <rdfs:comment>Where Santa and Mrs. Claus live</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;ReindeerStable">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Reindeer Stable</santa:hasLocationName>
+        <rdfs:comment>Where reindeer rest and prepare</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <!-- Continents -->
+    <owl:NamedIndividual rdf:about="&santa;NorthAmericaLocation">
+        <rdf:type rdf:resource="&santa;Continent"/>
+        <santa:hasLocationName>North America</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;SouthAmericaLocation">
+        <rdf:type rdf:resource="&santa;Continent"/>
+        <santa:hasLocationName>South America</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;EuropeLocation">
+        <rdf:type rdf:resource="&santa;Continent"/>
+        <santa:hasLocationName>Europe</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;AfricaLocation">
+        <rdf:type rdf:resource="&santa;Continent"/>
+        <santa:hasLocationName>Africa</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;AsiaLocation">
+        <rdf:type rdf:resource="&santa;Continent"/>
+        <santa:hasLocationName>Asia</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;AustraliaLocation">
+        <rdf:type rdf:resource="&santa;Continent"/>
+        <santa:hasLocationName>Australia</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <!-- Major Cities -->
+    <owl:NamedIndividual rdf:about="&santa;NewYorkCity">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>New York City</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;London">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>London</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Tokyo">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Tokyo</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Sydney">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Sydney</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Paris">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Paris</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Rio">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Rio de Janeiro</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Moscow">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Moscow</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;Dubai">
+        <rdf:type rdf:resource="&santa;Location"/>
+        <santa:hasLocationName>Dubai</santa:hasLocationName>
+    </owl:NamedIndividual>
+    
+    <!-- Events -->
+    <owl:NamedIndividual rdf:about="&santa;NaughtyNiceListEvent">
+        <rdf:type rdf:resource="&santa;Preparation"/>
+        <rdfs:label>Naughty &amp; Nice List</rdfs:label>
+        <rdfs:comment>Santa checks the list twice</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;PreparationEvent">
+        <rdf:type rdf:resource="&santa;Preparation"/>
+        <rdfs:label>Preparation Phase</rdfs:label>
+        <rdfs:comment>Weeks before Christmas making toys</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;ChristmasEveEvent">
+        <rdf:type rdf:resource="&santa;Event"/>
+        <rdfs:label>Christmas Eve</rdfs:label>
+        <santa:hasEventDate rdf:datatype="&xsd;date">2025-12-24</santa:hasEventDate>
+        <santa:occursAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;SleighLaunchEvent">
+        <rdf:type rdf:resource="&santa;Event"/>
+        <rdfs:label>Sleigh Launch</rdfs:label>
+        <santa:hasEventDate rdf:datatype="&xsd;date">2025-12-24</santa:hasEventDate>
+        <santa:occursAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;GiftDeliveryEvent">
+        <rdf:type rdf:resource="&santa;Delivery"/>
+        <rdfs:label>Gift Delivery</rdfs:label>
+        <santa:hasEventDate rdf:datatype="&xsd;date">2025-12-24</santa:hasEventDate>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;ChimneyEntryEvent">
+        <rdf:type rdf:resource="&santa;Delivery"/>
+        <rdfs:label>Chimney Entry</rdfs:label>
+        <rdfs:comment>Santa's magical entry method</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;MilkCookiesEvent">
+        <rdf:type rdf:resource="&santa;Event"/>
+        <rdfs:label>Milk and Cookies</rdfs:label>
+        <rdfs:comment>Traditional treats left by children</rdfs:comment>
+    </owl:NamedIndividual>
+    
+    <owl:NamedIndividual rdf:about="&santa;JourneyCompleteEvent">
+        <rdf:type rdf:resource="&santa;Event"/>
+        <rdfs:label>Journey Complete</rdfs:label>
+        <santa:occursAt rdf:resource="&santa;NorthPoleLocation"/>
+    </owl:NamedIndividual>
+    
+    <!-- Reindeer Team Relationships -->
+    <rdf:Description rdf:about="&santa;Rudolph">
+        <santa:leadsTeam rdf:resource="&santa;Dasher"/>
+        <santa:leadsTeam rdf:resource="&santa;Dancer"/>
+        <santa:leadsTeam rdf:resource="&santa;Prancer"/>
+        <santa:leadsTeam rdf:resource="&santa;Vixen"/>
+        <santa:leadsTeam rdf:resource="&santa;Comet"/>
+        <santa:leadsTeam rdf:resource="&santa;Cupid"/>
+        <santa:leadsTeam rdf:resource="&santa;Donner"/>
+        <santa:leadsTeam rdf:resource="&santa;Blitzen"/>
+    </rdf:Description>
+    
+    <!-- Event Sequence -->
+    <rdf:Description rdf:about="&santa;NaughtyNiceListEvent">
+        <santa:precedesEvent rdf:resource="&santa;PreparationEvent"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&santa;PreparationEvent">
+        <santa:precedesEvent rdf:resource="&santa;ChristmasEveEvent"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&santa;ChristmasEveEvent">
+        <santa:precedesEvent rdf:resource="&santa;SleighLaunchEvent"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&santa;SleighLaunchEvent">
+        <santa:precedesEvent rdf:resource="&santa;GiftDeliveryEvent"/>
+    </rdf:Description>
+    
+    <rdf:Description rdf:about="&santa;GiftDeliveryEvent">
+        <santa:precedesEvent rdf:resource="&santa;JourneyCompleteEvent"/>
+    </rdf:Description>
+    
+    <!-- Santa's Route -->
+    <rdf:Description rdf:about="&santa;Santa">
+        <santa:visits rdf:resource="&santa;NorthAmericaLocation"/>
+        <santa:visits rdf:resource="&santa;SouthAmericaLocation"/>
+        <santa:visits rdf:resource="&santa;EuropeLocation"/>
+        <santa:visits rdf:resource="&santa;AfricaLocation"/>
+        <santa:visits rdf:resource="&santa;AsiaLocation"/>
+        <santa:visits rdf:resource="&santa;AustraliaLocation"/>
+        <santa:visits rdf:resource="&santa;NewYorkCity"/>
+        <santa:visits rdf:resource="&santa;London"/>
+        <santa:visits rdf:resource="&santa;Tokyo"/>
+        <santa:visits rdf:resource="&santa;Sydney"/>
+        <santa:visits rdf:resource="&santa;Paris"/>
+        <santa:visits rdf:resource="&santa;Rio"/>
+        <santa:participatesIn rdf:resource="&santa;ChristmasEveEvent"/>
+        <santa:participatesIn rdf:resource="&santa;SleighLaunchEvent"/>
+        <santa:participatesIn rdf:resource="&santa;GiftDeliveryEvent"/>
+        <santa:participatesIn rdf:resource="&santa;JourneyCompleteEvent"/>
+    </rdf:Description>
+
+</rdf:RDF>
