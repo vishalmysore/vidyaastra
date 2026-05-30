@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: Meghadoot - The Cloud Messenger Network</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         /* CSS styles updated for Meghadoot theme: Blues, Greens, and Light Golds for the Sky and Earth */
         * {
@@ -255,20 +255,20 @@
 </head>
 <body>
 <div class="controls">
-    <h2>☁️ MEGHADOOT NETWORK</h2>
+    <h2>â˜ï¸ MEGHADOOT NETWORK</h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">Kalidasa's Epic Journey</p>
 
     <h3>Filter by Type</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
-        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
-        <button class="filter-btn active" onclick="toggleFilter('place')">📍 Locations</button>
-        <button class="filter-btn active" onclick="toggleFilter('path')">🗺️ Path Stops</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">ðŸ‘¤ Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">âœ¨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('place')">ðŸ“ Locations</button>
+        <button class="filter-btn active" onclick="toggleFilter('path')">ðŸ—ºï¸ Path Stops</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button onclick="resetSimulation()">🔄 Reset</button>
-    <button onclick="showStats()">📊 Stats</button>
+    <button onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -311,7 +311,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -323,39 +323,39 @@
     // *** START NODES ***
     const nodes = [
         // MAIN CHARACTERS
-        {id: "Yaksha", type: "character", color: "#ff9f4d", size: 30, description: "👤 The exiled lover | Servant of Kubera | Cursed for a year | Initiates the message"},
-        {id: "Wife", type: "character", color: "#ff9f4d", size: 28, description: "👸 The wife of the Yaksha | Waiting faithfully in Alaka | The recipient of the message"},
-        {id: "Cloud", type: "character", color: "#ff9f4d", size: 32, description: "☁️ The messenger | A sentient entity of smoke, light, water, and wind | The protagonist of the poem's journey"},
+        {id: "Yaksha", type: "character", color: "#ff9f4d", size: 30, description: "ðŸ‘¤ The exiled lover | Servant of Kubera | Cursed for a year | Initiates the message"},
+        {id: "Wife", type: "character", color: "#ff9f4d", size: 28, description: "ðŸ‘¸ The wife of the Yaksha | Waiting faithfully in Alaka | The recipient of the message"},
+        {id: "Cloud", type: "character", color: "#ff9f4d", size: 32, description: "â˜ï¸ The messenger | A sentient entity of smoke, light, water, and wind | The protagonist of the poem's journey"},
 
         // DIVINE & MYTHOLOGICAL FIGURES
-        {id: "Kubera", type: "divine", color: "#a78bfa", size: 26, description: "💰 God of Wealth | Lord of the Yakshas | The one who pronounced the curse"},
-        {id: "Shiva", type: "divine", color: "#a78bfa", size: 24, description: "🔱 Great God | Resides in Mount Kailash | The cloud often pays homage to him"},
-        {id: "Indra", type: "divine", color: "#a78bfa", size: 22, description: "⚡ King of Gods | Clouds are associated with his power and war"},
-        {id: "Ganga River", type: "place", color: "#a78bfa", size: 20, description: "🌊 Sacred river | The Cloud is asked to imbibe its holy waters"},
-        {id: "Chitrakuta", type: "place", color: "#20948b", size: 20, description: "⛰️ Mountain mentioned as having Ramayana connections | Cloud pauses here"},
-        {id: "Vishnu's Footprint", type: "mythology", color: "#a78bfa", size: 18, description: "🦶 Mythical marker | The cloud is asked to respect and circle it"},
+        {id: "Kubera", type: "divine", color: "#a78bfa", size: 26, description: "ðŸ’° God of Wealth | Lord of the Yakshas | The one who pronounced the curse"},
+        {id: "Shiva", type: "divine", color: "#a78bfa", size: 24, description: "ðŸ”± Great God | Resides in Mount Kailash | The cloud often pays homage to him"},
+        {id: "Indra", type: "divine", color: "#a78bfa", size: 22, description: "âš¡ King of Gods | Clouds are associated with his power and war"},
+        {id: "Ganga River", type: "place", color: "#a78bfa", size: 20, description: "ðŸŒŠ Sacred river | The Cloud is asked to imbibe its holy waters"},
+        {id: "Chitrakuta", type: "place", color: "#20948b", size: 20, description: "â›°ï¸ Mountain mentioned as having Ramayana connections | Cloud pauses here"},
+        {id: "Vishnu's Footprint", type: "mythology", color: "#a78bfa", size: 18, description: "ðŸ¦¶ Mythical marker | The cloud is asked to respect and circle it"},
 
 
         // MAJOR LOCATIONS (START/END)
-        {id: "Ramagiri", type: "place", color: "#7fb5a3", size: 28, description: "📍 Starting point | Yaksha's place of exile in Central India | Where the Cloud is first sighted"},
-        {id: "Alaka", type: "place", color: "#7fb5a3", size: 28, description: "📍 Destination | City of Kubera and the Yakshas | High up in the Himalayas | Yaksha's home"},
-        {id: "Kailash", type: "place", color: "#7fb5a3", size: 26, description: "🏔️ Sacred mountain | Residence of Shiva | Final major landmark before Alaka"},
+        {id: "Ramagiri", type: "place", color: "#7fb5a3", size: 28, description: "ðŸ“ Starting point | Yaksha's place of exile in Central India | Where the Cloud is first sighted"},
+        {id: "Alaka", type: "place", color: "#7fb5a3", size: 28, description: "ðŸ“ Destination | City of Kubera and the Yakshas | High up in the Himalayas | Yaksha's home"},
+        {id: "Kailash", type: "place", color: "#7fb5a3", size: 26, description: "ðŸ”ï¸ Sacred mountain | Residence of Shiva | Final major landmark before Alaka"},
 
         // PATH STOPS (Purva Megha - East Cloud)
-        {id: "Mal Region", type: "path", color: "#20948b", size: 20, description: "🌾 Cloud's initial path | Over fertile plains and farmers"},
-        {id: "Narmada River", type: "path", color: "#20948b", size: 22, description: "🌊 Major River | Cloud must cross it | Represents a resting point"},
-        {id: "Vidisha", type: "path", color: "#20948b", size: 20, description: "🏛️ City of repute | Home to the Vetravati River"},
-        {id: "Ujjain", type: "path", color: "#20948b", size: 24, description: "🌃 City of Grandeur | Cloud is advised to detour to this cultural heartland | Mahakala Temple"},
-        {id: "Reva River", type: "path", color: "#20948b", size: 19, description: "💧 Another name for Narmada | Described vividly"},
-        {id: "Dasharna Country", type: "path", color: "#20948b", size: 19, description: "🏞️ Region with beautiful landscapes"},
+        {id: "Mal Region", type: "path", color: "#20948b", size: 20, description: "ðŸŒ¾ Cloud's initial path | Over fertile plains and farmers"},
+        {id: "Narmada River", type: "path", color: "#20948b", size: 22, description: "ðŸŒŠ Major River | Cloud must cross it | Represents a resting point"},
+        {id: "Vidisha", type: "path", color: "#20948b", size: 20, description: "ðŸ›ï¸ City of repute | Home to the Vetravati River"},
+        {id: "Ujjain", type: "path", color: "#20948b", size: 24, description: "ðŸŒƒ City of Grandeur | Cloud is advised to detour to this cultural heartland | Mahakala Temple"},
+        {id: "Reva River", type: "path", color: "#20948b", size: 19, description: "ðŸ’§ Another name for Narmada | Described vividly"},
+        {id: "Dasharna Country", type: "path", color: "#20948b", size: 19, description: "ðŸžï¸ Region with beautiful landscapes"},
 
         // PATH STOPS (Uttara Megha - North Cloud)
-        {id: "Devagiri", type: "path", color: "#20948b", size: 20, description: "🌄 Mountain stop | Known for Skanda's abode (Kartikeya)"},
-        {id: "Chamaravati", type: "path", color: "#20948b", size: 19, description: "🐘 Town famed for ivory and elephant herds"},
-        {id: "Kanakhala", type: "path", color: "#20948b", size: 18, description: "🏞️ Location of the Ganga's descent"},
-        {id: "Himadri", type: "path", color: "#20948b", size: 22, description: "🏔️ The great Himalayan range | The gateway to the Yaksha's home"},
-        {id: "Mount Amrakuta", type: "path", color: "#20948b", size: 20, description: "🥭 Mango-laden mountain | Cloud takes a rest here"},
-        {id: "Mount Vindhya", type: "path", color: "#20948b", size: 20, description: "⛰️ Mountain range | Cloud travels over it"},
+        {id: "Devagiri", type: "path", color: "#20948b", size: 20, description: "ðŸŒ„ Mountain stop | Known for Skanda's abode (Kartikeya)"},
+        {id: "Chamaravati", type: "path", color: "#20948b", size: 19, description: "ðŸ˜ Town famed for ivory and elephant herds"},
+        {id: "Kanakhala", type: "path", color: "#20948b", size: 18, description: "ðŸžï¸ Location of the Ganga's descent"},
+        {id: "Himadri", type: "path", color: "#20948b", size: 22, description: "ðŸ”ï¸ The great Himalayan range | The gateway to the Yaksha's home"},
+        {id: "Mount Amrakuta", type: "path", color: "#20948b", size: 20, description: "ðŸ¥­ Mango-laden mountain | Cloud takes a rest here"},
+        {id: "Mount Vindhya", type: "path", color: "#20948b", size: 20, description: "â›°ï¸ Mountain range | Cloud travels over it"},
     ];
 
     // *** START LINKS ***
@@ -527,7 +527,7 @@
     }
 
     function showStats() {
-        alert(`📊 MEGHADOOT STATISTICS\n\nTotal Characters, Places & Path Stops: ${nodes.length}\nTotal Relationships & Journey Steps: ${links.length}\n\nThis knowledge graph illustrates the narrative structure of Kalidasa's Meghadoot by mapping the Yaksha, his wife, the Cloud Messenger, and all the key geographical landmarks and mythological figures encountered on the cloud's epic journey.`);
+        alert(`ðŸ“Š MEGHADOOT STATISTICS\n\nTotal Characters, Places & Path Stops: ${nodes.length}\nTotal Relationships & Journey Steps: ${links.length}\n\nThis knowledge graph illustrates the narrative structure of Kalidasa's Meghadoot by mapping the Yaksha, his wife, the Cloud Messenger, and all the key geographical landmarks and mythological figures encountered on the cloud's epic journey.`);
     }
 
     updateVisibility();

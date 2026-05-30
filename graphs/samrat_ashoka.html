@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>VidyaAstra: Samrat Ashoka Network</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         * {margin:0; padding:0; box-sizing:border-box;}
         body {font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg,#14213d,#1d3557,#2a9d8f); color:#fff; overflow:hidden;}
@@ -41,20 +41,20 @@
 </head>
 <body>
     <div class="controls">
-        <h2>🛕 SAMRAT ASHOKA</h2>
+        <h2>ðŸ›• SAMRAT ASHOKA</h2>
         <p style="font-size:.7em; margin-bottom:6px; opacity:.8;">Project VidyaAstra</p>
         <h3>Filter by Type</h3>
         <div>
-            <button class="filter-btn active" onclick="toggleFilter('royal')">👑 Royal</button>
-            <button class="filter-btn active" onclick="toggleFilter('general')">⚔️ General/Admin</button>
-            <button class="filter-btn active" onclick="toggleFilter('enemy')">🟥 Enemy/Rival</button>
-            <button class="filter-btn active" onclick="toggleFilter('religious')">🙏 Religious</button>
-            <button class="filter-btn active" onclick="toggleFilter('territory')">🗺️ Territory</button>
-            <button class="filter-btn active" onclick="toggleFilter('event')">📜 Event</button>
+            <button class="filter-btn active" onclick="toggleFilter('royal')">ðŸ‘‘ Royal</button>
+            <button class="filter-btn active" onclick="toggleFilter('general')">âš”ï¸ General/Admin</button>
+            <button class="filter-btn active" onclick="toggleFilter('enemy')">ðŸŸ¥ Enemy/Rival</button>
+            <button class="filter-btn active" onclick="toggleFilter('religious')">ðŸ™ Religious</button>
+            <button class="filter-btn active" onclick="toggleFilter('territory')">ðŸ—ºï¸ Territory</button>
+            <button class="filter-btn active" onclick="toggleFilter('event')">ðŸ“œ Event</button>
         </div>
         <h3>Actions</h3>
-        <button class="action" onclick="resetSimulation()">🔄 Reset</button>
-        <button class="action" onclick="showStats()">📊 Stats</button>
+        <button class="action" onclick="resetSimulation()">ðŸ”„ Reset</button>
+        <button class="action" onclick="showStats()">ðŸ“Š Stats</button>
     </div>
     <div class="legend">
         <h3>Legend</h3>
@@ -74,7 +74,7 @@
         <div class="legend-item"><div style="width:22px; height:3px; background:#457b9d; margin-right:6px;"></div><span>Alliance / External</span></div>
     </div>
     <div class="info-panel" id="infoPanel">
-        <button class="close-btn" onclick="closeInfo()">✕</button>
+        <button class="close-btn" onclick="closeInfo()">âœ•</button>
         <h3 id="nodeTitle"></h3>
         <div id="nodeDescription"></div>
     </div>
@@ -86,99 +86,99 @@
     const nodes = [
         // ASHOKA - THE MAIN FIGURE
         {id: "Ashoka", type: "royal", faction: "maurya", color: "#2a9d8f", size: 40,
-         description: "👑 Samrat Ashoka the Great | 3rd Mauryan Emperor (268-232 BCE) | Conquered Kalinga | Later became Buddhist pacifist | Greatest emperor of India"},
+         description: "ðŸ‘‘ Samrat Ashoka the Great | 3rd Mauryan Emperor (268-232 BCE) | Conquered Kalinga | Later became Buddhist pacifist | Greatest emperor of India"},
 
         // MAURYAN ROYAL FAMILY
         {id: "Chandragupta Maurya", type: "royal", faction: "maurya", color: "#2a9d8f", size: 28,
-         description: "👑 Founder of Mauryan Empire | Grandfather of Ashoka | Abdicated and became Jain monk"},
+         description: "ðŸ‘‘ Founder of Mauryan Empire | Grandfather of Ashoka | Abdicated and became Jain monk"},
         {id: "Bindusara", type: "royal", faction: "maurya", color: "#2a9d8f", size: 30,
-         description: "👑 Father of Ashoka | Also called Amitraghata (Destroyer of Enemies) | Ruled before Ashoka"},
+         description: "ðŸ‘‘ Father of Ashoka | Also called Amitraghata (Destroyer of Enemies) | Ruled before Ashoka"},
         {id: "Devi", type: "royal", faction: "maurya", color: "#e76f51", size: 24,
-         description: "👸 Mother of Ashoka | Wife of Bindusara | Born as merchant's daughter"},
+         description: "ðŸ‘¸ Mother of Ashoka | Wife of Bindusara | Born as merchant's daughter"},
         {id: "Radhika", type: "royal", faction: "maurya", color: "#e76f51", size: 20,
-         description: "👸 Wife of Ashoka | Mother of Mahinda and Sanghamitta"},
+         description: "ðŸ‘¸ Wife of Ashoka | Mother of Mahinda and Sanghamitta"},
         {id: "Mahinda", type: "royal", faction: "maurya", color: "#e76f51", size: 22,
-         description: "🧑 Son of Ashoka | Buddhist missionary | Took Buddhism to Sri Lanka"},
+         description: "ðŸ§‘ Son of Ashoka | Buddhist missionary | Took Buddhism to Sri Lanka"},
         {id: "Sanghamitta", type: "royal", faction: "maurya", color: "#e76f51", size: 20,
-         description: "🧑 Daughter of Ashoka | Buddhist nun | Took Bodhi tree to Sri Lanka"},
+         description: "ðŸ§‘ Daughter of Ashoka | Buddhist nun | Took Bodhi tree to Sri Lanka"},
         {id: "Susima", type: "royal", faction: "maurya", color: "#d62828", size: 22,
-         description: "🔪 Half-brother of Ashoka | Died in Ashoka's rise to power | Rival"},
+         description: "ðŸ”ª Half-brother of Ashoka | Died in Ashoka's rise to power | Rival"},
 
         // GENERALS & MILITARY COMMANDERS
         {id: "Radhagupta", type: "general", faction: "general", color: "#f4a261", size: 24,
-         description: "⚔️ Commander of Ashoka's forces | Led conquest of Kalinga"},
+         description: "âš”ï¸ Commander of Ashoka's forces | Led conquest of Kalinga"},
         {id: "Khalsi", type: "general", faction: "general", color: "#f4a261", size: 20,
-         description: "⚔️ General | Helped expand territories"},
+         description: "âš”ï¸ General | Helped expand territories"},
         {id: "Vipula", type: "general", faction: "general", color: "#f4a261", size: 22,
-         description: "⚔️ Northern commander | Administered northern territories"},
+         description: "âš”ï¸ Northern commander | Administered northern territories"},
 
         // POLITICAL ADVISORS & MINISTERS
         {id: "Radhagupta (Minister)", type: "general", faction: "general", color: "#f4a261", size: 22,
-         description: "🧠 Chief Minister | Advisor to Ashoka | Key administrator"},
+         description: "ðŸ§  Chief Minister | Advisor to Ashoka | Key administrator"},
         {id: "Vishnugupta (Chanakya)", type: "general", faction: "general", color: "#f4a261", size: 23,
-         description: "🧠 Ancient advisor | Strategist to Chandragupta | Founder of policies"},
+         description: "ðŸ§  Ancient advisor | Strategist to Chandragupta | Founder of policies"},
 
         // ENEMIES & RIVALS
         {id: "Seleucus Nicator", type: "enemy", faction: "enemy", color: "#d62828", size: 24,
-         description: "⚔️ Greek general | Founder of Seleucid Empire | Rival to Mauryan Empire | Made peace treaty"},
+         description: "âš”ï¸ Greek general | Founder of Seleucid Empire | Rival to Mauryan Empire | Made peace treaty"},
         {id: "Nanda Dynasty", type: "enemy", faction: "enemy", color: "#d62828", size: 22,
-         description: "👑 Previous ruling dynasty | Overthrown by Chandragupta Maurya"},
+         description: "ðŸ‘‘ Previous ruling dynasty | Overthrown by Chandragupta Maurya"},
         {id: "Kalinga King", type: "enemy", faction: "enemy", color: "#d62828", size: 23,
-         description: "👑 Independent ruler of Kalinga | Resisted Ashoka's conquest"},
+         description: "ðŸ‘‘ Independent ruler of Kalinga | Resisted Ashoka's conquest"},
         {id: "Tamraparni Rulers", type: "enemy", faction: "enemy", color: "#d62828", size: 20,
-         description: "👑 Rulers of Sri Lanka | Initially foreign relations, later allied"},
+         description: "ðŸ‘‘ Rulers of Sri Lanka | Initially foreign relations, later allied"},
         {id: "Chola Kingdom", type: "enemy", faction: "enemy", color: "#d62828", size: 20,
-         description: "🏰 Southern kingdom | Independent state during Ashoka's reign"},
+         description: "ðŸ° Southern kingdom | Independent state during Ashoka's reign"},
         {id: "Pandya Kingdom", type: "enemy", faction: "enemy", color: "#d62828", size: 19,
-         description: "🏰 Southern kingdom | Maintained independence"},
+         description: "ðŸ° Southern kingdom | Maintained independence"},
         {id: "Kuntala", type: "enemy", faction: "enemy", color: "#d62828", size: 18,
-         description: "🏰 Frontier kingdom | Resisted Mauryan expansion"},
+         description: "ðŸ° Frontier kingdom | Resisted Mauryan expansion"},
 
         // RELIGIOUS FIGURES
         {id: "Radhagupta (Buddhist)", type: "religious", faction: "religious", color: "#9d84b7", size: 24,
-         description: "🙏 Chief Buddhist monk | Influenced Ashoka's conversion | Religious advisor"},
+         description: "ðŸ™ Chief Buddhist monk | Influenced Ashoka's conversion | Religious advisor"},
         {id: "Buddha Gautama", type: "religious", faction: "religious", color: "#9d84b7", size: 20,
-         description: "🙏 Founder of Buddhism | Died before Ashoka | Inspired conversion"},
+         description: "ðŸ™ Founder of Buddhism | Died before Ashoka | Inspired conversion"},
         {id: "Ashoka (Buddhist)", type: "religious", faction: "religious", color: "#9d84b7", size: 26,
-         description: "🙏 Ashoka as Buddhist convert | Promoter of dharma | Builder of stupas"},
+         description: "ðŸ™ Ashoka as Buddhist convert | Promoter of dharma | Builder of stupas"},
         {id: "Mahakassapa", type: "religious", faction: "religious", color: "#9d84b7", size: 20,
-         description: "🙏 Buddhist elder monk | Contemporary of Ashoka"},
+         description: "ðŸ™ Buddhist elder monk | Contemporary of Ashoka"},
         {id: "Upagupta", type: "religious", faction: "religious", color: "#9d84b7", size: 22,
-         description: "🙏 Buddhist sage | Mentor in Ashoka's spiritual journey | Teacher"},
+         description: "ðŸ™ Buddhist sage | Mentor in Ashoka's spiritual journey | Teacher"},
 
         // MAJOR TERRITORIES
         {id: "Pataliputra", type: "territory", faction: "territory", color: "#457b9d", size: 24,
-         description: "🏰 Capital city of Mauryan Empire | Power center | Administrative heart"},
+         description: "ðŸ° Capital city of Mauryan Empire | Power center | Administrative heart"},
         {id: "Kalinga", type: "territory", faction: "territory", color: "#d62828", size: 25,
-         description: "🗺️ Eastern coastal kingdom | Conquered in bloodiest war | Major conquest"},
+         description: "ðŸ—ºï¸ Eastern coastal kingdom | Conquered in bloodiest war | Major conquest"},
         {id: "Magadha", type: "territory", faction: "territory", color: "#457b9d", size: 22,
-         description: "🗺️ Core Mauryan territory | Center of power"},
+         description: "ðŸ—ºï¸ Core Mauryan territory | Center of power"},
         {id: "Deccan", type: "territory", faction: "territory", color: "#457b9d", size: 20,
-         description: "🗺️ Southern plateau | Conquered and administered"},
+         description: "ðŸ—ºï¸ Southern plateau | Conquered and administered"},
         {id: "Tamraparni", type: "territory", faction: "territory", color: "#457b9d", size: 19,
-         description: "🗺️ Sri Lanka | Peace & Buddhism sent through Mahinda"},
+         description: "ðŸ—ºï¸ Sri Lanka | Peace & Buddhism sent through Mahinda"},
         {id: "Northwest Territories", type: "territory", faction: "territory", color: "#457b9d", size: 20,
-         description: "🗺️ Greek-influenced regions | Seleucid contact"},
+         description: "ðŸ—ºï¸ Greek-influenced regions | Seleucid contact"},
         {id: "Bengal", type: "territory", faction: "territory", color: "#457b9d", size: 18,
-         description: "🗺️ Eastern region | Major supporter of Ashoka's reign"},
+         description: "ðŸ—ºï¸ Eastern region | Major supporter of Ashoka's reign"},
 
         // MAJOR EVENTS & MILESTONES
         {id: "Rise to Power", type: "event", faction: "event", color: "#f4a261", size: 20,
-         description: "📜 Ashoka's ascension to throne (268 BCE) | Succession from Bindusara"},
+         description: "ðŸ“œ Ashoka's ascension to throne (268 BCE) | Succession from Bindusara"},
         {id: "Battle of Kalinga", type: "event", faction: "event", color: "#d62828", size: 24,
-         description: "⚔️ Bloodiest conquest (262 BCE) | ~100,000 casualties | Turning point"},
+         description: "âš”ï¸ Bloodiest conquest (262 BCE) | ~100,000 casualties | Turning point"},
         {id: "Remorse & Conversion", type: "event", faction: "event", color: "#9d84b7", size: 22,
-         description: "🙏 Ashoka's conversion to Buddhism | Renounced violence | Spiritual awakening"},
+         description: "ðŸ™ Ashoka's conversion to Buddhism | Renounced violence | Spiritual awakening"},
         {id: "Edicts of Ashoka", type: "event", faction: "event", color: "#2a9d8f", size: 22,
-         description: "📜 Inscribed moral codes | Spread across empire | Code of dharma"},
+         description: "ðŸ“œ Inscribed moral codes | Spread across empire | Code of dharma"},
         {id: "Stupa Construction", type: "event", faction: "event", color: "#9d84b7", size: 20,
-         description: "🏛️ Built 84,000 stupas | Buddhist monuments | Religious legacy"},
+         description: "ðŸ›ï¸ Built 84,000 stupas | Buddhist monuments | Religious legacy"},
         {id: "Missionary Missions", type: "event", faction: "event", color: "#9d84b7", size: 20,
-         description: "🌍 Sent monks to foreign lands | Spread Buddhism | Diplomatic missions"},
+         description: "ðŸŒ Sent monks to foreign lands | Spread Buddhism | Diplomatic missions"},
         {id: "Golden Age", type: "event", faction: "event", color: "#2a9d8f", size: 22,
-         description: "✨ Reign (268-232 BCE) | Peace & prosperity | Cultural flourishing"},
+         description: "âœ¨ Reign (268-232 BCE) | Peace & prosperity | Cultural flourishing"},
         {id: "Death & Legacy", type: "event", faction: "event", color: "#457b9d", size: 18,
-         description: "📜 Ashoka's passing (232 BCE) | Left vast empire | Changed history"},
+         description: "ðŸ“œ Ashoka's passing (232 BCE) | Left vast empire | Changed history"},
     ];
 
     // *** START LINKS ***
@@ -201,11 +201,11 @@
         {source: "Chandragupta Maurya", target: "Vishnugupta (Chanakya)", type: "mentor", label: "Advisor"},
 
         // WARS & CONQUESTS
-        {source: "Ashoka", target: "Kalinga King", type: "war", label: "⚔️ Conquered Kalinga"},
-        {source: "Ashoka", target: "Kuntala", type: "war", label: "⚔️ Conquered"},
+        {source: "Ashoka", target: "Kalinga King", type: "war", label: "âš”ï¸ Conquered Kalinga"},
+        {source: "Ashoka", target: "Kuntala", type: "war", label: "âš”ï¸ Conquered"},
         {source: "Ashoka", target: "Chola Kingdom", type: "war", label: "Diplomatic relations"},
         {source: "Ashoka", target: "Pandya Kingdom", type: "war", label: "Diplomatic relations"},
-        {source: "Chandragupta Maurya", target: "Nanda Dynasty", type: "war", label: "⚔️ Overthrew"},
+        {source: "Chandragupta Maurya", target: "Nanda Dynasty", type: "war", label: "âš”ï¸ Overthrew"},
         {source: "Ashoka", target: "Seleucus Nicator", type: "alliance", label: "Peace treaty"},
 
         // RELIGIOUS CONVERSION & INFLUENCE
@@ -340,7 +340,7 @@
     }
     function resetSimulation() { simulation.alpha(0.3).restart(); }
     function showStats() {
-        alert(`📊 SAMRAT ASHOKA STATISTICS\n\nTotal Entities: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThree Life Periods:\n1. Rise to Power (268 BCE) - Warrior Emperor\n2. Battle of Kalinga (262 BCE) - Turning Point\n3. Spiritual Conversion - Buddhist Pacifist\n\nAchievements:\n• Conquered 90% of Indian subcontinent\n• Built 84,000 Buddhist stupas\n• Spread Buddhism across Asia\n• Wrote Edicts on rock and pillars\n• Created Golden Age of Mauryan Empire\n• Transformed from warrior to monk\n\nReign: 268-232 BCE (36 years)\nCapital: Pataliputra\nLegacy: One of history's greatest rulers`);
+        alert(`ðŸ“Š SAMRAT ASHOKA STATISTICS\n\nTotal Entities: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThree Life Periods:\n1. Rise to Power (268 BCE) - Warrior Emperor\n2. Battle of Kalinga (262 BCE) - Turning Point\n3. Spiritual Conversion - Buddhist Pacifist\n\nAchievements:\nâ€¢ Conquered 90% of Indian subcontinent\nâ€¢ Built 84,000 Buddhist stupas\nâ€¢ Spread Buddhism across Asia\nâ€¢ Wrote Edicts on rock and pillars\nâ€¢ Created Golden Age of Mauryan Empire\nâ€¢ Transformed from warrior to monk\n\nReign: 268-232 BCE (36 years)\nCapital: Pataliputra\nLegacy: One of history's greatest rulers`);
     }
 
     updateVisibility();
@@ -352,3 +352,4 @@
     </script>
 </body>
 </html>
+

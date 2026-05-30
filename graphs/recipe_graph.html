@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra Recipe & Food Pairing Knowledge Graph</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -176,7 +176,7 @@
 </head>
 <body>
     <div class="controls">
-        <h2>🍽️ Recipe & Food Graph</h2>
+        <h2>ðŸ½ï¸ Recipe & Food Graph</h2>
         <h3>Project: Vidya Astra</h3>
         <p style="font-size: 0.9em; margin-bottom: 15px;">Explore recipes, ingredients, and food pairings. Drag nodes and click for details.</p>
         <button onclick="resetSimulation()">Reset Layout</button>
@@ -184,7 +184,7 @@
     </div>
 
     <div class="legend">
-        <h3>🎨 Categories</h3>
+        <h3>ðŸŽ¨ Categories</h3>
         <div class="legend-item"><div class="legend-color" style="background: #ff6b9d;"></div>Recipe</div>
         <div class="legend-item"><div class="legend-color" style="background: #4ecdc4;"></div>Ingredient</div>
         <div class="legend-item"><div class="legend-color" style="background: #ffe66d;"></div>Cuisine</div>
@@ -244,7 +244,7 @@
             // Chefs
             {id: "Chef Marco", type: "chef", category: "Chef", size: 16, description: "Italian chef specializing in traditional recipes. 20 years experience. Michelin-starred restaurant."},
             {id: "Chef Anita", type: "chef", category: "Chef", size: 15, description: "Indian chef known for authentic curries and spice blending. Award-winning. Vegan specialist."},
-            {id: "Chef Tomás", type: "chef", category: "Chef", size: 15, description: "Mexican chef passionate about street food and traditional recipes. Farm-to-table approach."},
+            {id: "Chef TomÃ¡s", type: "chef", category: "Chef", size: 15, description: "Mexican chef passionate about street food and traditional recipes. Farm-to-table approach."},
             {id: "Chef Yuki", type: "chef", category: "Chef", size: 15, description: "Japanese sushi master with 25 years experience. Trained in Tokyo. Precision-focused."},
             {id: "Chef Alex", type: "chef", category: "Chef", size: 14, description: "Fusion cuisine specialist combining Asian and Western techniques. Health-conscious cooking."},
 
@@ -329,13 +329,13 @@
             {source: "Pasta Carbonara", target: "Chef Marco", label: "created by"},
             {source: "Margherita Pizza", target: "Chef Marco", label: "created by"},
             {source: "Paneer Tikka Masala", target: "Chef Anita", label: "created by"},
-            {source: "Bean Tacos", target: "Chef Tomás", label: "created by"},
+            {source: "Bean Tacos", target: "Chef TomÃ¡s", label: "created by"},
             {source: "Sushi Roll Assortment", target: "Chef Yuki", label: "created by"},
             {source: "Vegetable Stir-fry", target: "Chef Alex", label: "created by"},
             {source: "Thai Green Curry", target: "Chef Alex", label: "adapted by"},
             {source: "Chef Marco", target: "Italian", label: "specializes in"},
             {source: "Chef Anita", target: "Indian", label: "specializes in"},
-            {source: "Chef Tomás", target: "Mexican", label: "specializes in"},
+            {source: "Chef TomÃ¡s", target: "Mexican", label: "specializes in"},
             {source: "Chef Yuki", target: "Japanese", label: "specializes in"},
             {source: "Chef Alex", target: "Asian Fusion", label: "specializes in"},
 
@@ -532,4 +532,5 @@
     </script>
 </body>
 </html>
+
 

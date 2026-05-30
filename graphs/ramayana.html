@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: The Ramayana - Epic Network (Stabilized Scholarly Edition)</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         /* CSS styles updated for Ramayana theme: Greens, Golds, Browns, and Purple for Divine */
         * {
@@ -273,21 +273,21 @@
 </head>
 <body>
 <div class="controls">
-    <h2>🏹 RAMAYANA </h2>
+    <h2>ðŸ¹ RAMAYANA </h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">Project VidyaAstra</p>
 
     <h3>Filter by Type</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('hero')">🏹 Heroes</button>
-        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
-        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
-        <button class="filter-btn active" onclick="toggleFilter('demon')">👿 Demons</button>
-        <button class="filter-btn active" onclick="toggleFilter('event')">🎲 Events</button>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">ðŸ¹ Heroes</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">ðŸ‘¤ Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">âœ¨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('demon')">ðŸ‘¿ Demons</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">ðŸŽ² Events</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button onclick="resetSimulation()">🔄 Reset</button>
-    <button onclick="showStats()">📊 Stats</button>
+    <button onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -338,7 +338,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -350,59 +350,59 @@
     // *** START NODES ***
     const nodes = [
         // RAMA & IMMEDIATE FAMILY (Kosala Kingdom)
-        {id: "Rama", type: "hero", faction: "hero", color: "#4ecdc4", size: 32, description: "👑 7th avatar of Vishnu | Perfect man (Purushottama) | Hero of Ramayana | Exiled prince who became king"},
-        {id: "Sita", type: "hero", faction: "hero", color: "#4ecdc4", size: 28, description: "👸 Wife of Rama | Born from earth | Abducted by Ravana | Symbol of virtue and devotion"},
-        {id: "Lakshman", type: "hero", faction: "hero", color: "#4ecdc4", size: 27, description: "🗡️ Younger brother of Rama | Devoted companion | Served with unwavering loyalty | Incarnation of Shesha"},
-        {id: "Bharata", type: "hero", faction: "hero", color: "#4ecdc4", size: 24, description: "🤴 Half-brother of Rama | Served as regent | Kept Rama's sandals on throne"},
-        {id: "Shatrughna", type: "hero", faction: "hero", color: "#4ecdc4", size: 22, description: "⚔️ Youngest brother of Rama | Twin with Lakshman | Great warrior"},
-        {id: "Dasharatha", type: "character", faction: "royal", color: "#9d6b3d", size: 24, description: "🤴 King of Kosala | Father of Rama | Died of grief after Rama's exile"},
-        {id: "Kaushalya", type: "character", faction: "royal", color: "#9d6b3d", size: 22, description: "👸 Queen of Kosala | Mother of Rama | Mourned during his exile"},
-        {id: "Kaikeyi", type: "character", faction: "royal", color: "#9d6b3d", size: 21, description: "👑 Second queen | Mother of Bharata | Demanded Rama's exile using boons"},
-        {id: "Sumitra", type: "character", faction: "royal", color: "#9d6b3d", size: 20, description: "👸 Third queen | Mother of Lakshman and Shatrughna"},
-        {id: "Urmila", type: "character", faction: "royal", color: "#9d6b3d", size: 18, description: "👰 Sister of Sita | Wife of Lakshman | Waited faithfully"},
-        {id: "Janaka", type: "character", faction: "royal", color: "#9d6b3d", size: 20, description: "🤴 King of Mithila | Father of Sita | Arranged Rama's marriage"},
+        {id: "Rama", type: "hero", faction: "hero", color: "#4ecdc4", size: 32, description: "ðŸ‘‘ 7th avatar of Vishnu | Perfect man (Purushottama) | Hero of Ramayana | Exiled prince who became king"},
+        {id: "Sita", type: "hero", faction: "hero", color: "#4ecdc4", size: 28, description: "ðŸ‘¸ Wife of Rama | Born from earth | Abducted by Ravana | Symbol of virtue and devotion"},
+        {id: "Lakshman", type: "hero", faction: "hero", color: "#4ecdc4", size: 27, description: "ðŸ—¡ï¸ Younger brother of Rama | Devoted companion | Served with unwavering loyalty | Incarnation of Shesha"},
+        {id: "Bharata", type: "hero", faction: "hero", color: "#4ecdc4", size: 24, description: "ðŸ¤´ Half-brother of Rama | Served as regent | Kept Rama's sandals on throne"},
+        {id: "Shatrughna", type: "hero", faction: "hero", color: "#4ecdc4", size: 22, description: "âš”ï¸ Youngest brother of Rama | Twin with Lakshman | Great warrior"},
+        {id: "Dasharatha", type: "character", faction: "royal", color: "#9d6b3d", size: 24, description: "ðŸ¤´ King of Kosala | Father of Rama | Died of grief after Rama's exile"},
+        {id: "Kaushalya", type: "character", faction: "royal", color: "#9d6b3d", size: 22, description: "ðŸ‘¸ Queen of Kosala | Mother of Rama | Mourned during his exile"},
+        {id: "Kaikeyi", type: "character", faction: "royal", color: "#9d6b3d", size: 21, description: "ðŸ‘‘ Second queen | Mother of Bharata | Demanded Rama's exile using boons"},
+        {id: "Sumitra", type: "character", faction: "royal", color: "#9d6b3d", size: 20, description: "ðŸ‘¸ Third queen | Mother of Lakshman and Shatrughna"},
+        {id: "Urmila", type: "character", faction: "royal", color: "#9d6b3d", size: 18, description: "ðŸ‘° Sister of Sita | Wife of Lakshman | Waited faithfully"},
+        {id: "Janaka", type: "character", faction: "royal", color: "#9d6b3d", size: 20, description: "ðŸ¤´ King of Mithila | Father of Sita | Arranged Rama's marriage"},
 
 
         // AYODHYA ALLIES & SUPPORTERS (Vanaras, Sages, etc.)
-        {id: "Hanuman", type: "hero", faction: "ally", color: "#34d399", size: 29, description: "🐒 Vanara hero | Son of Vayu | Devoted follower of Rama | Bridge builder | Master of devotion"},
-        {id: "Sugriva", type: "hero", faction: "ally", color: "#34d399", size: 25, description: "🦁 King of Vanaras | Exiled by Vali | Ally to Rama | Helped find Sita"},
-        {id: "Vali", type: "character", faction: "ally", color: "#34d399", size: 23, description: "⚔️ King of Vanaras | Defeated by Rama | Sugriva's brother"},
-        {id: "Jambavan", type: "character", faction: "ally", color: "#34d399", size: 22, description: "🐻 Wise bear king | Elder of Vanaras | Strategic advisor"},
-        {id: "Vibhishana", type: "hero", faction: "ally", color: "#34d399", size: 24, description: "😇 Brother of Ravana | Demon who sided with Rama | Became king of Lanka"},
-        {id: "Valmiki", type: "character", faction: "ally", color: "#34d399", size: 21, description: "📖 Sage | Poet | Author of Ramayana | Adopted Sita and her sons"},
-        {id: "Vasishtha", type: "character", faction: "ally", color: "#34d399", size: 20, description: "🧙 Guru of Rama | Advisor to Dasharatha"},
-        {id: "Vishwamitra", type: "character", faction: "ally", color: "#34d399", size: 19, description: "🔮 Great sage | Trained Rama in youth | Gave him divine weapons"},
-        {id: "Jatayu", type: "character", faction: "ally", color: "#34d399", size: 20, description: "🦅 Divine eagle | Tried to save Sita from Ravana | Died fighting"},
-        {id: "Sampati", type: "character", faction: "ally", color: "#34d399", size: 19, description: "🦅 Brother of Jatayu | Told Vanaras of Sita's location"},
-        {id: "Trijata", type: "character", faction: "ally", color: "#34d399", size: 18, description: "👹 Rakshasa woman | Comforted Sita in Lanka | Kind-hearted demon"},
+        {id: "Hanuman", type: "hero", faction: "ally", color: "#34d399", size: 29, description: "ðŸ’ Vanara hero | Son of Vayu | Devoted follower of Rama | Bridge builder | Master of devotion"},
+        {id: "Sugriva", type: "hero", faction: "ally", color: "#34d399", size: 25, description: "ðŸ¦ King of Vanaras | Exiled by Vali | Ally to Rama | Helped find Sita"},
+        {id: "Vali", type: "character", faction: "ally", color: "#34d399", size: 23, description: "âš”ï¸ King of Vanaras | Defeated by Rama | Sugriva's brother"},
+        {id: "Jambavan", type: "character", faction: "ally", color: "#34d399", size: 22, description: "ðŸ» Wise bear king | Elder of Vanaras | Strategic advisor"},
+        {id: "Vibhishana", type: "hero", faction: "ally", color: "#34d399", size: 24, description: "ðŸ˜‡ Brother of Ravana | Demon who sided with Rama | Became king of Lanka"},
+        {id: "Valmiki", type: "character", faction: "ally", color: "#34d399", size: 21, description: "ðŸ“– Sage | Poet | Author of Ramayana | Adopted Sita and her sons"},
+        {id: "Vasishtha", type: "character", faction: "ally", color: "#34d399", size: 20, description: "ðŸ§™ Guru of Rama | Advisor to Dasharatha"},
+        {id: "Vishwamitra", type: "character", faction: "ally", color: "#34d399", size: 19, description: "ðŸ”® Great sage | Trained Rama in youth | Gave him divine weapons"},
+        {id: "Jatayu", type: "character", faction: "ally", color: "#34d399", size: 20, description: "ðŸ¦… Divine eagle | Tried to save Sita from Ravana | Died fighting"},
+        {id: "Sampati", type: "character", faction: "ally", color: "#34d399", size: 19, description: "ðŸ¦… Brother of Jatayu | Told Vanaras of Sita's location"},
+        {id: "Trijata", type: "character", faction: "ally", color: "#34d399", size: 18, description: "ðŸ‘¹ Rakshasa woman | Comforted Sita in Lanka | Kind-hearted demon"},
 
         // RAVANA & DEMONS (Lanka)
-        {id: "Ravana", type: "demon", faction: "demon", color: "#ff6b6b", size: 30, description: "👿 10-headed demon king | Lord of Lanka | Abducted Sita | Ultimate antagonist | Killed by Rama"},
-        {id: "Mandodari", type: "character", faction: "demon", color: "#ff6b6b", size: 22, description: "👸 Queen of Lanka | Wise wife of Ravana | Warned him about consequences"},
-        {id: "Kumbhakarna", type: "character", faction: "demon", color: "#ff6b6b", size: 26, description: "😴 Brother of Ravana | Slept for months | Woke for battle | Killed by Rama"},
-        {id: "Indrajit", type: "hero", faction: "demon", color: "#ff6b6b", size: 25, description: "⚡ Son of Ravana | Able to use Brahmastra | Defeated by Lakshman"},
-        {id: "Maricha", type: "character", faction: "demon", color: "#ff6b6b", size: 20, description: "🦌 Demon shapeshifter | Took form of golden deer | Tricked Rama"},
-        {id: "Shurpanakha", type: "character", faction: "demon", color: "#ff6b6b", size: 20, description: "👹 Sister of Ravana | Attempted to seduce Rama | Nose cut by Lakshman"},
-        {id: "Khara", type: "character", faction: "demon", color: "#ff6b6b", size: 19, description: "👹 Demon chieftain | Fought Rama | Killed in battle"},
-        {id: "Dushana", type: "character", faction: "demon", color: "#ff6b6b", size: 18, description: "😈 Demon ally of Ravana | Killed by Rama"},
+        {id: "Ravana", type: "demon", faction: "demon", color: "#ff6b6b", size: 30, description: "ðŸ‘¿ 10-headed demon king | Lord of Lanka | Abducted Sita | Ultimate antagonist | Killed by Rama"},
+        {id: "Mandodari", type: "character", faction: "demon", color: "#ff6b6b", size: 22, description: "ðŸ‘¸ Queen of Lanka | Wise wife of Ravana | Warned him about consequences"},
+        {id: "Kumbhakarna", type: "character", faction: "demon", color: "#ff6b6b", size: 26, description: "ðŸ˜´ Brother of Ravana | Slept for months | Woke for battle | Killed by Rama"},
+        {id: "Indrajit", type: "hero", faction: "demon", color: "#ff6b6b", size: 25, description: "âš¡ Son of Ravana | Able to use Brahmastra | Defeated by Lakshman"},
+        {id: "Maricha", type: "character", faction: "demon", color: "#ff6b6b", size: 20, description: "ðŸ¦Œ Demon shapeshifter | Took form of golden deer | Tricked Rama"},
+        {id: "Shurpanakha", type: "character", faction: "demon", color: "#ff6b6b", size: 20, description: "ðŸ‘¹ Sister of Ravana | Attempted to seduce Rama | Nose cut by Lakshman"},
+        {id: "Khara", type: "character", faction: "demon", color: "#ff6b6b", size: 19, description: "ðŸ‘¹ Demon chieftain | Fought Rama | Killed in battle"},
+        {id: "Dushana", type: "character", faction: "demon", color: "#ff6b6b", size: 18, description: "ðŸ˜ˆ Demon ally of Ravana | Killed by Rama"},
 
         // DIVINE BEINGS & GODS
-        {id: "Vishnu", type: "divine", faction: "divine", color: "#a78bfa", size: 31, description: "✨ Supreme deity | Rama is his 7th avatar | Preserver of universe"},
-        {id: "Shiva", type: "divine", faction: "divine", color: "#a78bfa", size: 28, description: "🔱 Destroyer god | Granted boons to both Rama and Ravana"},
-        {id: "Brahma", type: "divine", faction: "divine", color: "#a78bfa", size: 26, description: "🙏 Creator god | Gave boons of immortality to Ravana"},
-        {id: "Agni", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "🔥 Fire god | Witnessed Sita's purity test"},
-        {id: "Vayu", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "💨 Wind god | Father of Hanuman"},
-        {id: "Garuda", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "🦅 Divine eagle | King of birds | Vahana of Vishnu"},
-        {id: "Surya", type: "divine", faction: "divine", color: "#a78bfa", size: 20, description: "☀️ Sun god | Father of Sugriva"},
+        {id: "Vishnu", type: "divine", faction: "divine", color: "#a78bfa", size: 31, description: "âœ¨ Supreme deity | Rama is his 7th avatar | Preserver of universe"},
+        {id: "Shiva", type: "divine", faction: "divine", color: "#a78bfa", size: 28, description: "ðŸ”± Destroyer god | Granted boons to both Rama and Ravana"},
+        {id: "Brahma", type: "divine", faction: "divine", color: "#a78bfa", size: 26, description: "ðŸ™ Creator god | Gave boons of immortality to Ravana"},
+        {id: "Agni", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "ðŸ”¥ Fire god | Witnessed Sita's purity test"},
+        {id: "Vayu", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "ðŸ’¨ Wind god | Father of Hanuman"},
+        {id: "Garuda", type: "divine", faction: "divine", color: "#a78bfa", size: 22, description: "ðŸ¦… Divine eagle | King of birds | Vahana of Vishnu"},
+        {id: "Surya", type: "divine", faction: "divine", color: "#a78bfa", size: 20, description: "â˜€ï¸ Sun god | Father of Sugriva"},
 
         // KEY LOCATIONS & EVENTS
-        {id: "Ayodhya", type: "event", color: "#9d6b3d", size: 20, description: "🏰 Kingdom of Kosala | Rama's capital | Represented duty and order"},
-        {id: "Forest Exile", type: "event", color: "#ffaa00", size: 22, description: "🌲 14-year forest exile | Quest and trials period"},
-        {id: "Sita Abduction", type: "event", color: "#ff6b6b", size: 21, description: "👸 Ravana abducts Sita | Central turning point of epic"},
-        {id: "Bridge to Lanka", type: "event", color: "#4ecdc4", size: 20, description: "🌉 Hanuman and Vanaras build bridge | Path to final battle"},
-        {id: "Battle of Lanka", type: "event", color: "#ff6b6b", size: 23, description: "⚔️ Final war between Rama and Ravana | Destruction of Lanka"},
-        {id: "Sita's Trial", type: "event", color: "#a78bfa", size: 19, description: "🔥 Agni test of Sita's purity | Proof of chastity"},
-        {id: "Return to Ayodhya", type: "event", color: "#4ecdc4", size: 20, description: "👑 Rama's coronation and return | Restoration of kingdom"},
+        {id: "Ayodhya", type: "event", color: "#9d6b3d", size: 20, description: "ðŸ° Kingdom of Kosala | Rama's capital | Represented duty and order"},
+        {id: "Forest Exile", type: "event", color: "#ffaa00", size: 22, description: "ðŸŒ² 14-year forest exile | Quest and trials period"},
+        {id: "Sita Abduction", type: "event", color: "#ff6b6b", size: 21, description: "ðŸ‘¸ Ravana abducts Sita | Central turning point of epic"},
+        {id: "Bridge to Lanka", type: "event", color: "#4ecdc4", size: 20, description: "ðŸŒ‰ Hanuman and Vanaras build bridge | Path to final battle"},
+        {id: "Battle of Lanka", type: "event", color: "#ff6b6b", size: 23, description: "âš”ï¸ Final war between Rama and Ravana | Destruction of Lanka"},
+        {id: "Sita's Trial", type: "event", color: "#a78bfa", size: 19, description: "ðŸ”¥ Agni test of Sita's purity | Proof of chastity"},
+        {id: "Return to Ayodhya", type: "event", color: "#4ecdc4", size: 20, description: "ðŸ‘‘ Rama's coronation and return | Restoration of kingdom"},
     ];
 
     // *** START LINKS ***
@@ -445,12 +445,12 @@
         {source: "Sampati", target: "Hanuman", type: "alliance", label: "Revealed Sita's location"},
 
         // BATTLE CONFLICTS
-        {source: "Rama", target: "Ravana", type: "battle", label: "⚔️ Final Battle"},
-        {source: "Lakshman", target: "Indrajit", type: "battle", label: "⚔️ Killed"},
-        {source: "Rama", target: "Kumbhakarna", type: "battle", label: "⚔️ Killed"},
-        {source: "Rama", target: "Maricha", type: "battle", label: "⚔️ Killed"},
+        {source: "Rama", target: "Ravana", type: "battle", label: "âš”ï¸ Final Battle"},
+        {source: "Lakshman", target: "Indrajit", type: "battle", label: "âš”ï¸ Killed"},
+        {source: "Rama", target: "Kumbhakarna", type: "battle", label: "âš”ï¸ Killed"},
+        {source: "Rama", target: "Maricha", type: "battle", label: "âš”ï¸ Killed"},
         {source: "Lakshman", target: "Shurpanakha", type: "battle", label: "Mutilated"},
-        {source: "Rama", target: "Khara", type: "battle", label: "⚔️ Killed"},
+        {source: "Rama", target: "Khara", type: "battle", label: "âš”ï¸ Killed"},
 
         // DIVINE RELATIONSHIPS
         {source: "Vishnu", target: "Rama", type: "divine", label: "Avatar"},
@@ -610,7 +610,7 @@
     }
 
     function showStats() {
-        alert(`📊 RAMAYANA STATISTICS\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThis comprehensive knowledge graph covers all major characters from the Ramayana epic including the main heroes, royal families, demons, divine beings, and key events.`);
+        alert(`ðŸ“Š RAMAYANA STATISTICS\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThis comprehensive knowledge graph covers all major characters from the Ramayana epic including the main heroes, royal families, demons, divine beings, and key events.`);
     }
 
     updateVisibility();

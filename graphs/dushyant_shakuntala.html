@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: Dushyant-Shakuntala - Epic Network</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -271,21 +271,21 @@
 </head>
 <body>
 <div class="controls">
-    <h2>💫 DUSHYANT-SHAKUNTALA</h2>
+    <h2>ðŸ’« DUSHYANT-SHAKUNTALA</h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">From Mahabharata & Kalidasa's Play</p>
 
     <h3>Filter by Type</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('hero')">🏹 Heroes</button>
-        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
-        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
-        <button class="filter-btn active" onclick="toggleFilter('sage')">🧙 Sages</button>
-        <button class="filter-btn active" onclick="toggleFilter('event')">🎭 Events</button>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">ðŸ¹ Heroes</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">ðŸ‘¤ Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">âœ¨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('sage')">ðŸ§™ Sages</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">ðŸŽ­ Events</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button onclick="resetSimulation()">🔄 Reset</button>
-    <button onclick="showStats()">📊 Stats</button>
+    <button onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -332,7 +332,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -344,56 +344,56 @@
     // *** START NODES ***
     const nodes = [
         // MAIN HEROES
-        {id: "Dushyant", type: "hero", faction: "royal", color: "#4ecdc4", size: 32, description: "👑 Legendary king of Puru dynasty | Famous for performing the Ashvamedha ritual | Powerful and virtuous ruler | Married Shakuntala through Gandharva marriage"},
-        {id: "Shakuntala", type: "hero", faction: "royal", color: "#4ecdc4", size: 30, description: "👸 Wife of Dushyant | Adopted daughter of Kanva Rishi | Born in the forest | Symbol of virtue and grace"},
-        {id: "Bharata", type: "hero", faction: "royal", color: "#4ecdc4", size: 28, description: "👑 Son of Dushyant and Shakuntala | Founder of Bharata dynasty | Emperor of India | Became extremely powerful and righteous"},
+        {id: "Dushyant", type: "hero", faction: "royal", color: "#4ecdc4", size: 32, description: "ðŸ‘‘ Legendary king of Puru dynasty | Famous for performing the Ashvamedha ritual | Powerful and virtuous ruler | Married Shakuntala through Gandharva marriage"},
+        {id: "Shakuntala", type: "hero", faction: "royal", color: "#4ecdc4", size: 30, description: "ðŸ‘¸ Wife of Dushyant | Adopted daughter of Kanva Rishi | Born in the forest | Symbol of virtue and grace"},
+        {id: "Bharata", type: "hero", faction: "royal", color: "#4ecdc4", size: 28, description: "ðŸ‘‘ Son of Dushyant and Shakuntala | Founder of Bharata dynasty | Emperor of India | Became extremely powerful and righteous"},
 
         // SHAKUNTALA'S BIRTH & FAMILY
-        {id: "Menaka", type: "character", faction: "celestial", color: "#ff69b4", size: 24, description: "✨ Celestial apsara | Mother of Shakuntala | Sent by Indra to distract sage Vishvamitra"},
-        {id: "Vishvamitra", type: "sage", faction: "sage", color: "#34d399", size: 23, description: "🧙 Great sage | Father of Shakuntala | Cursed her initially | Later blessed her"},
-        {id: "Kanva Rishi", type: "sage", faction: "sage", color: "#34d399", size: 24, description: "🧙 Foster father of Shakuntala | Adopted her | Raised her in hermitage | Blessed her wedding"},
+        {id: "Menaka", type: "character", faction: "celestial", color: "#ff69b4", size: 24, description: "âœ¨ Celestial apsara | Mother of Shakuntala | Sent by Indra to distract sage Vishvamitra"},
+        {id: "Vishvamitra", type: "sage", faction: "sage", color: "#34d399", size: 23, description: "ðŸ§™ Great sage | Father of Shakuntala | Cursed her initially | Later blessed her"},
+        {id: "Kanva Rishi", type: "sage", faction: "sage", color: "#34d399", size: 24, description: "ðŸ§™ Foster father of Shakuntala | Adopted her | Raised her in hermitage | Blessed her wedding"},
         // *** FIX APPLIED HERE ***
-        {id: "Priyamvada", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👧 Friend of Shakuntala | Daughter of Marichi Rishi | Confidante and playmate"},
-        {id: "Anusuya", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👧 Friend of Shakuntala | Daughter of Gautama Rishi | Devoted companion"},
+        {id: "Priyamvada", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "ðŸ‘§ Friend of Shakuntala | Daughter of Marichi Rishi | Confidante and playmate"},
+        {id: "Anusuya", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "ðŸ‘§ Friend of Shakuntala | Daughter of Gautama Rishi | Devoted companion"},
         // *** END FIX ***
 
         // DUSHYANT'S FAMILY & COURT
-        {id: "King Ajamidha", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👑 Ancestor of Dushyant | Founder of the dynasty"},
-        {id: "Puru", type: "character", faction: "royal", color: "#e8b366", size: 19, description: "👑 Founder of Puru dynasty | Ancestor of Dushyant"},
-        {id: "Queen Sudeshna", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "👑 Queen of Hastinapur | Cared for Bharata | Helped during confusion"},
-        {id: "General Raivatak", type: "character", faction: "royal", color: "#e8b366", size: 18, description: "⚔️ Commander of Dushyant's army | Loyal general | Fought Ashvamedha war"},
+        {id: "King Ajamidha", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "ðŸ‘‘ Ancestor of Dushyant | Founder of the dynasty"},
+        {id: "Puru", type: "character", faction: "royal", color: "#e8b366", size: 19, description: "ðŸ‘‘ Founder of Puru dynasty | Ancestor of Dushyant"},
+        {id: "Queen Sudeshna", type: "character", faction: "royal", color: "#e8b366", size: 20, description: "ðŸ‘‘ Queen of Hastinapur | Cared for Bharata | Helped during confusion"},
+        {id: "General Raivatak", type: "character", faction: "royal", color: "#e8b366", size: 18, description: "âš”ï¸ Commander of Dushyant's army | Loyal general | Fought Ashvamedha war"},
 
         // CELESTIAL & DIVINE BEINGS
-        {id: "Indra", type: "divine", faction: "divine", color: "#a78bfa", size: 25, description: "⚡ King of gods | Sent Menaka to distract Vishvamitra | Supporter of Dushyant"},
-        {id: "Brahma", type: "divine", faction: "divine", color: "#a78bfa", size: 23, description: "🙏 Creator god | Blessed Shakuntala | Confirmed her marriage"},
-        {id: "Matali", type: "divine", faction: "divine", color: "#a78bfa", size: 21, description: "🦅 Celestial charioteer | Took Dushyant to heaven | Indra's messenger"},
-        {id: "Marichi", type: "sage", faction: "sage", color: "#34d399", size: 21, description: "🧙 Ancient sage | Father of Priyamvada | Blessed the events"},
-        {id: "Gautama Rishi", type: "sage", faction: "sage", color: "#34d399", size: 20, description: "🧙 Father of Anusuya | Dweller of the hermitage"},
-        {id: "Bharadvaja", type: "sage", faction: "sage", color: "#34d399", size: 20, description: "🧙 Great sage | Connected to the story | Mentor of many"},
+        {id: "Indra", type: "divine", faction: "divine", color: "#a78bfa", size: 25, description: "âš¡ King of gods | Sent Menaka to distract Vishvamitra | Supporter of Dushyant"},
+        {id: "Brahma", type: "divine", faction: "divine", color: "#a78bfa", size: 23, description: "ðŸ™ Creator god | Blessed Shakuntala | Confirmed her marriage"},
+        {id: "Matali", type: "divine", faction: "divine", color: "#a78bfa", size: 21, description: "ðŸ¦… Celestial charioteer | Took Dushyant to heaven | Indra's messenger"},
+        {id: "Marichi", type: "sage", faction: "sage", color: "#34d399", size: 21, description: "ðŸ§™ Ancient sage | Father of Priyamvada | Blessed the events"},
+        {id: "Gautama Rishi", type: "sage", faction: "sage", color: "#34d399", size: 20, description: "ðŸ§™ Father of Anusuya | Dweller of the hermitage"},
+        {id: "Bharadvaja", type: "sage", faction: "sage", color: "#34d399", size: 20, description: "ðŸ§™ Great sage | Connected to the story | Mentor of many"},
 
         // CHARACTERS INVOLVED IN COMPLICATIONS
-        {id: "Durvasa", type: "sage", faction: "sage", color: "#34d399", size: 21, description: "🧙 Powerful sage with temperamental nature | Cursed Shakuntala for forgetting him | Curse caused the separation"},
-        {id: "Madhavya", type: "character", faction: "royal", color: "#e8b366", size: 18, description: "🤡 Jester/buffoon | Dushyant's companion | Comic relief | Loyal friend"},
-        {id: "Vetravati", type: "character", faction: "royal", color: "#e8b366", size: 17, description: "👧 Servant in the hermitage | Helped Shakuntala"},
-        {id: "Doorkeeper", type: "character", faction: "royal", color: "#e8b366", size: 16, description: "🚪 Palace official | Refused Shakuntala entry | Caused initial rejection"},
+        {id: "Durvasa", type: "sage", faction: "sage", color: "#34d399", size: 21, description: "ðŸ§™ Powerful sage with temperamental nature | Cursed Shakuntala for forgetting him | Curse caused the separation"},
+        {id: "Madhavya", type: "character", faction: "royal", color: "#e8b366", size: 18, description: "ðŸ¤¡ Jester/buffoon | Dushyant's companion | Comic relief | Loyal friend"},
+        {id: "Vetravati", type: "character", faction: "royal", color: "#e8b366", size: 17, description: "ðŸ‘§ Servant in the hermitage | Helped Shakuntala"},
+        {id: "Doorkeeper", type: "character", faction: "royal", color: "#e8b366", size: 16, description: "ðŸšª Palace official | Refused Shakuntala entry | Caused initial rejection"},
 
         // KEY LOCATIONS & EVENTS
-        {id: "Kanva Hermitage", type: "event", color: "#ffa500", size: 20, description: "🌲 Forest hermitage | Where Shakuntala grew up | Meeting place of Dushyant and Shakuntala"},
-        {id: "First Meeting", type: "event", color: "#ff69b4", size: 19, description: "💕 Dushyant hunted near hermitage | Love at first sight | Epic romance begins"},
-        {id: "Gandharva Marriage", type: "event", color: "#ff69b4", size: 21, description: "💍 Secret wedding ceremony | No witnesses required | Mutual consent marriage | Gandharva tradition"},
-        {id: "Durvasa's Curse", type: "event", color: "#ff6b6b", size: 20, description: "😔 Shakuntala forgot sage Durvasa | Sage cursed her to be forgotten | Central turning point"},
-        {id: "Separation", type: "event", color: "#ff6b6b", size: 20, description: "💔 Dushyant doesn't recognize Shakuntala | Heartbroken rejection | Separation tragedy"},
-        {id: "Token Discovery", type: "event", color: "#ffa500", size: 19, description: "💎 Ring found in fish | Dushyant's memory returns | Recognition moment"},
-        {id: "Reunion", type: "event", color: "#4ecdc4", size: 20, description: "💕 Dushyant recognizes Shakuntala | Passionate reunion | Joy and celebration"},
-        {id: "Ashvamedha Ritual", type: "event", color: "#ffa500", size: 20, description: "🐴 Vedic horse sacrifice ritual | Performed by Dushyant | Sign of imperial power"},
-        {id: "Bharata's Birth", type: "event", color: "#4ecdc4", size: 19, description: "👶 Son born during separation | Later recognized by Dushyant | Became emperor"},
+        {id: "Kanva Hermitage", type: "event", color: "#ffa500", size: 20, description: "ðŸŒ² Forest hermitage | Where Shakuntala grew up | Meeting place of Dushyant and Shakuntala"},
+        {id: "First Meeting", type: "event", color: "#ff69b4", size: 19, description: "ðŸ’• Dushyant hunted near hermitage | Love at first sight | Epic romance begins"},
+        {id: "Gandharva Marriage", type: "event", color: "#ff69b4", size: 21, description: "ðŸ’ Secret wedding ceremony | No witnesses required | Mutual consent marriage | Gandharva tradition"},
+        {id: "Durvasa's Curse", type: "event", color: "#ff6b6b", size: 20, description: "ðŸ˜” Shakuntala forgot sage Durvasa | Sage cursed her to be forgotten | Central turning point"},
+        {id: "Separation", type: "event", color: "#ff6b6b", size: 20, description: "ðŸ’” Dushyant doesn't recognize Shakuntala | Heartbroken rejection | Separation tragedy"},
+        {id: "Token Discovery", type: "event", color: "#ffa500", size: 19, description: "ðŸ’Ž Ring found in fish | Dushyant's memory returns | Recognition moment"},
+        {id: "Reunion", type: "event", color: "#4ecdc4", size: 20, description: "ðŸ’• Dushyant recognizes Shakuntala | Passionate reunion | Joy and celebration"},
+        {id: "Ashvamedha Ritual", type: "event", color: "#ffa500", size: 20, description: "ðŸ´ Vedic horse sacrifice ritual | Performed by Dushyant | Sign of imperial power"},
+        {id: "Bharata's Birth", type: "event", color: "#4ecdc4", size: 19, description: "ðŸ‘¶ Son born during separation | Later recognized by Dushyant | Became emperor"},
     ];
 
     // *** START LINKS ***
     const links = [
         // ROMANTIC RELATIONSHIPS
-        {source: "Dushyant", target: "Shakuntala", type: "romance", label: "💕 Loves/Marries"},
-        {source: "Shakuntala", target: "Dushyant", type: "romance", label: "💕 Loves/Marries"},
+        {source: "Dushyant", target: "Shakuntala", type: "romance", label: "ðŸ’• Loves/Marries"},
+        {source: "Shakuntala", target: "Dushyant", type: "romance", label: "ðŸ’• Loves/Marries"},
 
         // FAMILY RELATIONSHIPS
         {source: "Dushyant", target: "Bharata", type: "family", label: "Father"},
@@ -585,7 +585,7 @@
     }
 
     function showStats() {
-        alert(`📊 DUSHYANT-SHAKUNTALA STATISTICS\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThis knowledge graph covers the romantic epic story of Dushyant and Shakuntala, including characters from the play by Kalidasa and the Mahabharata account. It showcases one of literature's greatest love stories with themes of duty, separation, and reunion.`);
+        alert(`ðŸ“Š DUSHYANT-SHAKUNTALA STATISTICS\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThis knowledge graph covers the romantic epic story of Dushyant and Shakuntala, including characters from the play by Kalidasa and the Mahabharata account. It showcases one of literature's greatest love stories with themes of duty, separation, and reunion.`);
     }
 
     updateVisibility();

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: Ponniyin Selvan - Chola Network</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         /* CSS styles updated for Ponniyin Selvan theme: Deep Reds, Golds, and Royal Blues */
         * {
@@ -255,20 +255,20 @@
 </head>
 <body>
 <div class="controls">
-    <h2>👑 PONNIYIN SELVAN NETWORK</h2>
+    <h2>ðŸ‘‘ PONNIYIN SELVAN NETWORK</h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">The Chola Dynasty Saga</p>
 
     <h3>Filter by Faction</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('chola')">🦁 Chola Royals</button>
-        <button class="filter-btn active" onclick="toggleFilter('vassal')">⚔️ Loyal Vassals</button>
-        <button class="filter-btn active" onclick="toggleFilter('antagonist')">🐍 Conspirators</button>
-        <button class="filter-btn active" onclick="toggleFilter('secret')">🎭 Secret/Mystery</button>
+        <button class="filter-btn active" onclick="toggleFilter('chola')">ðŸ¦ Chola Royals</button>
+        <button class="filter-btn active" onclick="toggleFilter('vassal')">âš”ï¸ Loyal Vassals</button>
+        <button class="filter-btn active" onclick="toggleFilter('antagonist')">ðŸ Conspirators</button>
+        <button class="filter-btn active" onclick="toggleFilter('secret')">ðŸŽ­ Secret/Mystery</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button onclick="resetSimulation()">🔄 Reset</button>
-    <button onclick="showStats()">📊 Stats</button>
+    <button onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -311,7 +311,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -323,34 +323,34 @@
     // *** START NODES ***
     const nodes = [
         // CHOLA ROYAL FAMILY (type: chola, color: #ffd700)
-        {id: "Sundara Chola", type: "chola", color: "#ffd700", size: 30, description: "👑 Reigning Emperor of the Chola Empire | Ailing and politically weak"},
-        {id: "Aditya Karikalan", type: "chola", color: "#ffd700", size: 35, description: "⚔️ Crown Prince and Commander of the Northern Armies | Hot-tempered and tragic figure | Eldest son"},
-        {id: "Kundavai", type: "chola", color: "#ffd700", size: 30, description: "👸 Chola Princess | Highly intelligent and politically astute | Elder daughter"},
-        {id: "Arunmozhi Varman", type: "chola", color: "#ffd700", size: 38, description: "🦁 Ponniyin Selvan (The Son of Ponni) | Younger Prince, popular with the people | Later Rajaraja I"},
-        {id: "Anbil Sundari", type: "chola", color: "#ffd700", size: 20, description: "🤫 The younger, secret daughter of Sundara Chola, raised in obscurity"},
+        {id: "Sundara Chola", type: "chola", color: "#ffd700", size: 30, description: "ðŸ‘‘ Reigning Emperor of the Chola Empire | Ailing and politically weak"},
+        {id: "Aditya Karikalan", type: "chola", color: "#ffd700", size: 35, description: "âš”ï¸ Crown Prince and Commander of the Northern Armies | Hot-tempered and tragic figure | Eldest son"},
+        {id: "Kundavai", type: "chola", color: "#ffd700", size: 30, description: "ðŸ‘¸ Chola Princess | Highly intelligent and politically astute | Elder daughter"},
+        {id: "Arunmozhi Varman", type: "chola", color: "#ffd700", size: 38, description: "ðŸ¦ Ponniyin Selvan (The Son of Ponni) | Younger Prince, popular with the people | Later Rajaraja I"},
+        {id: "Anbil Sundari", type: "chola", color: "#ffd700", size: 20, description: "ðŸ¤« The younger, secret daughter of Sundara Chola, raised in obscurity"},
 
         // LOYAL VASSALS & HEROES (type: vassal, color: #3498db)
-        {id: "Vandiyathevan", type: "vassal", color: "#3498db", size: 40, description: "🐎 Valorous messenger from Vana clan | Protagonist, serving Aditya Karikalan and Kundavai | Love interest of Kundavai"},
-        {id: "Azhwarkadiyan Nambi", type: "vassal", color: "#3498db", size: 30, description: "🕵️‍♂️ Vaishnavite spy and intelligence agent | Brother of Nandini | Works for the Prime Minister"},
-        {id: "Periya Pazhuvettarayar", type: "vassal", color: "#3498db", size: 25, description: "🛡️ Lord of Pazhuvur and Chancellor | Elder statesman, fiercely loyal to the Chola throne but manipulated by his young wife"},
-        {id: "Aniruddha Brahmarayar", type: "vassal", color: "#3498db", size: 28, description: "🧠 Prime Minister | Chief strategist and spymaster | Commands Azhwarkadiyan"},
+        {id: "Vandiyathevan", type: "vassal", color: "#3498db", size: 40, description: "ðŸŽ Valorous messenger from Vana clan | Protagonist, serving Aditya Karikalan and Kundavai | Love interest of Kundavai"},
+        {id: "Azhwarkadiyan Nambi", type: "vassal", color: "#3498db", size: 30, description: "ðŸ•µï¸â€â™‚ï¸ Vaishnavite spy and intelligence agent | Brother of Nandini | Works for the Prime Minister"},
+        {id: "Periya Pazhuvettarayar", type: "vassal", color: "#3498db", size: 25, description: "ðŸ›¡ï¸ Lord of Pazhuvur and Chancellor | Elder statesman, fiercely loyal to the Chola throne but manipulated by his young wife"},
+        {id: "Aniruddha Brahmarayar", type: "vassal", color: "#3498db", size: 28, description: "ðŸ§  Prime Minister | Chief strategist and spymaster | Commands Azhwarkadiyan"},
 
         // ANTAGONISTS & CONSPIRATORS (type: antagonist, color: #e74c3c)
-        {id: "Nandini", type: "antagonist", color: "#e74c3c", size: 38, description: "🐍 Chief conspirator | Wife of Periya Pazhuvettarayar | Former lover of Karikalan | Beautiful and manipulative"},
-        {id: "Madurantaka Chola", type: "antagonist", color: "#e74c3c", size: 25, description: "👑 Claim to the throne | Supported by the conspiracy | Cousin of Sundara Chola (Later Uttama Chola)"},
-        {id: "Chinnapazhuvettarayar", type: "antagonist", color: "#e74c3c", size: 22, description: "⚔️ Lord of Tanjore Fort and Treasurer | Pazhuvur faction member, loyal to his brother Periya"},
-        {id: "Sambuvarayar", type: "antagonist", color: "#e74c3c", size: 20, description: "🏰 Feudal Lord and Conspirator | Provides the fort for the major conspiracy meeting"},
-        {id: "Pandya Conspirators", type: "antagonist", color: "#e74c3c", size: 20, description: "🗡️ Group sworn to avenge the death of Veerapandyan (their king)"},
+        {id: "Nandini", type: "antagonist", color: "#e74c3c", size: 38, description: "ðŸ Chief conspirator | Wife of Periya Pazhuvettarayar | Former lover of Karikalan | Beautiful and manipulative"},
+        {id: "Madurantaka Chola", type: "antagonist", color: "#e74c3c", size: 25, description: "ðŸ‘‘ Claim to the throne | Supported by the conspiracy | Cousin of Sundara Chola (Later Uttama Chola)"},
+        {id: "Chinnapazhuvettarayar", type: "antagonist", color: "#e74c3c", size: 22, description: "âš”ï¸ Lord of Tanjore Fort and Treasurer | Pazhuvur faction member, loyal to his brother Periya"},
+        {id: "Sambuvarayar", type: "antagonist", color: "#e74c3c", size: 20, description: "ðŸ° Feudal Lord and Conspirator | Provides the fort for the major conspiracy meeting"},
+        {id: "Pandya Conspirators", type: "antagonist", color: "#e74c3c", size: 20, description: "ðŸ—¡ï¸ Group sworn to avenge the death of Veerapandyan (their king)"},
 
         // MYSTERY & HIDDEN CHARACTERS (type: secret, color: #9b59b6)
-        {id: "Veerapandyan", type: "secret", color: "#9b59b6", size: 20, description: "💀 Pandya King killed by Aditya Karikalan | His death drives the entire vengeance plot"},
-        {id: "Oomai Rani", type: "secret", color: "#9b59b6", size: 33, description: "🤫 The mute queen/woman | Appears mysteriously | Resembles Nandini and Sundara Chola's mother | Protects Arunmozhi"},
-        {id: "Mandakini", type: "secret", color: "#9b59b6", size: 25, description: "🌊 The true identity of Oomai Rani | Linked to Sundara Chola's past"},
+        {id: "Veerapandyan", type: "secret", color: "#9b59b6", size: 20, description: "ðŸ’€ Pandya King killed by Aditya Karikalan | His death drives the entire vengeance plot"},
+        {id: "Oomai Rani", type: "secret", color: "#9b59b6", size: 33, description: "ðŸ¤« The mute queen/woman | Appears mysteriously | Resembles Nandini and Sundara Chola's mother | Protects Arunmozhi"},
+        {id: "Mandakini", type: "secret", color: "#9b59b6", size: 25, description: "ðŸŒŠ The true identity of Oomai Rani | Linked to Sundara Chola's past"},
 
         // LOCATIONS (type: place, color: #2ecc71)
-        {id: "Thanjavur", type: "place", color: "#2ecc71", size: 25, description: "📍 Chola Capital | Seat of the Pazhuvettarayar's power"},
-        {id: "Eezham (Lanka)", type: "place", color: "#2ecc71", size: 22, description: "🏝️ Where Arunmozhi Varman is fighting and first introduced"},
-        {id: "Kadavur", type: "place", color: "#2ecc71", size: 20, description: "🏰 Sambuvarayar's fort, site of the midnight conspiracy meeting"},
+        {id: "Thanjavur", type: "place", color: "#2ecc71", size: 25, description: "ðŸ“ Chola Capital | Seat of the Pazhuvettarayar's power"},
+        {id: "Eezham (Lanka)", type: "place", color: "#2ecc71", size: 22, description: "ðŸï¸ Where Arunmozhi Varman is fighting and first introduced"},
+        {id: "Kadavur", type: "place", color: "#2ecc71", size: 20, description: "ðŸ° Sambuvarayar's fort, site of the midnight conspiracy meeting"},
     ];
 
     // *** START LINKS ***
@@ -536,7 +536,7 @@
     }
 
     function showStats() {
-        alert(`📊 PONNIYIN SELVAN STATISTICS\n\nTotal Characters & Factions: ${nodes.length}\nTotal Relationships & Conflict Lines: ${links.length}\n\nThis knowledge graph illustrates the complex political web of the Chola saga, highlighting the conflict between the Royal Family, the Loyalists, and the Pazhuvettarayar-led Conspiracy.`);
+        alert(`ðŸ“Š PONNIYIN SELVAN STATISTICS\n\nTotal Characters & Factions: ${nodes.length}\nTotal Relationships & Conflict Lines: ${links.length}\n\nThis knowledge graph illustrates the complex political web of the Chola saga, highlighting the conflict between the Royal Family, the Loyalists, and the Pazhuvettarayar-led Conspiracy.`);
     }
 
     updateVisibility();

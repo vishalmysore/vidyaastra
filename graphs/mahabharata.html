@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: The Mahabharata - Epic Network (Stabilized Scholarly Edition)</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         /* CSS styles remain consistent for functionality and aesthetics */
         * {
@@ -274,20 +274,20 @@
 </head>
 <body>
 <div class="controls">
-    <h2>⚔️ MAHABHARATA</h2>
+    <h2>âš”ï¸ MAHABHARATA</h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">Project VidyaAstra</p>
 
     <h3>Filter by Type</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('hero')">🏹 Heroes</button>
-        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
-        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
-        <button class="filter-btn active" onclick="toggleFilter('event')">🎲 Events</button>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">ðŸ¹ Heroes</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">ðŸ‘¤ Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">âœ¨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">ðŸŽ² Events</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button onclick="resetSimulation()">🔄 Reset</button>
-    <button onclick="showStats()">📊 Stats</button>
+    <button onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -338,7 +338,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -350,37 +350,37 @@
     // *** START NODES ***
     const nodes = [
         // Pandavas & Immediate Family
-        {id: "Yudhishthira", type: "hero", faction: "pandava", color: "#ff6b6b", size: 28, description: "👑 Eldest Pandava | Known for dharma and righteousness"},
-        {id: "Bhima", type: "hero", faction: "pandava", color: "#ff6b6b", size: 26, description: "💪 Strongest warrior | Killed Duryodhana and Dushasana"},
-        {id: "Arjuna", type: "hero", faction: "pandava", color: "#ff6b6b", size: 28, description: "🏹 Greatest archer | Listener of the Bhagavad Gita"},
-        {id: "Nakula", type: "hero", faction: "pandava", color: "#ff6b6b", size: 22, description: "🐴 Expert horseman | Twin brother of Sahadeva"},
-        {id: "Sahadeva", type: "hero", faction: "pandava", color: "#ff6b6b", size: 22, description: "🌙 Astrologer & strategist | Twin brother of Nakula"},
-        {id: "Draupadi", type: "hero", faction: "pandava", color: "#ff6b6b", size: 26, description: "👰 Wife of 5 Pandavas | Born from fire"},
-        {id: "Abhimanyu", type: "hero", faction: "pandava", color: "#ff6b6b", size: 20, description: "⚔️ Son of Arjuna & Subhadra | Killed in Chakravyuh"},
-        {id: "Ghatotkacha", type: "hero", faction: "pandava", color: "#ff6b6b", size: 21, description: "👹 Son of Bhima and Hidimba | Rakshasa warrior"},
-        {id: "Kunti", type: "character", faction: "pandava", color: "#ffd700", size: 22, description: "👩 Mother of Yudhishthira, Bhima, Arjuna & Karna"},
-        {id: "Subhadra", type: "character", faction: "pandava", color: "#ffd700", size: 20, description: "👸 Sister of Krishna | Wife of Arjuna | Mother of Abhimanyu"},
-        {id: "Dhrishtadyumna", type: "hero", faction: "pandava", color: "#ff6b6b", size: 23, description: "🎖️ Commander of Pandava army | Killed Drona"},
-        {id: "Pandu", type: "character", faction: "pandava", color: "#ffd700", size: 20, description: "🤴 Nominal father of the Pandavas | King of Hastinapur"},
-        {id: "Madri", type: "character", faction: "pandava", color: "#ffd700", size: 19, description: "👸 Second wife of Pandu | Mother of Nakula and Sahadeva"},
+        {id: "Yudhishthira", type: "hero", faction: "pandava", color: "#ff6b6b", size: 28, description: "ðŸ‘‘ Eldest Pandava | Known for dharma and righteousness"},
+        {id: "Bhima", type: "hero", faction: "pandava", color: "#ff6b6b", size: 26, description: "ðŸ’ª Strongest warrior | Killed Duryodhana and Dushasana"},
+        {id: "Arjuna", type: "hero", faction: "pandava", color: "#ff6b6b", size: 28, description: "ðŸ¹ Greatest archer | Listener of the Bhagavad Gita"},
+        {id: "Nakula", type: "hero", faction: "pandava", color: "#ff6b6b", size: 22, description: "ðŸ´ Expert horseman | Twin brother of Sahadeva"},
+        {id: "Sahadeva", type: "hero", faction: "pandava", color: "#ff6b6b", size: 22, description: "ðŸŒ™ Astrologer & strategist | Twin brother of Nakula"},
+        {id: "Draupadi", type: "hero", faction: "pandava", color: "#ff6b6b", size: 26, description: "ðŸ‘° Wife of 5 Pandavas | Born from fire"},
+        {id: "Abhimanyu", type: "hero", faction: "pandava", color: "#ff6b6b", size: 20, description: "âš”ï¸ Son of Arjuna & Subhadra | Killed in Chakravyuh"},
+        {id: "Ghatotkacha", type: "hero", faction: "pandava", color: "#ff6b6b", size: 21, description: "ðŸ‘¹ Son of Bhima and Hidimba | Rakshasa warrior"},
+        {id: "Kunti", type: "character", faction: "pandava", color: "#ffd700", size: 22, description: "ðŸ‘© Mother of Yudhishthira, Bhima, Arjuna & Karna"},
+        {id: "Subhadra", type: "character", faction: "pandava", color: "#ffd700", size: 20, description: "ðŸ‘¸ Sister of Krishna | Wife of Arjuna | Mother of Abhimanyu"},
+        {id: "Dhrishtadyumna", type: "hero", faction: "pandava", color: "#ff6b6b", size: 23, description: "ðŸŽ–ï¸ Commander of Pandava army | Killed Drona"},
+        {id: "Pandu", type: "character", faction: "pandava", color: "#ffd700", size: 20, description: "ðŸ¤´ Nominal father of the Pandavas | King of Hastinapur"},
+        {id: "Madri", type: "character", faction: "pandava", color: "#ffd700", size: 19, description: "ðŸ‘¸ Second wife of Pandu | Mother of Nakula and Sahadeva"},
         {id: "Upapandavas", type: "character", faction: "pandava", color: "#ff6b6b", size: 18, description: "The five sons of Draupadi (Prativindhya, Sutasoma, Shrutakarma, Satanika, Shrutasena), all killed by Ashwatthama"},
         {id: "Chitrangada", type: "character", faction: "pandava", color: "#ffd700", size: 16, description: "Naga princess, one of Arjuna's wives"},
         {id: "Uloopi", type: "character", faction: "pandava", color: "#ffd700", size: 16, description: "Naga princess, one of Arjuna's wives"},
 
 
         // Kauravas & Immediate Family
-        {id: "Duryodhana", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 28, description: "👿 Eldest Kaurava | Antagonist | Killed by Bhima"},
-        {id: "Dushasana", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 22, description: "😈 Brother of Duryodhana, key tormentor of Draupadi"},
-        {id: "Bhishma", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 27, description: "🗡️ Grandsire | Vow of celibacy | Commanded first 10 days"},
-        {id: "Dronacharya", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 26, description: "📚 Teacher of warfare | Fought for Kauravas"},
-        {id: "Karna", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 26, description: "⭐ Secret son of Kunti | Best friend of Duryodhana"},
-        {id: "Ashwatthama", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 23, description: "💎 Son of Drona | Immortal warrior | Killed Pandava heirs"},
-        {id: "Shakuni", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 24, description: "🎲 Uncle of Kauravas | Master strategist of the Dice Game"},
-        {id: "Dhritarashtra", type: "character", faction: "kaurava", color: "#ffd700", size: 23, description: "👨 Blind king of Hastinapur | Father of 100 Kauravas and Dussala"},
-        {id: "Gandhari", type: "character", faction: "kaurava", color: "#ffd700", size: 21, description: "👩 Mother of Kauravas | Blindfolded herself for life"},
-        {id: "Shalya", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 24, description: "👑 King of Madra | Forced Kaurava Ally | Karna's charioteer"},
-        {id: "Jayadratha", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 20, description: "🤴 King of Sindhu | Husband of Dussala | Killed Abhimanyu"},
-        {id: "Kripacharya", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 20, description: "🙏 Royal Guru of the Kuru dynasty | Immortal Chiranjivi"},
+        {id: "Duryodhana", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 28, description: "ðŸ‘¿ Eldest Kaurava | Antagonist | Killed by Bhima"},
+        {id: "Dushasana", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 22, description: "ðŸ˜ˆ Brother of Duryodhana, key tormentor of Draupadi"},
+        {id: "Bhishma", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 27, description: "ðŸ—¡ï¸ Grandsire | Vow of celibacy | Commanded first 10 days"},
+        {id: "Dronacharya", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 26, description: "ðŸ“š Teacher of warfare | Fought for Kauravas"},
+        {id: "Karna", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 26, description: "â­ Secret son of Kunti | Best friend of Duryodhana"},
+        {id: "Ashwatthama", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 23, description: "ðŸ’Ž Son of Drona | Immortal warrior | Killed Pandava heirs"},
+        {id: "Shakuni", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 24, description: "ðŸŽ² Uncle of Kauravas | Master strategist of the Dice Game"},
+        {id: "Dhritarashtra", type: "character", faction: "kaurava", color: "#ffd700", size: 23, description: "ðŸ‘¨ Blind king of Hastinapur | Father of 100 Kauravas and Dussala"},
+        {id: "Gandhari", type: "character", faction: "kaurava", color: "#ffd700", size: 21, description: "ðŸ‘© Mother of Kauravas | Blindfolded herself for life"},
+        {id: "Shalya", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 24, description: "ðŸ‘‘ King of Madra | Forced Kaurava Ally | Karna's charioteer"},
+        {id: "Jayadratha", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 20, description: "ðŸ¤´ King of Sindhu | Husband of Dussala | Killed Abhimanyu"},
+        {id: "Kripacharya", type: "hero", faction: "kaurava", color: "#4ecdc4", size: 20, description: "ðŸ™ Royal Guru of the Kuru dynasty | Immortal Chiranjivi"},
         {id: "Kripi", type: "character", faction: "kaurava", color: "#ffd700", size: 17, description: "Wife of Dronacharya, mother of Ashwatthama"},
         {id: "Dussala", type: "character", faction: "kaurava", color: "#ffd700", size: 18, description: "Only sister of the Kauravas, wife of Jayadratha"},
         {id: "Subala", type: "character", faction: "kaurava", color: "#ffd700", size: 17, description: "King of Gandhara, father of Gandhari and Shakuni"},
@@ -390,11 +390,11 @@
 
 
         // Divine Beings & Neutrals
-        {id: "Krishna", type: "divine", faction: "neutral", color: "#a78bfa", size: 30, description: "✨ 8th avatar of Vishnu | Supreme deity | Charioteer of Arjuna"},
-        {id: "Vyasa", type: "divine", faction: "neutral", color: "#a78bfa", size: 24, description: "📖 Divine sage | Author and progenitor of the Kuru line"},
+        {id: "Krishna", type: "divine", faction: "neutral", color: "#a78bfa", size: 30, description: "âœ¨ 8th avatar of Vishnu | Supreme deity | Charioteer of Arjuna"},
+        {id: "Vyasa", type: "divine", faction: "neutral", color: "#a78bfa", size: 24, description: "ðŸ“– Divine sage | Author and progenitor of the Kuru line"},
         {id: "Balarama", type: "divine", faction: "neutral", color: "#a78bfa", size: 25, description: " plough Elder brother of Krishna | Master of Mace warfare (Gada) | Remained Neutral"},
-        {id: "Vidura", type: "character", faction: "neutral", color: "#34d399", size: 21, description: "🧙 Wise counselor | Half-brother to Dhritarashtra and Pandu | Voice of Dharma"},
-        {id: "Ekalavya", type: "hero", faction: "neutral", color: "#34d399", size: 18, description: "🎯 Nishada prince | Self-taught archer"},
+        {id: "Vidura", type: "character", faction: "neutral", color: "#34d399", size: 21, description: "ðŸ§™ Wise counselor | Half-brother to Dhritarashtra and Pandu | Voice of Dharma"},
+        {id: "Ekalavya", type: "hero", faction: "neutral", color: "#34d399", size: 18, description: "ðŸŽ¯ Nishada prince | Self-taught archer"},
         {id: "Shantanu", type: "character", faction: "neutral", color: "#34d399", size: 16, description: "Patriarch of the Kuru dynasty, father of Bhishma"},
         {id: "Ganga", type: "divine", faction: "neutral", color: "#a78bfa", size: 18, description: "River Goddess, mother of Bhishma"},
         {id: "Satyavati", type: "character", faction: "neutral", color: "#34d399", size: 17, description: "Fisherwoman queen, wife of Shantanu, arranged the Niyoga"},
@@ -412,10 +412,10 @@
 
         // Major Events
         {id: "Birth of Kuru Clan", type: "event", color: "#9333ea", size: 18, description: "The era beginning with Shantanu and Ganga."},
-        {id: "Dice Game", type: "event", color: "#ff6b6b", size: 18, description: "🎲 Fateful gambling match | Pandavas lost kingdom & freedom"},
+        {id: "Dice Game", type: "event", color: "#ff6b6b", size: 18, description: "ðŸŽ² Fateful gambling match | Pandavas lost kingdom & freedom"},
         {id: "The Exile (Vanavasa)", type: "event", color: "#34d399", size: 20, description: "12 years of forest exile + 1 year incognito."},
         {id: "Bhagavad Gita", type: "event", color: "#a78bfa", size: 23, description: "The divine discourse by Krishna to Arjuna."},
-        {id: "Kurukshetra War", type: "event", color: "#ff6b6b", size: 22, description: "⚔️ 18-day apocalyptic war"},
+        {id: "Kurukshetra War", type: "event", color: "#ff6b6b", size: 22, description: "âš”ï¸ 18-day apocalyptic war"},
         {id: "Ascension to Heaven", type: "event", color: "#9333ea", size: 18, description: "The final journey of the Pandavas (Mahaprasthana)."},
     ];
 
@@ -452,18 +452,18 @@
 
 
         // --- BATTLE CONFLICTS & RIVALRIES ---
-        {source: "Arjuna", target: "Karna", type: "battle", label: "⚔️ Killed"},
-        {source: "Bhima", target: "Duryodhana", type: "battle", label: "⚔️ Killed"},
-        {source: "Bhima", target: "Dushasana", type: "battle", label: "⚔️ Killed (Vow)"},
-        {source: "Dhrishtadyumna", target: "Dronacharya", type: "battle", label: "⚔️ Killed (Vengeance)"},
+        {source: "Arjuna", target: "Karna", type: "battle", label: "âš”ï¸ Killed"},
+        {source: "Bhima", target: "Duryodhana", type: "battle", label: "âš”ï¸ Killed"},
+        {source: "Bhima", target: "Dushasana", type: "battle", label: "âš”ï¸ Killed (Vow)"},
+        {source: "Dhrishtadyumna", target: "Dronacharya", type: "battle", label: "âš”ï¸ Killed (Vengeance)"},
         {source: "Shikhandi", target: "Bhishma", type: "battle", label: "Instrumental in Defeat"},
-        {source: "Arjuna", target: "Jayadratha", type: "battle", label: "⚔️ Killed (Vow)"},
-        {source: "Bhima", target: "Jarasandha", type: "battle", label: "⚔️ Killed (Dual)"},
-        {source: "Krishna", target: "Shishupala", type: "battle", label: "⚔️ Killed"},
-        {source: "Arjuna", target: "Bhagadatta", type: "battle", label: "⚔️ Killed"},
-        {source: "Bhima", target: "Kichaka", type: "battle", label: "⚔️ Killed (Exile)"},
-        {source: "Jayadratha", target: "Abhimanyu", type: "battle", label: "⚔️ Killed"},
-        {source: "Ashwatthama", target: "Upapandavas", type: "battle", label: "⚔️ Killed (in sleep)"},
+        {source: "Arjuna", target: "Jayadratha", type: "battle", label: "âš”ï¸ Killed (Vow)"},
+        {source: "Bhima", target: "Jarasandha", type: "battle", label: "âš”ï¸ Killed (Dual)"},
+        {source: "Krishna", target: "Shishupala", type: "battle", label: "âš”ï¸ Killed"},
+        {source: "Arjuna", target: "Bhagadatta", type: "battle", label: "âš”ï¸ Killed"},
+        {source: "Bhima", target: "Kichaka", type: "battle", label: "âš”ï¸ Killed (Exile)"},
+        {source: "Jayadratha", target: "Abhimanyu", type: "battle", label: "âš”ï¸ Killed"},
+        {source: "Ashwatthama", target: "Upapandavas", type: "battle", label: "âš”ï¸ Killed (in sleep)"},
 
         // --- ALLIANCES & SUPPORT ---
         {source: "Krishna", target: "Arjuna", type: "alliance", label: "Charioteer & Friend"},
@@ -639,7 +639,7 @@
     }
 
     function showStats() {
-        alert(`📊 MAHABHARATA STATISTICS (Stabilized Edition)\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThe graph has been stabilized by refining data and tuning the D3 force simulation parameters (link distance, repulsion, and collision radius).`);
+        alert(`ðŸ“Š MAHABHARATA STATISTICS (Stabilized Edition)\n\nTotal Characters & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nThe graph has been stabilized by refining data and tuning the D3 force simulation parameters (link distance, repulsion, and collision radius).`);
     }
 
     updateVisibility();

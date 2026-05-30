@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra : Cycle Detection Knowledge Graph</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -206,7 +206,7 @@
 </head>
 <body>
     <div class="controls">
-        <h2>⚠️ Cycle Detection</h2>
+        <h2>âš ï¸ Cycle Detection</h2>
         <h3>Project: Vidya Astra</h3>
         <p style="font-size: 0.85em; margin-bottom: 15px;">
             Red highlighted nodes and links indicate detected cycles. Drag to explore.
@@ -263,7 +263,7 @@
 
             // Algorithms
             {id: "DFS Algorithm", type: "algorithm", category: "Algorithm", size: 16, description: "Depth-First Search for general cycle detection (O(V+E))"},
-            {id: "Floyd-Warshall", type: "algorithm", category: "Algorithm", size: 16, description: "All-pairs analysis and shortest cycles (O(V³))"},
+            {id: "Floyd-Warshall", type: "algorithm", category: "Algorithm", size: 16, description: "All-pairs analysis and shortest cycles (O(VÂ³))"},
             {id: "Tarjan's SCC", type: "algorithm", category: "Algorithm", size: 16, description: "Strongly Connected Components detection (O(V+E))"},
             {id: "Bellman-Ford", type: "algorithm", category: "Algorithm", size: 16, description: "Negative cycle detection in weighted graphs (O(VxE))"},
 
@@ -273,7 +273,7 @@
             {id: "Network Analysis", type: "method", category: "Cycle Detection", size: 17, description: "Analyzing relationships between accounts"},
 
             // Risk Indicators
-            {id: "High Risk", type: "risk", category: "Risk Level", size: 15, description: "Risk Score ≥ 0.80 - Immediate investigation required"},
+            {id: "High Risk", type: "risk", category: "Risk Level", size: 15, description: "Risk Score â‰¥ 0.80 - Immediate investigation required"},
             {id: "Medium Risk", type: "risk", category: "Risk Level", size: 15, description: "Risk Score 0.50-0.79 - Schedule for review"},
             {id: "Low Risk", type: "risk", category: "Risk Level", size: 15, description: "Risk Score < 0.50 - Monitor and log"},
 
@@ -472,14 +472,14 @@
             const cycleInfo = document.getElementById("cycleInfo");
             if (["Account A", "Account B", "Account C", "Account D"].includes(d.id)) {
                 cycleInfo.innerHTML = `
-                    <strong>⚠️ CYCLE DETECTED</strong><br>
-                    <div class="cycle-path">Account A → Account B → Account C → Account D → Account A</div>
+                    <strong>âš ï¸ CYCLE DETECTED</strong><br>
+                    <div class="cycle-path">Account A â†’ Account B â†’ Account C â†’ Account D â†’ Account A</div>
                     <strong>Details:</strong><br>
-                    • Pattern: Circular Money Flow<br>
-                    • Total Amount: $200,000<br>
-                    • Cycle Length: 4 accounts<br>
-                    • Risk Score: 0.92 (HIGH)<br>
-                    • Status: INVESTIGATING
+                    â€¢ Pattern: Circular Money Flow<br>
+                    â€¢ Total Amount: $200,000<br>
+                    â€¢ Cycle Length: 4 accounts<br>
+                    â€¢ Risk Score: 0.92 (HIGH)<br>
+                    â€¢ Status: INVESTIGATING
                 `;
                 cycleInfo.style.display = "block";
                 panel.classList.add("cycle-info");
@@ -508,7 +508,7 @@
         }
 
         function showAllCycles() {
-            alert("Detected Cycles:\n\n1. CIRCULAR MONEY FLOW\n   Account A → Account B → Account C → Account D → Account A\n   Amount: $200,000\n   Risk Score: 0.92 (HIGH)\n   Status: INVESTIGATING\n\nTotal Cycles: 1");
+            alert("Detected Cycles:\n\n1. CIRCULAR MONEY FLOW\n   Account A â†’ Account B â†’ Account C â†’ Account D â†’ Account A\n   Amount: $200,000\n   Risk Score: 0.92 (HIGH)\n   Status: INVESTIGATING\n\nTotal Cycles: 1");
         }
 
         function resetSimulation() {
@@ -538,4 +538,5 @@
     </script>
 </body>
 </html>
+
 

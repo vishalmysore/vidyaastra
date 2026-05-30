@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: Manimekalai - Epic Network</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); overflow: hidden; color: #fff; }
@@ -39,22 +39,22 @@
 </head>
 <body>
 <div class="controls">
-    <h2>🌊 MANIMEKALAI</h2>
+    <h2>ðŸŒŠ MANIMEKALAI</h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">Project VidyaAstra</p>
 
     <h3>Filter by Type</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('hero')">🗡️ Protagonists</button>
-        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
-        <button class="filter-btn active" onclick="toggleFilter('royalty')">👑 Royalty</button>
-        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
-        <button class="filter-btn active" onclick="toggleFilter('place')">🏛️ Places</button>
-        <button class="filter-btn active" onclick="toggleFilter('event')">📜 Events</button>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">ðŸ—¡ï¸ Protagonists</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">ðŸ‘¤ Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('royalty')">ðŸ‘‘ Royalty</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">âœ¨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('place')">ðŸ›ï¸ Places</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">ðŸ“œ Events</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button class="action" onclick="resetSimulation()">🔄 Reset</button>
-    <button class="action" onclick="showStats()">📊 Stats</button>
+    <button class="action" onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button class="action" onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -74,7 +74,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -228,9 +228,10 @@
     }
 
     function resetSimulation() { simulation.alpha(0.3).restart(); }
-    function showStats() { alert(`📊 MANIMEKALAI STATISTICS\n\nTotal Entities & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nArc:\n• Puhar festival → Divine gift → Tragedy → Pilgrimage → Vows → Compassionate action`); }
+    function showStats() { alert(`ðŸ“Š MANIMEKALAI STATISTICS\n\nTotal Entities & Events: ${nodes.length}\nTotal Relationships: ${links.length}\n\nArc:\nâ€¢ Puhar festival â†’ Divine gift â†’ Tragedy â†’ Pilgrimage â†’ Vows â†’ Compassionate action`); }
 
     updateVisibility();
 </script>
 </body>
 </html>
+

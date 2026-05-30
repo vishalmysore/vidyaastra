@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra : Bird Migration Cycle Detection</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -279,7 +279,7 @@
 </head>
 <body>
     <div class="controls">
-        <h2>🦅 Bird Migration Cycles</h2>
+        <h2>ðŸ¦… Bird Migration Cycles</h2>
         <h3>Vidya Astra - Ecological Tracker</h3>
         <p style="font-size: 0.85em; margin-bottom: 15px;">
             Green highlighted nodes show annual migration cycles. Blue = Spring, Red = Fall.
@@ -302,7 +302,7 @@
     </div>
 
     <div class="legend">
-        <h3 style="margin: 0 0 10px 0; color: #4ecdc4;">🦅 Bird Species</h3>
+        <h3 style="margin: 0 0 10px 0; color: #4ecdc4;">ðŸ¦… Bird Species</h3>
         <div class="legend-item"><div class="legend-color" style="background: #ff4444;"></div>Arctic Tern</div>
         <div class="legend-item"><div class="legend-color" style="background: #ff6b9d;"></div>Bar-tailed Godwit</div>
         <div class="legend-item"><div class="legend-color" style="background: #c44536;"></div>Swainson's Hawk</div>
@@ -610,13 +610,13 @@
             if (d.bird) {
                 const species = birdSpecies[d.bird];
                 cycleInfo.innerHTML = `
-                    <strong>🦅 ${d.bird}</strong><br>
-                    <div class="migration-path">${species.route.join(" → ")}</div>
+                    <strong>ðŸ¦… ${d.bird}</strong><br>
+                    <div class="migration-path">${species.route.join(" â†’ ")}</div>
                     <strong>Details:</strong><br>
-                    • Total Distance: ${species.distance.toLocaleString()} miles<br>
-                    • Characteristic: ${species.speed}<br>
-                    • Annual Cycle: COMPLETE ✅<br>
-                    • Current Status: Migration Active
+                    â€¢ Total Distance: ${species.distance.toLocaleString()} miles<br>
+                    â€¢ Characteristic: ${species.speed}<br>
+                    â€¢ Annual Cycle: COMPLETE âœ…<br>
+                    â€¢ Current Status: Migration Active
                 `;
                 cycleInfo.style.display = "block";
                 panel.classList.add("cycle-info");
@@ -660,7 +660,7 @@
         }
 
         function showAllMigrations() {
-            alert("🦅 DETECTED MIGRATION CYCLES:\n\n1. ARCTIC TERN (44,000 miles)\n   Arctic → Greenland → Iceland → West Africa → Antarctic → Arctic\n   Duration: 12 months\n   Status: ACTIVE CYCLE ✅\n\n2. BAR-TAILED GODWIT (11,000 miles)\n   Alaska → China → New Zealand → Alaska\n   Duration: 11 months (non-stop)\n   Status: ACTIVE CYCLE ✅\n\n3. SWAINSON'S HAWK (13,000 miles)\n   North America → Central America → South America → North America\n   Duration: 12 months\n   Status: ACTIVE CYCLE ✅\n\nTotal Annual Cycles Detected: 3");
+            alert("ðŸ¦… DETECTED MIGRATION CYCLES:\n\n1. ARCTIC TERN (44,000 miles)\n   Arctic â†’ Greenland â†’ Iceland â†’ West Africa â†’ Antarctic â†’ Arctic\n   Duration: 12 months\n   Status: ACTIVE CYCLE âœ…\n\n2. BAR-TAILED GODWIT (11,000 miles)\n   Alaska â†’ China â†’ New Zealand â†’ Alaska\n   Duration: 11 months (non-stop)\n   Status: ACTIVE CYCLE âœ…\n\n3. SWAINSON'S HAWK (13,000 miles)\n   North America â†’ Central America â†’ South America â†’ North America\n   Duration: 12 months\n   Status: ACTIVE CYCLE âœ…\n\nTotal Annual Cycles Detected: 3");
         }
 
         function animateMigration() {
@@ -717,4 +717,5 @@
     </script>
 </body>
 </html>
+
 

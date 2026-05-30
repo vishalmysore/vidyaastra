@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: Nala and Damayanti - Epic Network</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         /* CSS styles updated for Nala-Damayanti theme: Royal Golds, Deep Blues, and Forest Greens */
         * {
@@ -260,22 +260,22 @@
 </head>
 <body>
 <div class="controls">
-    <h2>🎲 NALA & DAMAYANTI</h2>
+    <h2>ðŸŽ² NALA & DAMAYANTI</h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">From Mahabharata (Vana Parva)</p>
 
     <h3>Filter by Type</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('hero')">👑 Heroes</button>
-        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Characters</button>
-        <button class="filter-btn active" onclick="toggleFilter('divine')">✨ Divine</button>
-        <button class="filter-btn active" onclick="toggleFilter('antagonist')">😈 Antagonists</button>
-        <button class="filter-btn active" onclick="toggleFilter('event')">🎭 Events</button>
-        <button class="filter-btn active" onclick="toggleFilter('place')">📍 Locations</button>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">ðŸ‘‘ Heroes</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">ðŸ‘¤ Characters</button>
+        <button class="filter-btn active" onclick="toggleFilter('divine')">âœ¨ Divine</button>
+        <button class="filter-btn active" onclick="toggleFilter('antagonist')">ðŸ˜ˆ Antagonists</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">ðŸŽ­ Events</button>
+        <button class="filter-btn active" onclick="toggleFilter('place')">ðŸ“ Locations</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button onclick="resetSimulation()">🔄 Reset</button>
-    <button onclick="showStats()">📊 Stats</button>
+    <button onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -318,7 +318,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -330,46 +330,46 @@
     // *** START NODES ***
     const nodes = [
         // MAIN HEROES
-        {id: "Nala", type: "hero", color: "#f1c40f", size: 35, description: "👑 King of Nishadha | Virtuous, handsome, skilled charioteer | Cursed by Kali | Gambler in adversity"},
-        {id: "Damayanti", type: "hero", color: "#f1c40f", size: 33, description: "👸 Princess of Vidarbha | Beautiful, chaste, devoted wife | Endures great suffering during separation"},
-        {id: "Indrasena", type: "character", color: "#f1c40f", size: 18, description: "👶 Son of Nala and Damayanti"},
-        {id: "Indrasena (daughter)", type: "character", color: "#f1c40f", size: 18, description: "👧 Daughter of Nala and Damayanti"},
+        {id: "Nala", type: "hero", color: "#f1c40f", size: 35, description: "ðŸ‘‘ King of Nishadha | Virtuous, handsome, skilled charioteer | Cursed by Kali | Gambler in adversity"},
+        {id: "Damayanti", type: "hero", color: "#f1c40f", size: 33, description: "ðŸ‘¸ Princess of Vidarbha | Beautiful, chaste, devoted wife | Endures great suffering during separation"},
+        {id: "Indrasena", type: "character", color: "#f1c40f", size: 18, description: "ðŸ‘¶ Son of Nala and Damayanti"},
+        {id: "Indrasena (daughter)", type: "character", color: "#f1c40f", size: 18, description: "ðŸ‘§ Daughter of Nala and Damayanti"},
 
         // DIVINE FIGURES
-        {id: "Indra", type: "divine", color: "#3498db", size: 25, description: "⚡ King of Gods | Initially desires Damayanti, but blesses Nala"},
-        {id: "Agni", type: "divine", color: "#3498db", size: 23, description: "🔥 God of Fire | Blesses Nala, helps during the swayamvara"},
-        {id: "Varuna", type: "divine", color: "#3498db", size: 23, description: "🌊 God of Water | Blesses Nala during the swayamvara"},
-        {id: "Yama", type: "divine", color: "#3498db", size: 23, description: "💀 God of Death/Justice | Blesses Nala during the swayamvara"},
-        {id: "Saraswati", type: "divine", color: "#3498db", size: 22, description: "🕊️ Goddess of Knowledge and Arts | Helps Damayanti's decision"},
-        {id: "Vayu", type: "divine", color: "#3498db", size: 22, description: "💨 God of Wind | Delivers messages for Nala early on"},
+        {id: "Indra", type: "divine", color: "#3498db", size: 25, description: "âš¡ King of Gods | Initially desires Damayanti, but blesses Nala"},
+        {id: "Agni", type: "divine", color: "#3498db", size: 23, description: "ðŸ”¥ God of Fire | Blesses Nala, helps during the swayamvara"},
+        {id: "Varuna", type: "divine", color: "#3498db", size: 23, description: "ðŸŒŠ God of Water | Blesses Nala during the swayamvara"},
+        {id: "Yama", type: "divine", color: "#3498db", size: 23, description: "ðŸ’€ God of Death/Justice | Blesses Nala during the swayamvara"},
+        {id: "Saraswati", type: "divine", color: "#3498db", size: 22, description: "ðŸ•Šï¸ Goddess of Knowledge and Arts | Helps Damayanti's decision"},
+        {id: "Vayu", type: "divine", color: "#3498db", size: 22, description: "ðŸ’¨ God of Wind | Delivers messages for Nala early on"},
 
         // ANTAGONISTS & HELPERS
-        {id: "Kali", type: "antagonist", color: "#e74c3c", size: 28, description: "😈 Personification of the Kali Yuga (evil age) | Possesses Nala | Instigates the dice game and subsequent miseries"},
-        {id: "Dwapara", type: "antagonist", color: "#e74c3c", size: 20, description: "🎲 Kali's companion | Spirit of dice and gambling | Influences Pushkara"},
-        {id: "Pushkara", type: "antagonist", color: "#e74c3c", size: 25, description: "👑 Brother of Nala | Challenged Nala to the dice game | Takes Nala's kingdom"},
-        {id: "Rituparna", type: "character", color: "#2ecc71", size: 24, description: "👑 King of Ayodhya | Skilled in dice, unskilled in horses | Exchanges knowledge with Nala"},
-        {id: "Bahu", type: "character", color: "#e74c3c", size: 20, description: "👨‍🍳 Nala's disguised name | Charioteer and cook for Rituparna"},
-        {id: "Vahuka", type: "character", color: "#2ecc71", size: 20, description: "👨‍🍳 Nala's disguised name in Rituparna's court | Master of horses and cook"},
-        {id: "Karkotaka", type: "character", color: "#3498db", size: 25, description: "🐍 Serpent King | Curses Nala to change his appearance | Gives Nala the poison to remove Kali"},
-        {id: "Sudeva", type: "character", color: "#2ecc71", size: 20, description: "🕵️‍♂️ Brahmin messenger | Sent by Damayanti to find Nala"},
-        {id: "Brahmin Messengers", type: "character", color: "#2ecc71", size: 18, description: "🗣️ Sent by Damayanti to search for Nala throughout kingdoms"},
-        {id: "King Bhima", type: "character", color: "#2ecc71", size: 25, description: "👑 King of Vidarbha | Father of Damayanti | Provides refuge for his daughter and grandchildren"},
-        {id: "Queen Sunanda", type: "character", color: "#2ecc71", size: 22, description: "👸 Queen of Vidarbha | Mother of Damayanti"},
-        {id: "Swan Messenger", type: "character", color: "#3498db", size: 20, description: "🦢 Sent by Nala to Damayanti, describing his love for her. Initiates their romance."},
+        {id: "Kali", type: "antagonist", color: "#e74c3c", size: 28, description: "ðŸ˜ˆ Personification of the Kali Yuga (evil age) | Possesses Nala | Instigates the dice game and subsequent miseries"},
+        {id: "Dwapara", type: "antagonist", color: "#e74c3c", size: 20, description: "ðŸŽ² Kali's companion | Spirit of dice and gambling | Influences Pushkara"},
+        {id: "Pushkara", type: "antagonist", color: "#e74c3c", size: 25, description: "ðŸ‘‘ Brother of Nala | Challenged Nala to the dice game | Takes Nala's kingdom"},
+        {id: "Rituparna", type: "character", color: "#2ecc71", size: 24, description: "ðŸ‘‘ King of Ayodhya | Skilled in dice, unskilled in horses | Exchanges knowledge with Nala"},
+        {id: "Bahu", type: "character", color: "#e74c3c", size: 20, description: "ðŸ‘¨â€ðŸ³ Nala's disguised name | Charioteer and cook for Rituparna"},
+        {id: "Vahuka", type: "character", color: "#2ecc71", size: 20, description: "ðŸ‘¨â€ðŸ³ Nala's disguised name in Rituparna's court | Master of horses and cook"},
+        {id: "Karkotaka", type: "character", color: "#3498db", size: 25, description: "ðŸ Serpent King | Curses Nala to change his appearance | Gives Nala the poison to remove Kali"},
+        {id: "Sudeva", type: "character", color: "#2ecc71", size: 20, description: "ðŸ•µï¸â€â™‚ï¸ Brahmin messenger | Sent by Damayanti to find Nala"},
+        {id: "Brahmin Messengers", type: "character", color: "#2ecc71", size: 18, description: "ðŸ—£ï¸ Sent by Damayanti to search for Nala throughout kingdoms"},
+        {id: "King Bhima", type: "character", color: "#2ecc71", size: 25, description: "ðŸ‘‘ King of Vidarbha | Father of Damayanti | Provides refuge for his daughter and grandchildren"},
+        {id: "Queen Sunanda", type: "character", color: "#2ecc71", size: 22, description: "ðŸ‘¸ Queen of Vidarbha | Mother of Damayanti"},
+        {id: "Swan Messenger", type: "character", color: "#3498db", size: 20, description: "ðŸ¦¢ Sent by Nala to Damayanti, describing his love for her. Initiates their romance."},
 
 
         // KEY LOCATIONS & EVENTS
-        {id: "Nishadha", type: "place", color: "#2ecc71", size: 22, description: "📍 Nala's kingdom | Lost in the dice game"},
-        {id: "Vidarbha", type: "place", color: "#2ecc71", size: 22, description: "📍 Damayanti's kingdom | Home of King Bhima"},
-        {id: "Ayodhya", type: "place", color: "#2ecc71", size: 20, description: "📍 Rituparna's kingdom | Where Nala (as Bahu/Vahuka) serves"},
-        {id: "Forest (Vana)", type: "place", color: "#2ecc71", size: 28, description: "🌳 Place of Nala and Damayanti's separation and hardship"},
-        {id: "Swayamvara", type: "event", color: "#2ecc71", size: 25, description: "🎉 Damayanti's marriage ceremony | Gods attempt to win her hand"},
-        {id: "Dice Game", type: "event", color: "#e74c3c", size: 25, description: "🎲 Nala gambles his kingdom away to Pushkara, influenced by Kali"},
-        {id: "Separation", type: "event", color: "#e74c3c", size: 28, description: "💔 Nala abandons Damayanti in the forest due to Kali's influence"},
-        {id: "Reunion", type: "event", color: "#f1c40f", size: 28, description: "💕 Nala and Damayanti are reunited through Damayanti's cleverness"},
-        {id: "Kali's Departure", type: "event", color: "#3498db", size: 20, description: "✨ Kali is expelled from Nala's body | Nala regains his true self"},
-        {id: "Second Swayamvara", type: "event", color: "#2ecc71", size: 25, description: "💡 Damayanti's stratagem to find Nala, attracting kings to Vidarbha"},
-        {id: "Reclaiming Kingdom", type: "event", color: "#f1c40f", size: 20, description: "⚔️ Nala challenges Pushkara again and wins back his kingdom"},
+        {id: "Nishadha", type: "place", color: "#2ecc71", size: 22, description: "ðŸ“ Nala's kingdom | Lost in the dice game"},
+        {id: "Vidarbha", type: "place", color: "#2ecc71", size: 22, description: "ðŸ“ Damayanti's kingdom | Home of King Bhima"},
+        {id: "Ayodhya", type: "place", color: "#2ecc71", size: 20, description: "ðŸ“ Rituparna's kingdom | Where Nala (as Bahu/Vahuka) serves"},
+        {id: "Forest (Vana)", type: "place", color: "#2ecc71", size: 28, description: "ðŸŒ³ Place of Nala and Damayanti's separation and hardship"},
+        {id: "Swayamvara", type: "event", color: "#2ecc71", size: 25, description: "ðŸŽ‰ Damayanti's marriage ceremony | Gods attempt to win her hand"},
+        {id: "Dice Game", type: "event", color: "#e74c3c", size: 25, description: "ðŸŽ² Nala gambles his kingdom away to Pushkara, influenced by Kali"},
+        {id: "Separation", type: "event", color: "#e74c3c", size: 28, description: "ðŸ’” Nala abandons Damayanti in the forest due to Kali's influence"},
+        {id: "Reunion", type: "event", color: "#f1c40f", size: 28, description: "ðŸ’• Nala and Damayanti are reunited through Damayanti's cleverness"},
+        {id: "Kali's Departure", type: "event", color: "#3498db", size: 20, description: "âœ¨ Kali is expelled from Nala's body | Nala regains his true self"},
+        {id: "Second Swayamvara", type: "event", color: "#2ecc71", size: 25, description: "ðŸ’¡ Damayanti's stratagem to find Nala, attracting kings to Vidarbha"},
+        {id: "Reclaiming Kingdom", type: "event", color: "#f1c40f", size: 20, description: "âš”ï¸ Nala challenges Pushkara again and wins back his kingdom"},
     ];
 
     // *** START LINKS ***
@@ -574,7 +574,7 @@
     }
 
     function showStats() {
-        alert(`📊 NALA & DAMAYANTI STATISTICS\n\nTotal Characters, Places & Events: ${nodes.length}\nTotal Relationships & Conflict Points: ${links.length}\n\nThis knowledge graph maps the central narrative of the Nala-Damayanti story, highlighting the roles of the gods, the antagonist Kali, the period of separation, and their eventual reunion.`);
+        alert(`ðŸ“Š NALA & DAMAYANTI STATISTICS\n\nTotal Characters, Places & Events: ${nodes.length}\nTotal Relationships & Conflict Points: ${links.length}\n\nThis knowledge graph maps the central narrative of the Nala-Damayanti story, highlighting the roles of the gods, the antagonist Kali, the period of separation, and their eventual reunion.`);
     }
 
     updateVisibility();

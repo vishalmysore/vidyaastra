@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vidya Astra: Santa's Christmas Route</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -260,20 +260,20 @@
 </head>
 <body>
 <div class="controls">
-    <h2>🎅 SANTA'S ROUTE</h2>
+    <h2>ðŸŽ… SANTA'S ROUTE</h2>
     <p style="font-size: 0.8em; margin-bottom: 8px;">Project VidyaAstra</p>
 
     <h3>Filter by Type</h3>
     <div>
-        <button class="filter-btn active" onclick="toggleFilter('hero')">🎅 Santa</button>
-        <button class="filter-btn active" onclick="toggleFilter('character')">👤 Helpers</button>
-        <button class="filter-btn active" onclick="toggleFilter('location')">🌍 Places</button>
-        <button class="filter-btn active" onclick="toggleFilter('event')">🎁 Events</button>
+        <button class="filter-btn active" onclick="toggleFilter('hero')">ðŸŽ… Santa</button>
+        <button class="filter-btn active" onclick="toggleFilter('character')">ðŸ‘¤ Helpers</button>
+        <button class="filter-btn active" onclick="toggleFilter('location')">ðŸŒ Places</button>
+        <button class="filter-btn active" onclick="toggleFilter('event')">ðŸŽ Events</button>
     </div>
 
     <h3 style="margin-top: 12px;">Actions</h3>
-    <button onclick="resetSimulation()">🔄 Reset</button>
-    <button onclick="showStats()">📊 Stats</button>
+    <button onclick="resetSimulation()">ðŸ”„ Reset</button>
+    <button onclick="showStats()">ðŸ“Š Stats</button>
 </div>
 
 <div class="legend">
@@ -320,7 +320,7 @@
 </div>
 
 <div class="info-panel" id="infoPanel">
-    <button class="close-btn" onclick="closeInfo()">✕</button>
+    <button class="close-btn" onclick="closeInfo()">âœ•</button>
     <h3 id="nodeTitle"></h3>
     <div id="nodeDescription"></div>
 </div>
@@ -332,64 +332,64 @@
     // *** START NODES ***
     const nodes = [
         // SANTA & FAMILY
-        {id: "Santa", type: "hero", faction: "santa", color: "#ff4444", size: 35, description: "🎅 Santa Claus | Father Christmas | Delivers gifts worldwide on Christmas Eve | Lives at North Pole"},
-        {id: "Mrs_Claus", type: "character", faction: "helper", color: "#ff69b4", size: 28, description: "👵 Mrs. Claus | Santa's wife | Manages North Pole operations | Bakes cookies for Santa"},
+        {id: "Santa", type: "hero", faction: "santa", color: "#ff4444", size: 35, description: "ðŸŽ… Santa Claus | Father Christmas | Delivers gifts worldwide on Christmas Eve | Lives at North Pole"},
+        {id: "Mrs_Claus", type: "character", faction: "helper", color: "#ff69b4", size: 28, description: "ðŸ‘µ Mrs. Claus | Santa's wife | Manages North Pole operations | Bakes cookies for Santa"},
         
         // ALL NINE REINDEER
-        {id: "Rudolph", type: "hero", faction: "reindeer", color: "#ffaa44", size: 30, description: "🦌 Rudolph | Red-nosed reindeer | Leads Santa's sleigh | Guides through fog and darkness"},
-        {id: "Dasher", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Dasher | Fastest reindeer | Known for incredible speed"},
-        {id: "Dancer", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Dancer | Graceful flyer | Performs aerial maneuvers"},
-        {id: "Prancer", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Prancer | Proud and powerful | Strong flyer"},
-        {id: "Vixen", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Vixen | Swift and clever | Navigates tricky routes"},
-        {id: "Comet", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Comet | Brings wonder | Shines brightly in flight"},
-        {id: "Cupid", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Cupid | Spreads love and joy | Kind-hearted"},
-        {id: "Donner", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Donner (Thunder) | Powerful and strong | Thunderous presence"},
-        {id: "Blitzen", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "🦌 Blitzen (Lightning) | Lightning fast | Quick and agile"},
+        {id: "Rudolph", type: "hero", faction: "reindeer", color: "#ffaa44", size: 30, description: "ðŸ¦Œ Rudolph | Red-nosed reindeer | Leads Santa's sleigh | Guides through fog and darkness"},
+        {id: "Dasher", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Dasher | Fastest reindeer | Known for incredible speed"},
+        {id: "Dancer", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Dancer | Graceful flyer | Performs aerial maneuvers"},
+        {id: "Prancer", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Prancer | Proud and powerful | Strong flyer"},
+        {id: "Vixen", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Vixen | Swift and clever | Navigates tricky routes"},
+        {id: "Comet", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Comet | Brings wonder | Shines brightly in flight"},
+        {id: "Cupid", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Cupid | Spreads love and joy | Kind-hearted"},
+        {id: "Donner", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Donner (Thunder) | Powerful and strong | Thunderous presence"},
+        {id: "Blitzen", type: "character", faction: "reindeer", color: "#8b4513", size: 22, description: "ðŸ¦Œ Blitzen (Lightning) | Lightning fast | Quick and agile"},
         
         // NORTH POLE HELPERS
-        {id: "Head_Elf", type: "character", faction: "helper", color: "#44ff44", size: 26, description: "🧝 Head Elf | Chief toy maker | Supervises all workshop operations"},
-        {id: "Toy_Makers", type: "character", faction: "helper", color: "#44ff44", size: 24, description: "🧝 Toy Maker Elves | Build toys | Skilled craftsmen"},
-        {id: "Gift_Wrappers", type: "character", faction: "helper", color: "#44ff44", size: 22, description: "🧝 Gift Wrapper Elves | Wrap presents | Masters of ribbons and bows"},
-        {id: "Sleigh_Engineer", type: "character", faction: "helper", color: "#44ff44", size: 22, description: "🧝 Sleigh Engineer | Maintains sleigh | Ensures safe flight | Checks reindeer harnesses"},
-        {id: "Cookie_Baker", type: "character", faction: "helper", color: "#44ff44", size: 20, description: "🧝 Cookie Baker Elf | Bakes treats | Works with Mrs. Claus"},
+        {id: "Head_Elf", type: "character", faction: "helper", color: "#44ff44", size: 26, description: "ðŸ§ Head Elf | Chief toy maker | Supervises all workshop operations"},
+        {id: "Toy_Makers", type: "character", faction: "helper", color: "#44ff44", size: 24, description: "ðŸ§ Toy Maker Elves | Build toys | Skilled craftsmen"},
+        {id: "Gift_Wrappers", type: "character", faction: "helper", color: "#44ff44", size: 22, description: "ðŸ§ Gift Wrapper Elves | Wrap presents | Masters of ribbons and bows"},
+        {id: "Sleigh_Engineer", type: "character", faction: "helper", color: "#44ff44", size: 22, description: "ðŸ§ Sleigh Engineer | Maintains sleigh | Ensures safe flight | Checks reindeer harnesses"},
+        {id: "Cookie_Baker", type: "character", faction: "helper", color: "#44ff44", size: 20, description: "ðŸ§ Cookie Baker Elf | Bakes treats | Works with Mrs. Claus"},
         
         // NORTH POLE LOCATIONS
-        {id: "North_Pole", type: "location", color: "#ffffff", size: 32, description: "🏔️ North Pole | Santa's home base | Workshop headquarters | Starting point of journey"},
-        {id: "Toy_Workshop", type: "event", color: "#4ecdc4", size: 28, description: "🏭 Toy Workshop | Where all toys are manufactured | Busy all year round"},
-        {id: "Stable", type: "location", color: "#cd853f", size: 22, description: "🏠 Reindeer Stable | Where reindeer rest | Warm and cozy"},
-        {id: "Santas_House", type: "location", color: "#ff6b6b", size: 24, description: "🏠 Santa's House | Where Santa and Mrs. Claus live | Cozy home"},
+        {id: "North_Pole", type: "location", color: "#ffffff", size: 32, description: "ðŸ”ï¸ North Pole | Santa's home base | Workshop headquarters | Starting point of journey"},
+        {id: "Toy_Workshop", type: "event", color: "#4ecdc4", size: 28, description: "ðŸ­ Toy Workshop | Where all toys are manufactured | Busy all year round"},
+        {id: "Stable", type: "location", color: "#cd853f", size: 22, description: "ðŸ  Reindeer Stable | Where reindeer rest | Warm and cozy"},
+        {id: "Santas_House", type: "location", color: "#ff6b6b", size: 24, description: "ðŸ  Santa's House | Where Santa and Mrs. Claus live | Cozy home"},
         
         // MAJOR CONTINENTS
-        {id: "North_America", type: "location", color: "#87ceeb", size: 28, description: "🌎 North America | USA, Canada, Mexico | First major stop"},
-        {id: "South_America", type: "location", color: "#87ceeb", size: 26, description: "🌎 South America | Brazil, Argentina, Chile | Southern deliveries"},
-        {id: "Europe", type: "location", color: "#87ceeb", size: 28, description: "🌍 Europe | UK, France, Germany, Italy | Traditional Christmas"},
-        {id: "Africa", type: "location", color: "#87ceeb", size: 26, description: "🌍 Africa | Egypt, Kenya, South Africa | Diverse celebrations"},
-        {id: "Asia", type: "location", color: "#87ceeb", size: 28, description: "🌏 Asia | China, Japan, India | Large population centers"},
-        {id: "Australia", type: "location", color: "#87ceeb", size: 26, description: "🌏 Australia & Oceania | Summer Christmas | Beach celebrations"},
+        {id: "North_America", type: "location", color: "#87ceeb", size: 28, description: "ðŸŒŽ North America | USA, Canada, Mexico | First major stop"},
+        {id: "South_America", type: "location", color: "#87ceeb", size: 26, description: "ðŸŒŽ South America | Brazil, Argentina, Chile | Southern deliveries"},
+        {id: "Europe", type: "location", color: "#87ceeb", size: 28, description: "ðŸŒ Europe | UK, France, Germany, Italy | Traditional Christmas"},
+        {id: "Africa", type: "location", color: "#87ceeb", size: 26, description: "ðŸŒ Africa | Egypt, Kenya, South Africa | Diverse celebrations"},
+        {id: "Asia", type: "location", color: "#87ceeb", size: 28, description: "ðŸŒ Asia | China, Japan, India | Large population centers"},
+        {id: "Australia", type: "location", color: "#87ceeb", size: 26, description: "ðŸŒ Australia & Oceania | Summer Christmas | Beach celebrations"},
         
         // MAJOR CITIES
-        {id: "New_York", type: "location", color: "#ffd700", size: 24, description: "🗽 New York City | Times Square | Empire State Building | Rockefeller Center tree"},
-        {id: "London", type: "location", color: "#ffd700", size: 24, description: "🏰 London | Big Ben | Buckingham Palace | Historic Christmas traditions"},
-        {id: "Tokyo", type: "location", color: "#ffd700", size: 24, description: "🗼 Tokyo | Tokyo Tower | Modern celebrations | KFC Christmas tradition"},
-        {id: "Sydney", type: "location", color: "#ffd700", size: 24, description: "🏖️ Sydney | Opera House | Beach Christmas | Bondi Beach Santa"},
-        {id: "Paris", type: "location", color: "#ffd700", size: 22, description: "🗼 Paris | Eiffel Tower | Champs-Élysées lights | Christmas markets"},
-        {id: "Rio", type: "location", color: "#ffd700", size: 22, description: "🏖️ Rio de Janeiro | Christ the Redeemer | Tropical Christmas"},
-        {id: "Moscow", type: "location", color: "#ffd700", size: 22, description: "❄️ Moscow | Red Square | Kremlin | Traditional Russian celebrations"},
-        {id: "Dubai", type: "location", color: "#ffd700", size: 22, description: "🏙️ Dubai | Burj Khalifa | Desert Christmas | Modern celebration"},
+        {id: "New_York", type: "location", color: "#ffd700", size: 24, description: "ðŸ—½ New York City | Times Square | Empire State Building | Rockefeller Center tree"},
+        {id: "London", type: "location", color: "#ffd700", size: 24, description: "ðŸ° London | Big Ben | Buckingham Palace | Historic Christmas traditions"},
+        {id: "Tokyo", type: "location", color: "#ffd700", size: 24, description: "ðŸ—¼ Tokyo | Tokyo Tower | Modern celebrations | KFC Christmas tradition"},
+        {id: "Sydney", type: "location", color: "#ffd700", size: 24, description: "ðŸ–ï¸ Sydney | Opera House | Beach Christmas | Bondi Beach Santa"},
+        {id: "Paris", type: "location", color: "#ffd700", size: 22, description: "ðŸ—¼ Paris | Eiffel Tower | Champs-Ã‰lysÃ©es lights | Christmas markets"},
+        {id: "Rio", type: "location", color: "#ffd700", size: 22, description: "ðŸ–ï¸ Rio de Janeiro | Christ the Redeemer | Tropical Christmas"},
+        {id: "Moscow", type: "location", color: "#ffd700", size: 22, description: "â„ï¸ Moscow | Red Square | Kremlin | Traditional Russian celebrations"},
+        {id: "Dubai", type: "location", color: "#ffd700", size: 22, description: "ðŸ™ï¸ Dubai | Burj Khalifa | Desert Christmas | Modern celebration"},
         
         // KEY EVENTS & TRADITIONS
-        {id: "Naughty_Nice_List", type: "event", color: "#ffaa00", size: 24, description: "📜 Naughty & Nice List | Santa checks it twice | Determines who gets gifts"},
-        {id: "Preparation", type: "event", color: "#ff69b4", size: 26, description: "🎁 Preparation Phase | Weeks before Christmas | Making and wrapping toys"},
-        {id: "Christmas_Eve", type: "event", color: "#ff4444", size: 28, description: "🌙 Christmas Eve Night | December 24th | The magical journey begins"},
-        {id: "Sleigh_Launch", type: "event", color: "#ff8c00", size: 26, description: "🚀 Sleigh Launch | Takeoff from North Pole | Reindeer power activated"},
-        {id: "Gift_Delivery", type: "event", color: "#ff69b4", size: 26, description: "🎁 Gift Delivery Process | Down chimneys | Under trees | In stockings"},
-        {id: "Chimney_Entry", type: "event", color: "#8b4513", size: 22, description: "🏠 Chimney Entry | Magic squeeze | Silent entrance | Santa's stealth"},
-        {id: "Milk_Cookies", type: "event", color: "#ffd700", size: 22, description: "🥛🍪 Milk & Cookies | Left by children | Santa's fuel | Carrots for reindeer"},
-        {id: "Journey_Complete", type: "event", color: "#44ff44", size: 26, description: "✅ Journey Complete | All gifts delivered | Return to North Pole | Success!"},
+        {id: "Naughty_Nice_List", type: "event", color: "#ffaa00", size: 24, description: "ðŸ“œ Naughty & Nice List | Santa checks it twice | Determines who gets gifts"},
+        {id: "Preparation", type: "event", color: "#ff69b4", size: 26, description: "ðŸŽ Preparation Phase | Weeks before Christmas | Making and wrapping toys"},
+        {id: "Christmas_Eve", type: "event", color: "#ff4444", size: 28, description: "ðŸŒ™ Christmas Eve Night | December 24th | The magical journey begins"},
+        {id: "Sleigh_Launch", type: "event", color: "#ff8c00", size: 26, description: "ðŸš€ Sleigh Launch | Takeoff from North Pole | Reindeer power activated"},
+        {id: "Gift_Delivery", type: "event", color: "#ff69b4", size: 26, description: "ðŸŽ Gift Delivery Process | Down chimneys | Under trees | In stockings"},
+        {id: "Chimney_Entry", type: "event", color: "#8b4513", size: 22, description: "ðŸ  Chimney Entry | Magic squeeze | Silent entrance | Santa's stealth"},
+        {id: "Milk_Cookies", type: "event", color: "#ffd700", size: 22, description: "ðŸ¥›ðŸª Milk & Cookies | Left by children | Santa's fuel | Carrots for reindeer"},
+        {id: "Journey_Complete", type: "event", color: "#44ff44", size: 26, description: "âœ… Journey Complete | All gifts delivered | Return to North Pole | Success!"},
         
         // SPECIAL ITEMS
-        {id: "Magic_Sleigh", type: "event", color: "#c0c0c0", size: 24, description: "🛷 Magic Sleigh | Flies through air | Carries all presents | Never-ending bag"},
-        {id: "Santa_Bag", type: "event", color: "#8b4513", size: 20, description: "🎒 Santa's Bag | Holds all gifts | Magically bottomless | Never runs out"},
+        {id: "Magic_Sleigh", type: "event", color: "#c0c0c0", size: 24, description: "ðŸ›· Magic Sleigh | Flies through air | Carries all presents | Never-ending bag"},
+        {id: "Santa_Bag", type: "event", color: "#8b4513", size: 20, description: "ðŸŽ’ Santa's Bag | Holds all gifts | Magically bottomless | Never runs out"},
     ];
 
     // *** START EDGES ***
@@ -601,7 +601,7 @@
                 <strong>Events:</strong> ${nodes.filter(n => n.type === 'event').length}
             </div>
         `;
-        document.getElementById("nodeTitle").textContent = "📊 Graph Statistics";
+        document.getElementById("nodeTitle").textContent = "ðŸ“Š Graph Statistics";
         document.getElementById("nodeDescription").innerHTML = stats;
         document.getElementById("infoPanel").style.display = "block";
     }
@@ -634,3 +634,4 @@
 </script>
 </body>
 </html>
+

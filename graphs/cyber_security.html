@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>Vidya Astra : Cyber Threat Intelligence (Hybrid)</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
     <style>
         :root{
             --bg1: #0f1724;
@@ -150,7 +150,7 @@
 </head>
 <body>
 <div class="controls">
-    <h2>🔐 Cyber Threat Intelligence — Hybrid Graph</h2>
+    <h2>ðŸ” Cyber Threat Intelligence â€” Hybrid Graph</h2>
     <h3> Project: Vidya Astra</h3>
     <p>Shows attack paths, CVE propagation, and threat-intel indicators. Click nodes to inspect. Drag nodes to explore relationships.</p>
 
@@ -183,7 +183,7 @@
 
 <div class="info-panel" id="infoPanel">
     <h3 id="infoTitle">Node</h3>
-    <div class="meta" id="infoType">Type: —</div>
+    <div class="meta" id="infoType">Type: â€”</div>
     <div id="infoBody">Select a node to see details.</div>
     <div style="margin-top:8px;">
         <button onclick="focusOnNode()">Focus</button>
@@ -395,28 +395,28 @@
     const infoPanel = document.getElementById("infoPanel");
     function showInfo(event,d){
         document.getElementById("infoTitle").textContent = d.id;
-        document.getElementById("infoType").textContent = `Type: ${d.category || '—'}`;
+        document.getElementById("infoType").textContent = `Type: ${d.category || 'â€”'}`;
         const body = document.getElementById("infoBody");
 
         // build details depending on type
         let html = `<div style="font-size:0.92rem;margin-bottom:6px;">${d.descr ? d.descr : ''}</div>`;
         if(d.category === "System"){
-            html += `<div class="badge">IP: ${d.ip || '—'}</div> <div class="badge">OS: ${d.os || '—'}</div><hr style="opacity:0.06">`;
+            html += `<div class="badge">IP: ${d.ip || 'â€”'}</div> <div class="badge">OS: ${d.os || 'â€”'}</div><hr style="opacity:0.06">`;
             html += `<div><strong>Possible Risks:</strong><ul style="margin:6px 0 0 18px;"><li>Unpatched CVEs</li><li>Credential theft</li><li>Lateral movement</li></ul></div>`;
         } else if(d.category === "Vulnerability"){
-            html += `<div class="badge danger">CVSS: ${d.cvss || '—'}</div> <div style="margin-top:8px;"><strong>Remediation:</strong><br>Patch or apply vendor mitigations; network segmentation; monitoring</div>`;
+            html += `<div class="badge danger">CVSS: ${d.cvss || 'â€”'}</div> <div style="margin-top:8px;"><strong>Remediation:</strong><br>Patch or apply vendor mitigations; network segmentation; monitoring</div>`;
         } else if(d.category === "ThreatActor"){
             html += `<div><strong>TTPs:</strong> Phishing, C2, Lateral movement</div>`;
             html += `<div style="margin-top:6px;"><strong>Known IOCs:</strong><br>185.45.12.90, bad-domain[.]xyz</div>`;
         } else if(d.category === "Indicator"){
-            html += `<div><strong>Kind:</strong> ${d.kind || '—'}</div><div style="margin-top:6px;">${d.descr || ''}</div>`;
+            html += `<div><strong>Kind:</strong> ${d.kind || 'â€”'}</div><div style="margin-top:6px;">${d.descr || ''}</div>`;
         } else if(d.category === "Control"){
             html += `<div><strong>Mitigation:</strong> ${d.descr || ''}</div>`;
         } else {
             html += `<div>${d.descr || ''}</div>`;
         }
 
-        html += `<hr style="opacity:0.06"><div style="font-size:0.85rem;color:#cfeffd;"><strong>Neighbors:</strong> ${neighborsOf(d.id).join(", ") || '—'}</div>`;
+        html += `<hr style="opacity:0.06"><div style="font-size:0.85rem;color:#cfeffd;"><strong>Neighbors:</strong> ${neighborsOf(d.id).join(", ") || 'â€”'}</div>`;
         body.innerHTML = html;
 
         infoPanel.style.display = "block";
@@ -501,7 +501,7 @@
     function showDetectedPaths(){
         let s = "Detected Paths:\n\n";
         detectedPaths.forEach((p,i) => {
-            s += `${i+1}. ${p.name}\n   Path: ${p.path.join(" → ")}\n   Severity: ${p.severity}\n   Notes: ${p.notes}\n\n`;
+            s += `${i+1}. ${p.name}\n   Path: ${p.path.join(" â†’ ")}\n   Severity: ${p.severity}\n   Notes: ${p.notes}\n\n`;
         });
         alert(s);
     }
@@ -567,3 +567,4 @@
 </script>
 </body>
 </html>
+
